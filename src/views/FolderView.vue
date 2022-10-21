@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useFilesystemStore } from "@/stores/filesystem";
 import { ElMessage } from "element-plus";
@@ -10,6 +10,7 @@ import { Timer, UploadFilled } from "@element-plus/icons-vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 const filesystem = useFilesystemStore();
 const props = defineProps({
   id: String,
@@ -63,7 +64,8 @@ function deleteFile (id) {
 }
 function goToActive (row) {
   if (row.type == 1) {
-    router.push("/folder/" + row.hash_id);
+    let hashId = row.hash_id ?? row.hashId;
+    router.push("/folder/" + hashId + "?name=" + row.name);
   } else if (row.type == 0) {
     window.open(row.path, "_blank ");
   }
@@ -74,7 +76,7 @@ function storeFolder () {
     {},
     {
       user_id: authStore.user.id,
-      parent_id: filesystem.active,
+      parent_id: filesystem.active.hashId,
       type: 1,
     },
     form.value
@@ -86,7 +88,12 @@ function storeFolder () {
 function goBack () {
   let len = filesystem.history.length;
   if (len > 1) {
-    router.push("/folder/" + filesystem.history[len - 2]);
+    router.push(
+      "/folder/" +
+      filesystem.history[len - 2].hashId +
+      "?name=" +
+      filesystem.history[len - 2].name
+    );
   } else {
     router.push("/storehouse");
   }
@@ -115,7 +122,11 @@ watch(
   () => props.id,
   (id) => {
     if (id) {
-      filesystem.setActive(id);
+      console.log(id);
+      filesystem.setActive({
+        hashId: id,
+        name: route.query ? route.query.name : "",
+      });
       filesystem.getFolder();
     }
   },
@@ -127,11 +138,18 @@ watch(
 
 <template>
   <div class="w-wull h-full flex flex-col">
-    <el-card class="m-4 h-44">
+    <el-card class="m-4">
       <template #header>
         <div><span class="text-2xl align-middle">文件管理器</span></div>
       </template>
       <el-page-header @back="goBack">
+        <template #breadcrumb>
+          <el-breadcrumb :separator-icon="ArrowRight">
+            <el-breadcrumb-item v-for="item in filesystem.history" :key="item" @click="goToActive(item)">
+              <div>{{ item.name }}</div>
+            </el-breadcrumb-item>
+          </el-breadcrumb>
+        </template>
         <template #content>
           <div class="flex items-center">
             <span class="text-large font-600">
@@ -149,7 +167,7 @@ watch(
       </el-page-header>
     </el-card>
     <el-card class="mx-4">
-      <el-table :data="filesystem.folder.data" stripe style="width: 100%" height="calc(100vh - 22rem)">
+      <el-table :data="filesystem.folder.data" stripe style="width: 100%">
         <el-table-column label="名称" width="280">
           <template #default="scope">
             <el-link target="_blank" type="primary" v-on:click.stop="goToActive(scope.row)">{{ scope.row.name }}

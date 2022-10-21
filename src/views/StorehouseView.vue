@@ -1,15 +1,16 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth";
 import { useFilesystemStore } from "@/stores/filesystem";
-import { watch, onActivated } from "vue";
+import { watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Timer } from "@element-plus/icons-vue";
 const authStore = useAuthStore();
 const router = useRouter();
 const filesystem = useFilesystemStore();
 
-onActivated(() => {
+onMounted(() => {
   filesystem.getStorehouse();
+  filesystem.clearHistory();
 });
 
 watch(
@@ -24,17 +25,17 @@ watch(
   }
 );
 
-watch(
-  () => authStore.user,
-  (user) => {
-    if (user) {
-      filesystem.getStorehouse();
-    }
-  },
-  {
-    immediate: true,
-  }
-);
+// watch(
+//   () => authStore.user,
+//   (user) => {
+//     if (user) {
+//       filesystem.getStorehouse();
+//     }
+//   },
+//   {
+//     immediate: true,
+//   }
+// );
 </script>
 
 <template>
@@ -46,8 +47,11 @@ watch(
       <el-table :data="filesystem.storehouse.data" stripe style="width: 100%">
         <el-table-column label="名称" width="180">
           <template #default="scope">
-            <el-link target="_blank" type="primary" size="small" @click="router.push('/folder/' + scope.row.hash_id)">{{
-            scope.row.name }}</el-link>
+            <el-link target="_blank" type="primary" size="small" @click="
+              router.push(
+                '/folder/' + scope.row.hash_id + '?name=' + scope.row.name
+              )
+            ">{{ scope.row.name }}</el-link>
           </template>
         </el-table-column>
         <el-table-column label="创建日期">

@@ -33,7 +33,7 @@ watch(
   () => authStore.isAuth,
   (isAuth) => {
     if (isAuth) {
-      router.push("/panorama-list");
+      router.push("/storehouse");
     } else {
       let accessToken = localStorage.getItem("accessToken");
       let tokenType = localStorage.getItem("tokenType");

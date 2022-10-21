@@ -116,3 +116,13 @@ export const SYSTEM_FILE = {
   val: 14,
   key: "系统文件",
 };
+
+export const THREE_DIMENSIONAL_OBJ = {
+  val: 15,
+  key: "obj 模型文件",
+};
+
+export const THREE_DIMENSIONAL_GLTF = {
+  val: 16,
+  key: "gltf 模型文件",
+};

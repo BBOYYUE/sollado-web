@@ -15,6 +15,12 @@ const router = createRouter({
       props: true,
     },
     {
+      path: "/three-dimensional-list/:id?",
+      name: "threeDimensionalList",
+      component: () => import("../views/threeDimensionalListView.vue"),
+      props: true,
+    },
+    {
       path: "/login",
       name: "login",
       component: () => import("../views/LoginView.vue"),

@@ -5,13 +5,14 @@ import queryBuilder from "../util/queryBuilder";
 import { useAppStore } from "@/stores/app";
 const appStore = useAppStore();
 
-export const useFilesystemStore = defineStore("filesystem", {
+export const useThreeDimensionalStore = defineStore("threeDimensional", {
   state: () => {
     return {
       active: {},
       storehouse: {},
       folder: {},
       history: [],
+      workingList: new Set(),
       queryBuilder: {
         filter: {
           id: undefined,
@@ -28,19 +29,13 @@ export const useFilesystemStore = defineStore("filesystem", {
     };
   },
   actions: {
-    clearHistory () {
-      while (this.history.length > 0) {
-        this.history.pop();
-      }
-      console.log(this.history);
-    },
     getStorehouse () {
-      appStore.loading();
       this.queryBuilder.filter.type = 2;
       this.queryBuilder.filter.parent_id = undefined;
       this.queryBuilder.filter.name = undefined;
+      appStore.loading();
       http()
-        .get(api.host + api.filesystem + queryBuilder(this.queryBuilder))
+        .get(api.host + api.threeDimensional + queryBuilder(this.queryBuilder))
         .then((res) => {
           let respond = res.data;
           if (respond.code == 200) {
@@ -54,7 +49,7 @@ export const useFilesystemStore = defineStore("filesystem", {
       this.queryBuilder.filter.parent_id = this.active.hashId;
       appStore.loading();
       http()
-        .get(api.host + api.filesystem + queryBuilder(this.queryBuilder))
+        .get(api.host + api.threeDimensional + queryBuilder(this.queryBuilder))
         .then((res) => {
           let respond = res.data;
           if (respond.code == 200) {
@@ -80,39 +75,52 @@ export const useFilesystemStore = defineStore("filesystem", {
     setPage (page) {
       this.queryBuilder.page = page;
     },
-    addFile (file) {
-      this.folder.data.push(file);
-    },
     storeFolder (form) {
       appStore.loading();
       http()
-        .post(api.host + api.filesystem, form)
+        .post(api.host + api.threeDimensional, form)
         .then((res) => {
           let respond = res.data;
           if (respond.code == 200) {
-            this.folder.data.push(respond.data);
+            this.folder.data.unshift(respond.data);
           }
           appStore.ready();
         });
     },
-    deleteFile (id) {
+    addWorkingList (id) {
+      this.workingList.add(id);
+    },
+    delWorkingList (id) {
+      this.workingList.delete(id);
+    },
+    storeThreeDimensional (form) {
       appStore.loading();
       http()
-        .delete(
-          api.host + api.filesystem + id + queryBuilder(this.queryBuilder)
-        )
+        .post(api.host + api.threeDimensional, form)
+        .then((res) => {
+          let respond = res.data;
+          let that = this;
+          if (respond.code == 200) {
+            if (respond.data instanceof Array) {
+              respond.data.map((arr) => {
+                that.folder.data.unshift(arr);
+                this.workingList.add(arr.hash_id);
+              });
+            } else {
+              this.folder.data.unshift(respond.data);
+              this.workingList.add(respond.data.hash_id);
+            }
+          }
+          appStore.ready();
+        });
+    },
+    deleteThreeDimensional (id) {
+      appStore.loading();
+      http()
+        .delete(api.host + api.threeDimensional + id)
         .then(() => {
           appStore.ready();
         });
-      // .then((res) => {
-      //     let respond = res.data
-      //     if (respond.code == 200) {
-      //         this.folder = respond.data
-      //     }
-      // })
-    },
-    downloadFile (id) {
-      window.open(api.host + api.filesystem + id);
     },
   },
 });

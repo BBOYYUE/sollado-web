@@ -1,6 +1,6 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { EchoImpl } from "../util/echo";
 import { onActivated, onMounted, watch, ref } from "vue";
 import { usePanoramaStore } from "../stores/panorama";
@@ -10,6 +10,7 @@ import http from "@/util/http";
 
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 const panorama = usePanoramaStore();
 const dialogFolderVisible = ref(false);
 const dialogAssetVisible = ref(false);
@@ -38,24 +39,18 @@ const filesystemProps = ref({
 
 function getCheckedNodes () {
   return formFileList.value;
-  // if (treeRef.value) {
-  //   return treeRef.value.getCheckedNodes(false, false);
-  // } else {
-  //   return [];
-  // }
 }
 function goBack () {
   let len = panorama.history.length;
   if (len > 1) {
-    router.push("/panorama-list/" + panorama.history[len - 2]);
-  } else {
-    router.push("/panorama-list/" + panorama.storehouse.data[0].hash_id);
+    router.push("/panorama-list/" + panorama.history[len - 2].hashId);
+    panorama.history.pop();
   }
-  panorama.history.pop();
 }
 function goToActive (row) {
   if (row.type == 1) {
-    router.push("/panorama-list/" + row.hash_id);
+    let hashId = row.hash_id ?? row.hashId;
+    router.push("/panorama-list/" + hashId + "?name=" + row.name);
   } else if (row.type == 0) {
     window.open(row.path, "_blank ");
   }
@@ -278,7 +273,11 @@ watch(
   () => props.id,
   (id) => {
     if (id) {
-      panorama.setActive(id);
+      console.log(route);
+      panorama.setActive({
+        hashId: id,
+        name: route.query ? route.query.name : "",
+      });
       panorama.getFolder();
     }
   },
@@ -290,15 +289,18 @@ watch(
   () => panorama.storehouse,
   (storeHouse) => {
     if (storeHouse) {
-      panorama.setActive(storeHouse.data[0].hash_id);
-      panorama.getFolder();
+      panorama.setActive({
+        hashId: storeHouse.data[0].hash_id,
+        name: "根目录",
+      });
+      // panorama.getFolder();
     }
   }
 );
 </script>
 <template>
   <div class="w-wull h-full flex flex-col">
-    <el-card class="m-4 h-44">
+    <el-card class="m-4">
       <template #header>
         <div class="flex flex-row justify-between">
           <span class="text-2xl align-middle">全景管理器</span>
@@ -308,6 +310,13 @@ watch(
         </div>
       </template>
       <el-page-header @back="goBack">
+        <template #breadcrumb>
+          <el-breadcrumb :separator-icon="ArrowRight">
+            <el-breadcrumb-item v-for="item in panorama.history" :key="item" @click="goToActive(item)">
+              <div>{{ item.name }}</div>
+            </el-breadcrumb-item>
+          </el-breadcrumb>
+        </template>
         <template #content>
           <div class="flex items-center">
             <span class="text-large font-600">
