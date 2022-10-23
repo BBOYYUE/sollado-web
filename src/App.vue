@@ -8,11 +8,11 @@ const appStore = useAppStore();
 const route = useRoute();
 const router = useRouter();
 const showMenu = computed(() => {
-  let unshow = new Set(["login", "panorama", "home"]);
+  let unshow = new Set(["login", "panorama", "home", "threeDimensional"]);
   return !unshow.has(route.name);
 });
 
-function goTo (url) {
+function goTo(url) {
   router.push(url);
 }
 </script>
@@ -20,7 +20,7 @@ function goTo (url) {
 <template>
   <div>
     <div class="flex flex-col w-screen h-screen">
-      <div v-show="showMenu">
+      <div v-if="showMenu">
         <el-menu default-active="1" mode="horizontal">
           <el-menu-item index="0" disabled>
             <template #title>徵羽宫</template>

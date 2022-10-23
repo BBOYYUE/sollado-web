@@ -5,16 +5,16 @@
 // } else {
 // }
 // const host = "https://filesystem.api.sollado.com/";
-// const host = "http://laravel.test/";
+const host = "http://laravel.test/";
 // const host = "https://api.sollado.com/";
-const host = "https://api.sollado.com/";
+// const host = "https://api.sollado.com/";
 const filesystem = "api/v1/filesystem/";
 const auth = "api/v1/authorizations/";
 const panorama = "api/v1/panorama/";
 const threeDimensional = "api/v1/three-dimensional/";
-const broadcaster = "broadcasting/auth";
-// const assetUrl = "http://127.0.0.1:9000/sollado-api/";
-const assetUrl = "https://oss.sollado.com/";
+const broadcaster = "api/v1/broadcasting/auth";
+const assetUrl = "http://127.0.0.1:9000/sollado-api/";
+// const assetUrl = "https://oss.sollado.com/";
 export {
   host,
   filesystem,

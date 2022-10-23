@@ -32,6 +32,12 @@ const router = createRouter({
       props: true,
     },
     {
+      path: "/three-dimensional/:id?",
+      name: "threeDimensional",
+      component: () => import("../views/threeDimensionalShowView.vue"),
+      props: true,
+    },
+    {
       path: "/storehouse",
       name: "storehouse",
       component: () => import("../views/StorehouseView.vue"),

@@ -8,14 +8,14 @@ const PusherImpl = Pusher;
 const EchoImpl = new Echo({
   broadcaster: "pusher",
   key: "7752d0686cc33c61e028",
-  // wsHost: "laravel.test",
-  // wsPort: "6001",
-  wsHost: "wss.sollado.com",
-  wsPort: "443",
+  wsHost: "laravel.test",
+  wsPort: "6001",
+  // wsHost: "wss.sollado.com",
+  // wsPort: "443",
   cluster: "ap3",
   forceTLS: false,
   disableStats: false,
-  // authEndpoint: 'http://laravel.test/api/v1/broadcasting/auth'
+  // authEndpoint: 'http://laravel.test/api/v1/broadcasting/auth',
   authorizer: (channel, options) => {
     return {
       authorize: (socketId, callback) => {

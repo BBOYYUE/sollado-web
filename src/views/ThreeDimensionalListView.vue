@@ -36,10 +36,10 @@ const filesystemProps = ref({
   children: "childFiles",
 });
 
-function getCheckedNodes () {
+function getCheckedNodes() {
   return formFileList.value;
 }
-function goBack () {
+function goBack() {
   let len = threeDimensional.history.length;
   if (len > 1) {
     router.push(
@@ -48,7 +48,7 @@ function goBack () {
     threeDimensional.history.pop();
   }
 }
-function goToActive (row) {
+function goToActive(row) {
   if (row.type == 1) {
     let hashId = row.hash_id ?? row.hashId;
     router.push("/three-dimensional-list/" + hashId + "?name=" + row.name);
@@ -57,16 +57,16 @@ function goToActive (row) {
   }
 }
 
-function search (name) {
+function search(name) {
   threeDimensional.setFilterByName(name);
   threeDimensional.getFolder();
 }
-function pageClick (page) {
+function pageClick(page) {
   threeDimensional.setPage(page);
   threeDimensional.getFolder();
 }
 
-function listen () {
+function listen() {
   EchoImpl.private("three-dimensional-task." + authStore.user.id)
     .listen("ThreeDimensionalTaskWait", (res) => {
       taskList.value.push({
@@ -80,7 +80,7 @@ function listen () {
     .listen("ThreeDimensionalTaskStart", (res) => {
       let hashId = res.data.hash_id;
       for (let item in taskList.value) {
-        if (taskList.value[item].hashId === hashId) {
+        if (taskList.value[item].hashId === hashId && !['success', 'error'].includes(taskList.value[item].status)) {
           taskList.value[item].status = "working";
         }
       }
@@ -108,7 +108,7 @@ function listen () {
     });
 }
 
-function storeFolder () {
+function storeFolder() {
   let formData = Object.assign(
     {},
     {
@@ -122,57 +122,56 @@ function storeFolder () {
   threeDimensional.storeFolder(formData);
 }
 
-function storeAsset () {
+function storeAsset() {
   let list = getCheckedNodes();
-  console.log(list);
   let fileList = [];
+  let name = ""
   for (let item in list) {
     // eslint-disable-next-line prettier/prettier
     fileList.push({
       filesystem_id: list[item],
       name: threeDimensionalFileInfo.value[list[item]].name,
     });
+    let purpose = threeDimensionalFileInfo.value[list[item]].purpose
+    if (purpose == 15 || purpose == 16) {
+      name = threeDimensionalFileInfo.value[list[item]].name
+    }
   }
-  if (fileList.length > 1) {
-    threeDimensional.storePanorama({
-      parent_id: threeDimensional.active,
+
+  if (fileList.length > 0 && name) {
+    threeDimensional.storeThreeDimensional({
+      parent_id: threeDimensional.active.hashId,
       filesystem_list: fileList,
-    });
-    dialogAssetVisible.value = false;
-  } else if (fileList.length > 0) {
-    threeDimensional.storePanorama({
-      parent_id: threeDimensional.active,
-      filesystem_id: fileList[0].filesystem_id,
-      name: fileList[0].name,
+      name: name
     });
     dialogAssetVisible.value = false;
   }
 }
 
-function getStatus (id) {
+function getStatus(id) {
   if (threeDimensional.workingList.has(id)) {
     return true;
   }
   return false;
 }
-function deleteThreeDimensional (id) {
+function deleteThreeDimensional(id) {
   threeDimensional.deleteThreeDimensional(id);
   setTimeout(function () {
     threeDimensional.getFolder();
   }, 1000);
 }
 
-function showThreeDimensional (id) {
+function showThreeDimensional(id) {
   try {
     let features =
       "height=500, width=800, top=100, left=100, toolbar=no, menubar=no, scrollbars = no, resizable = no, location = no, status = no";
-    window.open("/three-dimensional/" + id, "全景预览", features);
+    window.open("/three-dimensional/" + id, "3D模型预览", features);
   } catch (e) {
     console.log(e);
   }
 }
 
-function copyThreeDimensionalLink (id) {
+function copyThreeDimensionalLink(id) {
   let url =
     window.location.protocol +
     "//" +
@@ -181,7 +180,7 @@ function copyThreeDimensionalLink (id) {
     id;
   copy(url);
 }
-function copy (str) {
+function copy(str) {
   let transfer = document.createElement("input");
   document.body.appendChild(transfer);
   transfer.value = str; // 这里表示想要复制的内容
@@ -194,10 +193,10 @@ function copy (str) {
   console.log("复制成功");
   document.body.removeChild(transfer);
 }
-function filesystemTreeClick (node) {
+function filesystemTreeClick(node) {
   activeFilesystemFolder.value = node;
 }
-function loadFilesystem (node, resolve) {
+function loadFilesystem(node, resolve) {
   if (node.level === 0) {
     http()
       .get(api.host + api.filesystem + "?filter[type]=2")
@@ -293,10 +292,20 @@ watch(
   () => threeDimensional.storehouse,
   (storeHouse) => {
     if (storeHouse) {
+      console.log(storeHouse.data[0])
       threeDimensional.setActive({
         hashId: storeHouse.data[0].hash_id,
         name: "根目录",
       });
+      threeDimensional.getFolder();
+    }
+  }
+);
+watch(
+  () => threeDimensional.active,
+  (active) => {
+    if (active) {
+      console.log(active)
       // panorama.getFolder();
     }
   }
@@ -332,7 +341,7 @@ watch(
           <div class="flex items-center">
             <el-input v-model="searchForm.name" placeholder="按名称搜索" @input="search" />
             <el-button type="primary" class="ml-2" @click="dialogFolderVisible = true">创建文件夹</el-button>
-            <el-button type="primary" class="ml-2" @click="dialogAssetVisible = true">创建全景</el-button>
+            <el-button type="primary" class="ml-2" @click="dialogAssetVisible = true">创建立体模型</el-button>
           </div>
         </template>
       </el-page-header>
@@ -436,7 +445,7 @@ watch(
       <div class="flex flex-col justify-start h-44 overflow-auto" v-if="taskList.length > 0">
         <div class="flex flex-row justify-between m-2" v-for="task in taskList" :key="task">
           <div>{{ task.name }}</div>
-          <div v-if="task.type == 'panorama'">立体模型任务</div>
+          <div v-if="task.type == 'three-dimensional'">立体模型任务</div>
           <div v-if="task.status == 'waiting'">正在排队</div>
           <div v-if="task.status == 'working'">正在处理</div>
           <div v-if="task.status == 'success'">已完成</div>
