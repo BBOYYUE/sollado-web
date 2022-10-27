@@ -1,6 +1,6 @@
 <script setup>
 import { Picture, Files } from "@element-plus/icons-vue";
-import { computed, watch } from "vue";
+import { computed, watch, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAppStore } from "@/stores/app";
 
@@ -8,11 +8,19 @@ const appStore = useAppStore();
 const route = useRoute();
 const router = useRouter();
 const showMenu = computed(() => {
-  let unshow = new Set(["login", "panorama", "home", "threeDimensional"]);
+  let unshow = new Set([
+    "login",
+    "panorama",
+    "home",
+    "threeDimensional",
+    "panoramaWorkEdit",
+    "panoramaWorkShow",
+  ]);
   return !unshow.has(route.name);
 });
+const childMenuItemType = ref("sourceMaterial");
 
-function goTo(url) {
+function goTo (url) {
   router.push(url);
 }
 </script>
@@ -25,13 +33,20 @@ function goTo(url) {
           <el-menu-item index="0" disabled>
             <template #title>徵羽宫</template>
           </el-menu-item>
-          <el-menu-item index="1">
+          <el-menu-item index="1" @click="
+            (childMenuItemType = 'sourceMaterial'), router.push('/storehouse')
+          ">
             <template #title>素材库</template>
+          </el-menu-item>
+          <el-menu-item index="2" @click="
+            (childMenuItemType = 'sampleReels'), router.push('/panorama-work')
+          ">
+            <template #title>作品集</template>
           </el-menu-item>
         </el-menu>
       </div>
       <div class="flex flex-row flex-grow">
-        <div v-show="showMenu">
+        <div v-show="showMenu && childMenuItemType == 'sourceMaterial'">
           <el-menu default-active="1" class="h-full">
             <el-menu-item index="1" @click="goTo('/storehouse')">
               <el-icon>
@@ -50,6 +65,16 @@ function goTo(url) {
                 <Picture />
               </el-icon>
               <template #title>立体模型管理器</template>
+            </el-menu-item>
+          </el-menu>
+        </div>
+        <div v-show="showMenu && childMenuItemType == 'sampleReels'">
+          <el-menu default-active="1" class="h-full">
+            <el-menu-item index="1" @click="goTo('/panorama-work')">
+              <el-icon>
+                <Picture />
+              </el-icon>
+              <template #title>全景作品</template>
             </el-menu-item>
           </el-menu>
         </div>

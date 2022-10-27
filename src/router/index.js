@@ -48,6 +48,23 @@ const router = createRouter({
       component: () => import("../views/FolderView.vue"),
       props: true,
     },
+    {
+      path: "/panorama-work",
+      name: "panoramaWork",
+      component: () => import("../views/PanoramaWorkView.vue"),
+    },
+    {
+      path: "/panorama-work-edit/:id?",
+      name: "panoramaWorkEdit",
+      component: () => import("../views/PanoramaWorkEditView.vue"),
+      props: true,
+    },
+    {
+      path: "/panorama-work-show/:id?",
+      name: "panoramaWorkShow",
+      component: () => import("../views/PanoramaWorkShowView.vue"),
+      props: true,
+    },
   ],
 });
 

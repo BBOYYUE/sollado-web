@@ -2,7 +2,11 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
-
+import VueCodemirror from 'vue-codemirror'
+// import { basicSetup } from '@codemirror/basic-setup'
+import { json } from '@codemirror/lang-json'
+// import { oneDark } from '@codemirror/theme-one-dark'
+import { lineNumbers, gutter } from "@codemirror/view"
 import App from "./App.vue";
 import router from "./router";
 
@@ -12,6 +16,16 @@ app.use(ElementPlus);
 app.use(createPinia());
 app.use(router);
 
+app.use(VueCodemirror, {
+  // optional default global options
+  autofocus: true,
+  disabled: false,
+  indentWithTab: true,
+  tabSize: 4,
+  placeholder: '在这里输入',
+  extensions: [lineNumbers(), gutter({ class: "cm-mygutter" }), json()],
+  mode: 'application/json'
+})
 /**
  * 重写了Date的日期格式化
  * @param {*} fmt
