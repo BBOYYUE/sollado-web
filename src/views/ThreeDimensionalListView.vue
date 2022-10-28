@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { EchoImpl } from "../util/echo";
 import { onActivated, onMounted, watch, ref } from "vue";
 import { useThreeDimensionalStore } from "../stores/threeDimensional";
-import { Timer } from "@element-plus/icons-vue";
+import { Timer, ArrowRight } from "@element-plus/icons-vue";
 import * as api from "../util/api";
 import http from "@/util/http";
 
@@ -36,10 +36,10 @@ const filesystemProps = ref({
   children: "childFiles",
 });
 
-function getCheckedNodes() {
+function getCheckedNodes () {
   return formFileList.value;
 }
-function goBack() {
+function goBack () {
   let len = threeDimensional.history.length;
   if (len > 1) {
     router.push(
@@ -48,7 +48,7 @@ function goBack() {
     threeDimensional.history.pop();
   }
 }
-function goToActive(row) {
+function goToActive (row) {
   if (row.type == 1) {
     let hashId = row.hash_id ?? row.hashId;
     router.push("/three-dimensional-list/" + hashId + "?name=" + row.name);
@@ -57,16 +57,16 @@ function goToActive(row) {
   }
 }
 
-function search(name) {
+function search (name) {
   threeDimensional.setFilterByName(name);
   threeDimensional.getFolder();
 }
-function pageClick(page) {
+function pageClick (page) {
   threeDimensional.setPage(page);
   threeDimensional.getFolder();
 }
 
-function listen() {
+function listen () {
   EchoImpl.private("three-dimensional-task." + authStore.user.id)
     .listen("ThreeDimensionalTaskWait", (res) => {
       taskList.value.push({
@@ -108,7 +108,7 @@ function listen() {
     });
 }
 
-function storeFolder() {
+function storeFolder () {
   let formData = Object.assign(
     {},
     {
@@ -122,7 +122,7 @@ function storeFolder() {
   threeDimensional.storeFolder(formData);
 }
 
-function storeAsset() {
+function storeAsset () {
   let list = getCheckedNodes();
   let fileList = [];
   let name = ""
@@ -148,20 +148,20 @@ function storeAsset() {
   }
 }
 
-function getStatus(id) {
+function getStatus (id) {
   if (threeDimensional.workingList.has(id)) {
     return true;
   }
   return false;
 }
-function deleteThreeDimensional(id) {
+function deleteThreeDimensional (id) {
   threeDimensional.deleteThreeDimensional(id);
   setTimeout(function () {
     threeDimensional.getFolder();
   }, 1000);
 }
 
-function showThreeDimensional(id) {
+function showThreeDimensional (id) {
   try {
     let features =
       "height=500, width=800, top=100, left=100, toolbar=no, menubar=no, scrollbars = no, resizable = no, location = no, status = no";
@@ -171,7 +171,7 @@ function showThreeDimensional(id) {
   }
 }
 
-function copyThreeDimensionalLink(id) {
+function copyThreeDimensionalLink (id) {
   let url =
     window.location.protocol +
     "//" +
@@ -180,7 +180,7 @@ function copyThreeDimensionalLink(id) {
     id;
   copy(url);
 }
-function copy(str) {
+function copy (str) {
   let transfer = document.createElement("input");
   document.body.appendChild(transfer);
   transfer.value = str; // 这里表示想要复制的内容
@@ -193,10 +193,10 @@ function copy(str) {
   console.log("复制成功");
   document.body.removeChild(transfer);
 }
-function filesystemTreeClick(node) {
+function filesystemTreeClick (node) {
   activeFilesystemFolder.value = node;
 }
-function loadFilesystem(node, resolve) {
+function loadFilesystem (node, resolve) {
   if (node.level === 0) {
     http()
       .get(api.host + api.filesystem + "?filter[type]=2")

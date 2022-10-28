@@ -22,7 +22,25 @@
 		jscall(calc('let event = new Event("hotspotOnup");event.hotspot = "' + get(name) + '"; window.dispatchEvent(event);'))
   </action>
   <action name="hotspot_animate">  inc(frame,1,get(lastframe),0); mul(ypos,frame,frameheight); txtadd(crop,'0|',get(ypos),'|',get(framewidth),'|',get(frameheight)); delayedcall(0.03, if(loaded, hotspot_animate() ) );  </action>
-
+  <action name="set_flag">
+    txtadd(tooltipname, 'tooltip_', get(name)); 
+		set(plugin[get(tooltipname)].url,'%SWFPATH%/plugins/textfield.swf'); 
+		txtadd(plugin[get(tooltipname)].parent, 'hotspot[', get(name), ']'); 
+		addplugin(get(tooltipname)); 
+		set(plugin[get(tooltipname)].align,top); 
+		set(plugin[get(tooltipname)].edge,bottom); 
+		set(plugin[get(tooltipname)].backgroundalpha,0);
+		set(plugin[get(tooltipname)].x,0); 
+		set(plugin[get(tooltipname)].y,4);
+		set(plugin[get(tooltipname)].autowidth,true); 
+		set(plugin[get(tooltipname)].autoheight,true);    
+		set(plugin[get(tooltipname)].vcenter,true);
+    set(plugin[get(tooltipname)].onclick,"hotspotOnclick"); 
+		set(plugin[get(tooltipname)].ondown,"hotspotOndown");
+		set(plugin[get(tooltipname)].onup,"hotspotOnup");
+    copy(plugin[get(tooltipname)].html,text);
+    if(device.mobile, copy(plugin[get(tooltipname)].css, mobilecss), copy(plugin[get(tooltipname)].css, css));
+  </action>
   <!-- 地标 -->
   <!-- <style name="spot" url="%SWFPATH%/skin/vtourskin_mapspot.png" scale="0.8" oy="-40" align="lefttop" edge="center" zorder="2" onclick="subtxt(spotid,get(name),4,2);if(spotid != scene[get(xml.scene)].index,
 loadscene(get(scene[get(spotid)].name),null,MERGE,BLEND(1)); );" /> -->

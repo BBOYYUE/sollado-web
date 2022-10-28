@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
 import { onActivated, onMounted, watch, ref } from "vue";
 import { usePanoramaWorkStore } from "../stores/panoramaWork";
-import { Timer } from "@element-plus/icons-vue";
+import { Timer, ArrowRight } from "@element-plus/icons-vue";
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();

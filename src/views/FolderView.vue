@@ -6,7 +6,7 @@ import { useFilesystemStore } from "@/stores/filesystem";
 import { ElMessage } from "element-plus";
 import * as api from "../util/api";
 import * as purpose from "../common/purpose";
-import { Timer, UploadFilled } from "@element-plus/icons-vue";
+import { Timer, UploadFilled, ArrowRight } from "@element-plus/icons-vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -229,8 +229,8 @@ watch(
           parent_id: props.id,
           type: 0,
         }" :headers="{
-            Authorization: authStore.tokenType + ' ' + authStore.accessToken,
-          }" :on-success="onFileUploadSuccess" class="mx-4">
+  Authorization: authStore.tokenType + ' ' + authStore.accessToken,
+}" :on-success="onFileUploadSuccess" class="mx-4">
           <el-icon class="el-icon--upload" style="height: 150px">
             <upload-filled />
           </el-icon>

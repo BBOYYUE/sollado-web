@@ -1217,7 +1217,7 @@
 		set(plugin[get(tooltipname)].align,top); 
 		set(plugin[get(tooltipname)].edge,bottom); 
 		set(plugin[get(tooltipname)].x,0); 
-		set(plugin[get(tooltipname)].y,0); 
+		set(plugin[get(tooltipname)].y,10); 
 		set(plugin[get(tooltipname)].autowidth,true); 
 		set(plugin[get(tooltipname)].autoheight,true);    
 		set(plugin[get(tooltipname)].vcenter,true); 

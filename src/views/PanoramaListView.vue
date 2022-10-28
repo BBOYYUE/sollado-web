@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { EchoImpl } from "../util/echo";
 import { onActivated, onMounted, watch, ref } from "vue";
 import { usePanoramaStore } from "../stores/panorama";
-import { Timer } from "@element-plus/icons-vue";
+import { Timer, ArrowRight } from "@element-plus/icons-vue";
 import * as api from "../util/api";
 import http from "@/util/http";
 

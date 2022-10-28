@@ -23,7 +23,48 @@
 		loadscene(get(startscene), null, MERGE);
 		if(startactions !== null, startactions() );
 	</action>
+  <action name="set_flag">
+    txtadd(tooltipname, 'tooltip_', get(name)); 
+		set(plugin[get(tooltipname)].url,'%SWFPATH%/plugins/textfield.swf'); 
+		txtadd(plugin[get(tooltipname)].parent, 'hotspot[', get(name), ']'); 
+		addplugin(get(tooltipname)); 
+		set(plugin[get(tooltipname)].align,top); 
+		set(plugin[get(tooltipname)].edge,bottom); 
+		set(plugin[get(tooltipname)].backgroundalpha,0);
+		set(plugin[get(tooltipname)].x,0); 
+		set(plugin[get(tooltipname)].y,4);
+		set(plugin[get(tooltipname)].autowidth,true); 
+		set(plugin[get(tooltipname)].autoheight,true);    
+		set(plugin[get(tooltipname)].vcenter,true);
+    set(plugin[get(tooltipname)].onclick,"hotspotOnclick"); 
+		set(plugin[get(tooltipname)].ondown,"hotspotOndown");
+		set(plugin[get(tooltipname)].onup,"hotspotOnup");
+    <!-- set(plugin[get(tooltipname)].css,); -->
+    copy(plugin[get(tooltipname)].html,text);
+    if(device.mobile, copy(plugin[get(tooltipname)].css, mobilecss), copy(plugin[get(tooltipname)].css, css));
+  </action>
   <scene name="helper">
+    <!-- <hotspot
+      ath="0"
+      atv="0"
+      url="%SWFPATH%/skin/line.jpg"
+      crop="0|0|1|32"
+      edge="bottom"
+      name="flag_252bc72d"
+      onup="hotspotOnup"
+      text="万科公园都会万科公园都会"
+      uuid="252bc72d"
+      zoom="false"
+      scale="1"
+      ondown="hotspotOndown"
+      onclick="hotspotOnclick"
+      onloaded="set_flag"
+      distorted="false"
+      frameheight="32"
+      visible="true"
+      css='background: linear-gradient(#B8860B, #DAA520); width:1.4rem; font-size: 1rem; line-height:1.2rem; padding: 8px 1px;  border-radius: 9999px; text-align:center; word-wrap:break-word; word-break: break-all; white-space: pre-wrap;color:#FFFFFF;'
+      mobilecss="background: linear-gradient(#B8860B, #DAA520); width:0.7rem;font-size: .5rem; line-height:.6rem; padding: 4px 1px;  border-radius: 9999px; text-align:center; word-wrap:break-word; word-break: break-all; white-space: pre-wrap;color:#FFFFFF;"
+    ></hotspot> -->
     <preview type="grid(cube,64,64,512,0xCCCCCC,0xF6F6F6,0x999999);" />
     <view hlookat="0" vlookat="0" fov="100" distortion="0.0" />
   </scene>

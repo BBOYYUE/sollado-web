@@ -9,7 +9,9 @@ import http from "@/util/http";
 import { v4 as uuid } from "uuid";
 import JsonFormatter from "json-string-formatter";
 import { normalize, schema } from 'normalizr'
-
+import * as simpleHotspotOption from "../common/simleHotspot.js"
+import * as imgHotspotOption from "../common/imgHotspot.js"
+import * as flagOption from "../common/flag.js"
 
 
 const authStore = useAuthStore();
@@ -27,6 +29,10 @@ const panoramaTreeProps = ref({
   label: "name",
   children: "childFiles",
 });
+const filesystemProps = ref({
+  label: "name",
+  children: "childFiles",
+});
 
 /**
  * 组件状态
@@ -37,6 +43,7 @@ const contentStatus = ref('prview')
 const leftMenuIsCollapse = ref(false);
 const showSelectPanoramaDialogVisible = ref(false);
 const showCreatePanoramaGroupDialogVisible = ref(false);
+const showCreateImgHotspotDialogVisible = ref(false)
 
 /**
  * 新增表单
@@ -44,26 +51,20 @@ const showCreatePanoramaGroupDialogVisible = ref(false);
 const formPanoramaList = ref([]);
 const formPanoramaGroup = ref({});
 const formFlagGroup = ref({
-  name: "",
 });
 const formFlag = ref({
-  name: "",
 });
 const formSimpleHotspot = ref({
-  name: "",
 });
 const formImgHotspot = ref({
-  name: "",
 });
 const formView = ref({
-  name: "",
 });
 const formButton = ref({
-  name: "",
 });
 const formText = ref({
-  text: "",
 });
+const formFilesystem = ref({ url: '' })
 const editString = ref("")
 
 /**
@@ -98,21 +99,25 @@ const workOption = ref({
   button: {},
   text: {},
 });
+const panoramaWork = ref({})
 
 /**
  * 选中的元素对象
  */
 const activeSelectPanoramaFolder = ref({});
+const activeFilesystemFolder = ref({});
+
 const activePanoramaGroup = ref({});
 const activePanorama = ref({});
 const activeFlagGroup = ref({});
 const activeFlag = ref({});
-const activeSimpleHotspot = ref({});
+const activeSimpleHotspot = ref();
 const activeImgHotspot = ref({});
 const activeView = ref({});
 const activeButton = ref({});
 const activeText = ref({});
-
+const panoramaFileList = ref({});
+const panoramaFileInfo = ref({});
 
 onMounted(() => {
   setPrviewSize();
@@ -142,13 +147,69 @@ watch(activePanorama, (activePanorama) => {
 });
 
 
+function loadFilesystem (node, resolve) {
+  if (node.level === 0) {
+    http()
+      .get(api.host + api.filesystem + "?filter[type]=2")
+      .then((res) => {
+        let respond = res.data;
+        if (respond.code == 200) {
+          let data = [];
+          for (let item in respond.data.data) {
+            if (respond.data.data[item].type == 2) {
+              data.push({
+                name: respond.data.data[item].name,
+                hashId: respond.data.data[item].hash_id,
+                purpose: respond.data.data[item].purpose,
+                type: respond.data.data[item].type,
+              });
+            }
+          }
+          return resolve(data);
+        }
+      });
+  } else {
+    http()
+      .get(api.host + api.filesystem + "?filter[parent_id]=" + node.data.hashId)
+      .then((res) => {
+        let respond = res.data;
+        if (respond.code == 200) {
+          let data = [];
+          let fileList = [];
+          for (let item in respond.data.data) {
+            if (respond.data.data[item].type == 1) {
+              data.push({
+                name: respond.data.data[item].name,
+                hashId: respond.data.data[item].hash_id,
+                purpose: respond.data.data[item].purpose,
+                type: respond.data.data[item].type,
+              });
+            } else if (respond.data.data[item].purpose == 1) {
+              panoramaFileInfo.value[respond.data.data[item].hash_id] =
+                respond.data.data[item];
+              fileList.push({
+                name: respond.data.data[item].name,
+                hashId: respond.data.data[item].hash_id,
+                purpose: respond.data.data[item].purpose,
+                type: respond.data.data[item].type,
+              });
+            }
+          }
+          panoramaFileList.value[node.data.hashId] = fileList;
+          return resolve(data);
+        }
+      });
+  }
+}
+function filesystemTreeClick (node) {
+  activeFilesystemFolder.value = node;
+}
 function panoramaTreeClick (node) {
   activeSelectPanoramaFolder.value = node;
 }
 
 function updateEditString () {
   editString.value = JsonFormatter.format(JSON.stringify(workOption.value))
-  console.log(editString.value)
 }
 /**
  * 设置全景可展示区域的大小
@@ -165,11 +226,11 @@ function setPrviewSize () {
  * @param {*} xmlPath
  */
 function showPanorama (xmlPath) {
-  document.getElementById("prview").innerHTML = "";
+  document.getElementById("panorama").innerHTML = "";
   embedpano({
     swf: "/krpano/tour.swf",
     xml: "/krpano/tour.xml",
-    target: "prview",
+    target: "panorama",
     html5: "auto",
     mobilescale: 1.0,
     passQueryParameters: true,
@@ -183,11 +244,11 @@ function showPanorama (xmlPath) {
  * 初始化一个 panorama helper
  */
 function initPanorama () {
-  document.getElementById("prview").innerHTML = "";
+  document.getElementById("panorama").innerHTML = "";
   embedpano({
     swf: "/krpano/tour.swf",
     xml: "/krpano/test.xml",
-    target: "prview",
+    target: "panorama",
     html5: "auto",
     mobilescale: 1.0,
     passQueryParameters: true,
@@ -200,9 +261,69 @@ function initPanorama () {
  * krpano 就绪事件
  * @param {*} krpano
  */
-function krpanoReady (krpano) {
-  krpano.value = krpano;
+function krpanoReady (krpanoImpl) {
+  krpano.value = krpanoImpl;
 }
+
+function showFlag (active) {
+  let krpanoImpl = krpano.value
+  let flag = krpanoImpl.get("hotspot[" + active.name + "]")
+  if (!flag) {
+    krpanoImpl.call("addhotspot(" + active.name + ")")
+  } else {
+    krpanoImpl.call("removehotspot(" + active.name + ")")
+    krpanoImpl.call("addhotspot(" + active.name + ")")
+  }
+  for (let item in active) {
+    if (item != 'style') {
+      console.log(item, active[item], active.name)
+      krpanoImpl.set(
+        "hotspot[" + active.name + "]." + item,
+        active[item]
+      );
+    }
+  }
+}
+function showFlagGroup () {
+}
+function showSimpleHotspot (active) {
+  let krpanoImpl = krpano.value
+  let flag = krpanoImpl.get("hotspot[" + active.name + "]")
+  if (!flag) {
+    krpanoImpl.call("addhotspot(" + active.name + ")")
+  } else {
+    krpanoImpl.call("removehotspot(" + active.name + ")")
+    krpanoImpl.call("addhotspot(" + active.name + ")")
+  }
+  console.log(active)
+  for (let item in active) {
+    krpanoImpl.set(
+      "hotspot[" + active.name + "]." + item,
+      active[item]
+    );
+  }
+}
+function showImgHotspot (active) {
+  let krpanoImpl = krpano.value
+  let flag = krpanoImpl.get("hotspot[" + active.name + "]")
+  if (!flag) {
+    krpanoImpl.call("addhotspot(" + active.name + ")")
+  } else {
+    krpanoImpl.call("removehotspot(" + active.name + ")")
+    krpanoImpl.call("addhotspot(" + active.name + ")")
+  }
+  for (let item in active) {
+    krpanoImpl.set(
+      "hotspot[" + active.name + "]." + item,
+      active[item]
+    );
+  }
+}
+function showView () {
+
+}
+function showButton () { }
+function showText () { }
 
 /**
  * 新增一个场景分组
@@ -308,6 +429,7 @@ function storeSceneGroup () {
   updateEditString()
 }
 
+
 /**
  * 场景中的元素
  */
@@ -326,39 +448,77 @@ function storeFlagGroup () {
 }
 function storeFlag () {
   let u = uuid().split("-")[0];
-  workOption.value.flag[u] = {
+  let style
+  for (let i in flagOption.styleList) {
+    if (flagOption.styleList[i].uuid == formFlag.value.style) {
+      style = flagOption.styleList[i].style
+    }
+  }
+
+  let option = Object.assign({}, {
     uuid: u,
-    name: formFlag.value.name,
-  };
+    name: 'flag_' + u,
+    alias: formFlag.value.alias,
+    text: formFlag.value.alias,
+    ath: krpano.value.get("view.hlookat"),
+    atv: krpano.value.get("view.vlookat"),
+    style: formFlag.value.style,
+    css: style.css,
+    mobilecss: style.mobilecss,
+  }, flagOption.template);
+
+
+  workOption.value.flag[u] = option
   activePanorama.value.flags.push(u);
   workOption.value.panorama[activePanorama.value.hash_id] =
     activePanorama.value;
   rightFormStatus.value = "list";
+  activeFlag.value = workOption.value.flag[u]
   updateEditString()
+  showFlag(workOption.value.flag[u])
 }
 function storeSimpleHotspot () {
   let u = uuid().split("-")[0];
-  workOption.value.simpleHotspot[u] = {
+
+  let option = Object.assign({}, {
     uuid: u,
-    name: formSimpleHotspot.value.name,
-  };
+    name: 'simple_hotspot_' + u,
+    url: formSimpleHotspot.value.url,
+    alias: formImgHotspot.value.alias,
+    text: formSimpleHotspot.value.alias,
+    ath: krpano.value.get("view.hlookat"),
+    atv: krpano.value.get("view.vlookat")
+  }, simpleHotspotOption.template);
+
+  workOption.value.simpleHotspot[u] = option;
   activePanorama.value.simpleHotspots.push(u);
   workOption.value.panorama[activePanorama.value.hash_id] =
     activePanorama.value;
   rightFormStatus.value = "list";
+  activeSimpleHotspot.value = workOption.value.simpleHotspot[u]
   updateEditString()
+  showSimpleHotspot(activeSimpleHotspot.value)
 }
 function storeImgHotspot () {
   let u = uuid().split("-")[0];
-  workOption.value.imgHotspot[u] = {
+  let option = Object.assign({}, {
     uuid: u,
-    name: formImgHotspot.value.name,
-  };
+    name: 'img_hotspot_' + u,
+    url: formImgHotspot.value.url,
+    alias: formImgHotspot.value.alias,
+    scale: formImgHotspot.value.scale,
+    ath: krpano.value.get("view.hlookat"),
+    atv: krpano.value.get("view.vlookat")
+  }, imgHotspotOption.template);
+
+  workOption.value.imgHotspot[u] = option;
   activePanorama.value.imgHotspots.push(u);
   workOption.value.panorama[activePanorama.value.hash_id] =
     activePanorama.value;
   rightFormStatus.value = "list";
+  activeImgHotspot.value = workOption.value.imgHotspot[u]
   updateEditString()
+  showImgHotspot(activeImgHotspot.value)
 }
 function storeView () {
   let u = uuid().split("-")[0];
@@ -406,19 +566,41 @@ function updateFlagGroup () {
   updateEditString()
 }
 function updateFlag () {
+  let style
+  for (let i in flagOption.styleList) {
+    if (flagOption.styleList[i].uuid == activeFlag.value.style) {
+      style = flagOption.styleList[i].style
+    }
+  }
+  activeFlag.value.css = style.css;
+  activeFlag.value.mobilecss = style.mobilecss;
+  activeFlag.value.text = activeFlag.value.alias
   workOption.value.flag[activeFlag.value.uuid] = activeFlag.value
   rightFormStatus.value = 'list'
   updateEditString()
+  showFlag(activeFlag.value)
+}
+function updateImgHotspotUrl () {
+  console.log(formFilesystem)
+  if (rightFormStatus == 'edit') {
+    activeImgHotspot.value.url = formFilesystem.value.url
+  } else {
+    formImgHotspot.value.url = formFilesystem.value.url
+  }
 }
 function updateSimpleHotspot () {
+  activeSimpleHotspot.value.text = activeSimpleHotspot.value.alias
   workOption.value.simpleHotspot[activeSimpleHotspot.value.uuid] = activeSimpleHotspot.value
   rightFormStatus.value = 'list'
+
   updateEditString()
+  showSimpleHotspot(activeSimpleHotspot.value)
 }
 function updateImgHotspot () {
   workOption.value.imgHotspot[activeImgHotspot.value.uuid] = activeImgHotspot.value
   rightFormStatus.value = 'list'
   updateEditString()
+  showSimpleHotspot(activeImgHotspot.value)
 }
 function updateView () {
   workOption.value.view[activeView.value.uuid] = activeView.value
@@ -513,6 +695,7 @@ function storeScene () {
 }
 
 
+
 /**
  * util 相关, 获取资源的 url
  * @param {*} url
@@ -534,8 +717,10 @@ function getUrl (url) {
             <template #title>
               <span>标牌热点</span>
             </template>
-            <el-menu-item-group title="标牌">
+            <el-menu-item-group title="分组">
               <el-menu-item index="1-1" @click="rightFormType = 'flagGroup'">分组</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="标牌">
               <el-menu-item index="1-2" @click="rightFormType = 'flag'">标牌</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="热点">
@@ -553,11 +738,18 @@ function getUrl (url) {
           </el-sub-menu>
           <el-sub-menu index="3">
             <template #title>
+              <span>按钮</span>
+            </template>
+            <el-menu-item-group title="按钮">
+              <el-menu-item index="3-1" @click="rightFormType = 'button'">按钮</el-menu-item>
+            </el-menu-item-group>
+          </el-sub-menu>
+          <el-sub-menu index="4">
+            <template #title>
               <span>其他</span>
             </template>
             <el-menu-item-group title="其他">
-              <el-menu-item index="3-1" @click="rightFormType = 'button'">按钮</el-menu-item>
-              <el-menu-item index="3-2" @click="rightFormType = 'text'">文本</el-menu-item>
+              <el-menu-item index="4-1" @click="rightFormType = 'text'">文本</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
         </el-menu>
@@ -602,8 +794,9 @@ function getUrl (url) {
                 activePanorama.flagGroups &&
                 activePanorama.flagGroups.length > 0
               ">
-                <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between">
-                  <div class="flex flex-col justify-center">
+                <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between"
+                  @click="activeFlagGroup = workOption.flagGroup[flagGroup]">
+                  <div class=" flex flex-col justify-center">
                     <div>{{ workOption.flagGroup[flagGroup].name }}</div>
                   </div>
                   <div>
@@ -646,9 +839,10 @@ function getUrl (url) {
             <div v-if="rightFormStatus == 'list'" class="m-2 pt-4">
               <div v-for="flag in activePanorama.flags" :key="flag"
                 v-show="activePanorama.flags && activePanorama.flags.length > 0">
-                <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between">
+                <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between"
+                  @click="activeFlag = workOption.flag[flag]">
                   <div class="flex flex-col justify-center">
-                    <div>{{ workOption.flag[flag].name }}</div>
+                    <div>{{ workOption.flag[flag].alias }}</div>
                   </div>
                   <div>
                     <el-icon class="border border-gray-300 border-solid p-1 rounded-md"
@@ -666,13 +860,19 @@ function getUrl (url) {
             </div>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'create'">
               <el-form-item label="标牌名称">
-                <el-input v-model="formFlag.name" />
+                <el-input v-model="formFlag.alias" />
               </el-form-item>
-              <el-form-item v-show="activePanorama.flagGroups.length > 0" label="标牌名称">
-                <el-select v-model="formFlag.flageGroupUuid">
+              <el-form-item v-show="activePanorama.flagGroups.length > 0" label="标牌所属分组">
+                <el-select v-model="formFlag.flagGroupUuid">
                   <el-option v-for="group in activePanorama.flagGroups" :key="group" :value="group"
                     :label="workOption.flagGroup[group].name">
                     {{ workOption.flagGroup[group].name }}
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="标牌样式">
+                <el-select v-model="formFlag.style">
+                  <el-option :value="item.uuid" v-for="item in flagOption.styleList" :key="item" :label="item.text">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -680,13 +880,19 @@ function getUrl (url) {
             </el-form>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'edit'">
               <el-form-item label="标牌名称">
-                <el-input v-model="activeFlag.name" />
+                <el-input v-model="activeFlag.alias" />
               </el-form-item>
-              <el-form-item v-show="activePanorama.flagGroups.length > 0" label="标牌名称">
-                <el-select v-model="activeFlag.flageGroupUuid">
+              <el-form-item v-show="activePanorama.flagGroups.length > 0" label="标牌所属分组">
+                <el-select v-model="activeFlag.flagGroupUuid">
                   <el-option v-for="group in activePanorama.flagGroups" :key="group" :value="group"
                     :label="workOption.flagGroup[group].name">
                     {{ workOption.flagGroup[group].name }}
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="标牌样式">
+                <el-select v-model="activeFlag.style">
+                  <el-option :value="item.uuid" v-for="item in flagOption.styleList" :key="item" :label="item.text">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -707,10 +913,11 @@ function getUrl (url) {
                 activePanorama.simpleHotspots &&
                 activePanorama.simpleHotspots.length > 0
               ">
-                <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between">
+                <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between"
+                  @click="activeSimpleHotspot = workOption.simpleHotspot[simpleHotspot]">
                   <div class="flex flex-col justify-center">
                     <div>
-                      {{ workOption.simpleHotspot[simpleHotspot].name }}
+                      {{ workOption.simpleHotspot[simpleHotspot].alias }}
                     </div>
                   </div>
                   <div>
@@ -730,13 +937,27 @@ function getUrl (url) {
             </div>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'create'">
               <el-form-item label="热点名称">
-                <el-input v-model="formSimpleHotspot.name" />
+                <el-input v-model="formSimpleHotspot.alias" />
+              </el-form-item>
+              <el-form-item label="热点类型">
+                <el-select v-model="formSimpleHotspot.url">
+                  <el-option :value="item.url" v-for="item in simpleHotspotOption.urlList" :key="item"
+                    :label="item.text">
+                  </el-option>
+                </el-select>
               </el-form-item>
               <el-button class="w-full" @click="storeSimpleHotspot">保存</el-button>
             </el-form>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'edit'">
               <el-form-item label="热点名称">
-                <el-input v-model="activeHotspot.name" />
+                <el-input v-model="activeSimpleHotspot.alias" />
+              </el-form-item>
+              <el-form-item label="热点类型">
+                <el-select v-model="activeSimpleHotspot.url">
+                  <el-option :value="item.url" v-for="item in simpleHotspotOption.urlList" :key="item"
+                    :label="item.text">
+                  </el-option>
+                </el-select>
               </el-form-item>
               <el-button class="w-full" @click="updateSimpleHotspot">保存</el-button>
             </el-form>
@@ -757,7 +978,7 @@ function getUrl (url) {
               ">
                 <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between">
                   <div class="flex flex-col justify-center">
-                    <div>{{ workOption.imgHotspot[imgHotspot].name }}</div>
+                    <div>{{ workOption.imgHotspot[imgHotspot].alias }}</div>
                   </div>
                   <div>
                     <el-icon class="border border-gray-300 border-solid p-1 rounded-md"
@@ -776,13 +997,28 @@ function getUrl (url) {
             </div>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'create'">
               <el-form-item label="热点名称">
-                <el-input v-model="formImgHotspot.name" />
+                <el-input v-model="formImgHotspot.alias" />
+              </el-form-item>
+              <el-form-item label="缩放比例">
+                <el-input v-model="formImgHotspot.scale" />
+              </el-form-item>
+              <el-form-item label="热点图片">
+                <el-button class="w-full mb-2" v-show="!formImgHotspot.url"
+                  @click="showCreateImgHotspotDialogVisible = true">选择热点图片</el-button>
+                <el-image v-show="formImgHotspot.url" :src="formImgHotspot.url"
+                  @click="showCreateImgHotspotDialogVisible = true"></el-image>
               </el-form-item>
               <el-button class="w-full" @click="storeImgHotspot">保存</el-button>
             </el-form>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'edit'">
               <el-form-item label="热点名称">
-                <el-input v-model="activeImgHotspot.name" />
+                <el-input v-model="activeImgHotspot.alias" />
+              </el-form-item>
+              <el-form-item label="缩放比例">
+                <el-input v-model="activeImgHotspot.scale" />
+              </el-form-item>
+              <el-form-item label="热点图片">
+                <el-image :src="activeImgHotspot.url" @click="showCreateImgHotspotDialogVisible = true"></el-image>
               </el-form-item>
               <el-button class="w-full" @click="updateImgHotspot">保存</el-button>
             </el-form>
@@ -899,7 +1135,7 @@ function getUrl (url) {
                 </div>
               </div>
               <div v-show="
-                !activePanorama.texts && activePanorama.texts.length == 0
+                !activePanorama.texts || activePanorama.texts.length == 0
               ">
                 <el-empty />
               </div>
@@ -932,6 +1168,9 @@ function getUrl (url) {
       <template #content>
         <div class="w-full h-full">
           <div id="prview" class="overflow-hidden" ref="prview" :style="prviewStyle" v-show="contentStatus == 'prview'">
+
+            <div id="panorama" class="w-full h-full overflow-hidden">
+            </div>
           </div>
           <div id="edit" class="overflow-hidden" ref="edit" :style="prviewStyle" v-show="contentStatus == 'edit'">
             <vue-codemirror v-model="editString" @change="editChange"></vue-codemirror>
@@ -1018,6 +1257,31 @@ function getUrl (url) {
         <span class="dialog-footer">
           <el-button @click="showCreatePanoramaGroupDialogVisible = false">取消</el-button>
           <el-button type="primary" @click="storeSceneGroup">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+    <el-dialog v-model="showCreateImgHotspotDialogVisible" title="选择热点切图" width="500px">
+      <div class="flex flex-row justify-between" style="height: 300px">
+        <el-tree :props="filesystemProps" :load="loadFilesystem" lazy ref="treeRef" class="flex flex-grow"
+          @node-click="filesystemTreeClick" />
+        <div class="shadow-inner p-2 m-2 overflow-y-auto" style="width: 300px">
+          <div v-if="
+            panoramaFileList[activeFilesystemFolder.hashId] &&
+            panoramaFileList[activeFilesystemFolder.hashId].length > 0
+          " class="w-full">
+            <el-radio-group v-model="formFilesystem.url">
+              <el-radio v-for="file in panoramaFileList[activeFilesystemFolder.hashId]" :key="file"
+                :label="getUrl(panoramaFileInfo[file.hashId].path)">{{ file.name }}
+              </el-radio>
+            </el-radio-group>
+          </div>
+          <el-empty v-else />
+        </div>
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="showCreateImgHotspotDialogVisible = false, updateImgHotspotUrl()">确定
+          </el-button>
         </span>
       </template>
     </el-dialog>
