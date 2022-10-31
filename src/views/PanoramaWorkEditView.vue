@@ -12,6 +12,7 @@ import { normalize, schema } from 'normalizr'
 import * as simpleHotspotOption from "../common/simleHotspot.js"
 import * as imgHotspotOption from "../common/imgHotspot.js"
 import * as flagOption from "../common/flag.js"
+import * as eventOption from "../common/event.js"
 
 
 const authStore = useAuthStore();
@@ -61,6 +62,17 @@ const formImgHotspot = ref({
 const formView = ref({
 });
 const formButton = ref({
+  text: "",
+  width: "",
+  height: "",
+  align: "",
+  x: "",
+  y: "",
+  style: "",
+  background: "",
+  opacity: "",
+  rounded: "",
+  action: "",
 });
 const formText = ref({
 });
@@ -114,7 +126,19 @@ const activeFlag = ref({});
 const activeSimpleHotspot = ref();
 const activeImgHotspot = ref({});
 const activeView = ref({});
-const activeButton = ref({});
+const activeButton = ref({
+  text: "",
+  width: "",
+  height: "",
+  align: "",
+  x: "",
+  y: "",
+  style: "",
+  background: "",
+  opacity: "",
+  rounded: "",
+  action: "",
+});
 const activeText = ref({});
 const panoramaFileList = ref({});
 const panoramaFileInfo = ref({});
@@ -147,7 +171,7 @@ watch(activePanorama, (activePanorama) => {
 });
 
 
-function loadFilesystem(node, resolve) {
+function loadFilesystem (node, resolve) {
   if (node.level === 0) {
     http()
       .get(api.host + api.filesystem + "?filter[type]=2")
@@ -201,20 +225,20 @@ function loadFilesystem(node, resolve) {
       });
   }
 }
-function filesystemTreeClick(node) {
+function filesystemTreeClick (node) {
   activeFilesystemFolder.value = node;
 }
-function panoramaTreeClick(node) {
+function panoramaTreeClick (node) {
   activeSelectPanoramaFolder.value = node;
 }
 
-function updateEditString() {
+function updateEditString () {
   editString.value = JsonFormatter.format(JSON.stringify(workOption.value))
 }
 /**
  * 设置全景可展示区域的大小
  */
-function setPrviewSize() {
+function setPrviewSize () {
   prviewStyle.value = {
     width: document.getElementById("base-editor-content").offsetWidth + "px",
     height: document.getElementById("base-editor-content").offsetHeight + "px",
@@ -225,7 +249,7 @@ function setPrviewSize() {
  * 切换需要展示的全景
  * @param {*} xmlPath
  */
-function showPanorama(xmlPath) {
+function showPanorama (xmlPath) {
   document.getElementById("panorama").innerHTML = "";
   embedpano({
     swf: "/krpano/tour.swf",
@@ -243,7 +267,7 @@ function showPanorama(xmlPath) {
 /**
  * 初始化一个 panorama helper
  */
-function initPanorama() {
+function initPanorama () {
   document.getElementById("panorama").innerHTML = "";
   embedpano({
     swf: "/krpano/tour.swf",
@@ -261,11 +285,11 @@ function initPanorama() {
  * krpano 就绪事件
  * @param {*} krpano
  */
-function krpanoReady(krpanoImpl) {
+function krpanoReady (krpanoImpl) {
   krpano.value = krpanoImpl;
 }
 
-function showFlag(active) {
+function showFlag (active) {
   let krpanoImpl = krpano.value
   let flag = krpanoImpl.get("hotspot[" + active.name + "]")
   if (!flag) {
@@ -284,9 +308,9 @@ function showFlag(active) {
     }
   }
 }
-function showFlagGroup() {
+function showFlagGroup () {
 }
-function showSimpleHotspot(active) {
+function showSimpleHotspot (active) {
   let krpanoImpl = krpano.value
   let flag = krpanoImpl.get("hotspot[" + active.name + "]")
   if (!flag) {
@@ -303,7 +327,7 @@ function showSimpleHotspot(active) {
     );
   }
 }
-function showImgHotspot(active) {
+function showImgHotspot (active) {
   let krpanoImpl = krpano.value
   let flag = krpanoImpl.get("hotspot[" + active.name + "]")
   if (!flag) {
@@ -319,16 +343,16 @@ function showImgHotspot(active) {
     );
   }
 }
-function showView() {
+function showView () {
 
 }
-function showButton() { }
-function showText() { }
+function showButton () { }
+function showText () { }
 
 /**
  * 新增一个场景分组
  */
-function addSceneGroup() {
+function addSceneGroup () {
   showCreatePanoramaGroupDialogVisible.value = true;
 }
 
@@ -337,7 +361,7 @@ function addSceneGroup() {
  * @param {*} node
  * @param {*} resolve
  */
-function loadPanorama(node, resolve) {
+function loadPanorama (node, resolve) {
   if (node.level === 0) {
     http()
       .get(api.host + api.panorama + "?filter[type]=2")
@@ -402,12 +426,12 @@ function loadPanorama(node, resolve) {
  * 设置当前选中的 panorama
  * @param {*} active
  */
-function setActivePanorama(active) {
+function setActivePanorama (active) {
   // editFormPanorama.value = active;
   activePanorama.value = active;
   rightFormType.value = "panorama";
 }
-function setActivePanoramaGroup(context, event) {
+function setActivePanoramaGroup (context, event) {
   let name = context.paneName;
   activePanoramaGroup.value = workOption.value.panoramaGroup[name];
   rightFormType.value = "panoramaGroup";
@@ -415,7 +439,7 @@ function setActivePanoramaGroup(context, event) {
 /**
  * 新增场景分组
  */
-function storeSceneGroup() {
+function storeSceneGroup () {
   let u = uuid().split("-")[0];
   workOption.value.panoramaGroup[u] = {
     uuid: u,
@@ -433,7 +457,7 @@ function storeSceneGroup() {
 /**
  * 场景中的元素
  */
-function storeFlagGroup() {
+function storeFlagGroup () {
   let u = uuid().split("-")[0];
   workOption.value.flagGroup[u] = {
     uuid: u,
@@ -446,7 +470,7 @@ function storeFlagGroup() {
   rightFormStatus.value = "list";
   updateEditString()
 }
-function storeFlag() {
+function storeFlag () {
   let u = uuid().split("-")[0];
   let style
   for (let i in flagOption.styleList) {
@@ -477,7 +501,7 @@ function storeFlag() {
   updateEditString()
   showFlag(workOption.value.flag[u])
 }
-function storeSimpleHotspot() {
+function storeSimpleHotspot () {
   let u = uuid().split("-")[0];
 
   let option = Object.assign({}, {
@@ -499,7 +523,7 @@ function storeSimpleHotspot() {
   updateEditString()
   showSimpleHotspot(activeSimpleHotspot.value)
 }
-function storeImgHotspot() {
+function storeImgHotspot () {
   let u = uuid().split("-")[0];
   let option = Object.assign({}, {
     uuid: u,
@@ -520,7 +544,7 @@ function storeImgHotspot() {
   updateEditString()
   showImgHotspot(activeImgHotspot.value)
 }
-function storeView() {
+function storeView () {
   let u = uuid().split("-")[0];
   workOption.value.view[u] = {
     uuid: u,
@@ -535,11 +559,21 @@ function storeView() {
   rightFormStatus.value = "list";
   updateEditString()
 }
-function storeButton() {
+function storeButton () {
   let u = uuid().split("-")[0];
   workOption.value.button[u] = {
     uuid: u,
-    name: formButton.value.name,
+    text: "",
+    width: "",
+    height: "",
+    align: "",
+    x: "",
+    y: "",
+    style: "",
+    background: "",
+    opacity: "",
+    rounded: "",
+    action: "",
   };
   activePanorama.value.buttons.push(u);
   workOption.value.panorama[activePanorama.value.hash_id] =
@@ -547,7 +581,7 @@ function storeButton() {
   rightFormStatus.value = "list";
   updateEditString()
 }
-function storeText() {
+function storeText () {
   let u = uuid().split("-")[0];
   workOption.value.text[u] = {
     uuid: u,
@@ -560,15 +594,15 @@ function storeText() {
   updateEditString()
 }
 
-function editChange(text) {
+function editChange (text) {
   workOption.value = JSON.parse(text)
 }
-function updateFlagGroup() {
+function updateFlagGroup () {
   workOption.value.flagGroup[activeFlagGroup.value.uuid] = activeFlagGroup.value
   rightFormStatus.value = 'list'
   updateEditString()
 }
-function updateFlag() {
+function updateFlag () {
   let style
   for (let i in flagOption.styleList) {
     if (flagOption.styleList[i].uuid == activeFlag.value.style) {
@@ -583,7 +617,7 @@ function updateFlag() {
   updateEditString()
   showFlag(activeFlag.value)
 }
-function updateImgHotspotUrl() {
+function updateImgHotspotUrl () {
   console.log(formFilesystem)
   if (rightFormStatus == 'edit') {
     activeImgHotspot.value.url = formFilesystem.value.url
@@ -591,7 +625,7 @@ function updateImgHotspotUrl() {
     formImgHotspot.value.url = formFilesystem.value.url
   }
 }
-function updateSimpleHotspot() {
+function updateSimpleHotspot () {
   activeSimpleHotspot.value.text = activeSimpleHotspot.value.alias
   workOption.value.simpleHotspot[activeSimpleHotspot.value.uuid] = activeSimpleHotspot.value
   rightFormStatus.value = 'list'
@@ -599,23 +633,23 @@ function updateSimpleHotspot() {
   updateEditString()
   showSimpleHotspot(activeSimpleHotspot.value)
 }
-function updateImgHotspot() {
+function updateImgHotspot () {
   workOption.value.imgHotspot[activeImgHotspot.value.uuid] = activeImgHotspot.value
   rightFormStatus.value = 'list'
   updateEditString()
   showSimpleHotspot(activeImgHotspot.value)
 }
-function updateView() {
+function updateView () {
   workOption.value.view[activeView.value.uuid] = activeView.value
   rightFormStatus.value = 'list'
   updateEditString()
 }
-function updateButton() {
+function updateButton () {
   workOption.value.button[activeButton.value.uuid] = activeButton.value
   rightFormStatus.value = 'list'
   updateEditString()
 }
-function updateText() {
+function updateText () {
   workOption.value.text[activeText.value.uuid] = activeText.value
   rightFormStatus.value = 'list'
   updateEditString()
@@ -627,7 +661,7 @@ function updateText() {
  * 当前选中全景修改所属分组时, 需要的状态切换
  * @param {*} val
  */
-function panoramaGroupChange(val) {
+function panoramaGroupChange (val) {
   activePanoramaGroup.value.panoramas.splice(
     activePanoramaGroup.value.panoramas.indexOf(activePanorama.value.hash_id),
     1
@@ -650,7 +684,7 @@ function panoramaGroupChange(val) {
 /**
  * 往场景分组中添加场景
  */
-function storeScene() {
+function storeScene () {
   // 如果 workOption 中没有全景分组信息, 那么先创建一个默认分组
   if (Object.keys(workOption.value.panoramaGroup).length == 0) {
     // 先加入list
@@ -700,7 +734,7 @@ function storeScene() {
 /**
  * 
  */
-function getAngle() {
+function getAngle () {
   console.log(rightFormStatus)
   if (rightFormStatus.value == 'create') {
     formView.value.hlookat = krpano.value.get("view.hlookat")
@@ -718,7 +752,7 @@ function getAngle() {
  * util 相关, 获取资源的 url
  * @param {*} url
  */
-function getUrl(url) {
+function getUrl (url) {
   let arr = url.split("/");
   return api.assetUrl + arr[4] + "/" + arr[5];
 }
@@ -756,10 +790,17 @@ function getUrl(url) {
           </el-sub-menu>
           <el-sub-menu index="3">
             <template #title>
-              <span>按钮</span>
+              <span>按钮 事件与动作</span>
             </template>
             <el-menu-item-group title="按钮">
               <el-menu-item index="3-1" @click="rightFormType = 'button'">按钮</el-menu-item>
+              <el-menu-item index="3-2" @click="rightFormType = 'buttonGroup'">按钮组</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="动作">
+              <el-menu-item index="3-3" @click="rightFormType = 'mounted'">动作</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="事件">
+              <el-menu-item index="3-4" @click="rightFormType = 'mounted'">事件</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
           <el-sub-menu index="4">
@@ -770,6 +811,7 @@ function getUrl(url) {
               <el-menu-item index="4-1" @click="rightFormType = 'text'">文本</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
+
         </el-menu>
       </template>
       <template #right>
@@ -1119,7 +1161,7 @@ function getUrl(url) {
               ">
                 <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between">
                   <div class="flex flex-col justify-center">
-                    <div>{{ workOption.button[button].name }}</div>
+                    <div>{{ workOption.button[button].text }}</div>
                   </div>
                   <div>
                     <el-icon class="border border-gray-300 border-solid p-1 rounded-md"
@@ -1136,18 +1178,175 @@ function getUrl(url) {
               </div>
             </div>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'create'">
-              <el-form-item label="按钮名称">
-                <el-input v-model="formButton.name" />
+              <el-form-item label="按钮文本">
+                <el-input v-model="formButton.text" />
               </el-form-item>
+              <el-form-item label="按钮样式">
+                <el-select v-model="formButton.style">
+                  <el-option v-for="style in eventOption.buttonStyle" :key="style" :value="style.name"
+                    :label="style.alias"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="按钮宽度">
+                <el-input v-model="formButton.width" />
+              </el-form-item>
+              <el-form-item label="按钮高度">
+                <el-input v-model="formButton.height" />
+              </el-form-item>
+              <el-form-item label="按钮对齐方式">
+                <el-select v-model="formButton.align">
+                  <el-option v-for="align in eventOption.eventAlignType" :key="align" :value="align.name"
+                    :label="align.alias"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="按钮位置水平偏移量 x">
+                <el-input v-model="formButton.x" />
+              </el-form-item>
+              <el-form-item label="按钮位置垂直偏移量 y">
+                <el-input v-model="formButton.y" />
+              </el-form-item>
+              <el-form-item label="按钮背景颜色" v-show="formButton.style == 'roundBaseButton'">
+                <el-input v-model="formButton.background" />
+              </el-form-item>
+              <el-form-item label="按钮圆角大小" v-show="formButton.style == 'roundBaseButton'">
+                <el-input v-model="formButton.rounded" />
+              </el-form-item>
+              <el-form-item label="未选中的透明度" v-show="formButton.style == 'roundBaseButton'">
+                <el-input v-model="formButton.opacity" />
+              </el-form-item>
+              <el-form-item label="按钮绑定动作">
+                <el-select v-model="formButton.action">
+                  <el-option v-for="action in workOption.action" :key="action" :value="action.uuid"
+                    :label="action.name"></el-option>
+                </el-select>
+              </el-form-item>
+              <!-- <el-form-item label="选择标牌分组" v-show="formButton.event.type && formButton.event.type == 'flagGroupSwitch'">
+                <el-select v-model="formButton.event.value">
+                  <el-option v-for="flagGroup in activePanorama.flagGroups" :key="flagGroup" :value="flagGroup"
+                    :label="workOption.flagGroup[flagGroup].name"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="选择场景" v-show="formButton.event.type && formButton.event.type == 'sceneSwitch'">
+                <el-select v-model="formButton.event.value">
+                  <el-option v-for="panorama in activePanoramaGroup.panoramas" :key="panorama" :value="panorama"
+                    :label="panoramaInfo[panorama].name"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="选择视角" v-show="formButton.event.type && formButton.event.type == 'viewSwitch'">
+                <el-select v-model="formButton.event.value">
+                  <el-option v-for="view in activePanorama.views" :key="view" :value="view"
+                    :label="workOption.view[view].name"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="弹框宽度"
+                v-show="formButton.event.type && eventOption.dialogTypeList.includes(formButton.event.type)">
+                <el-input v-model="formButton.dialogStyle.width" />
+              </el-form-item>
+              <el-form-item label="弹框高度"
+                v-show="formButton.event.type && eventOption.dialogTypeList.includes(formButton.event.type)">
+                <el-input v-model="formButton.dialogStyle.height" />
+              </el-form-item>
+              <el-form-item label="弹框背景色"
+                v-show="formButton.event.type && eventOption.dialogTypeList.includes(formButton.event.type)">
+                <el-input v-model="formButton.dialogStyle.background" />
+              </el-form-item> -->
               <el-button class="w-full" @click="storeButton">保存</el-button>
             </el-form>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'edit'">
-              <el-form-item label="按钮名称">
-                <el-input v-model="activeButton.name" />
+              <el-form-item label="按钮文本">
+                <el-input v-model="activeButton.text" />
               </el-form-item>
+              <el-form-item label="按钮样式">
+                <el-select v-model="activeButton.style">
+                  <el-option v-for="style in eventOption.buttonStyle" :key="style" :value="style.name"
+                    :label="style.alias"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="按钮宽度">
+                <el-input v-model="activeButton.width" />
+              </el-form-item>
+              <el-form-item label="按钮高度">
+                <el-input v-model="activeButton.height" />
+              </el-form-item>
+              <el-form-item label="按钮对齐方式">
+                <el-select v-model="activeButton.align">
+                  <el-option v-for="align in eventOption.eventAlignType" :key="align" :value="align.name"
+                    :label="align.alias"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="按钮位置水平偏移量 x">
+                <el-input v-model="activeButton.x" />
+              </el-form-item>
+              <el-form-item label="按钮位置垂直偏移量 y">
+                <el-input v-model="activeButton.y" />
+              </el-form-item>
+              <el-form-item label="按钮背景颜色">
+                <el-input v-model="activeButton.background" />
+              </el-form-item>
+              <el-form-item label="按钮圆角大小" v-show="formButton.style == 'roundBaseButton'">
+                <el-input v-model="formButton.rounded" />
+              </el-form-item>
+              <el-form-item label="未选中的透明度" v-show="formButton.style == 'roundBaseButton'">
+                <el-input v-model="formButton.opacity" />
+              </el-form-item>
+              <el-form-item label="按钮绑定动作">
+                <el-select v-model="activeButton.action">
+                  <el-option v-for="action in workOption.action" :key="action" :value="action.uuid"
+                    :label="action.name">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <!-- <el-form-item label="选择标牌分组"
+                v-show="activeButton.event.type && activeButton.event.type == 'flagGroupSwitch'">
+                <el-select v-model="activeButton.event.value">
+                  <el-option v-for="flagGroup in activePanorama.flagGroups" :key="flagGroup" :value="flagGroup"
+                    :label="workOption.flagGroup[flagGroup].name"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="选择场景" v-show="activeButton.event.type && activeButton.event.type == 'sceneSwitch'">
+                <el-select v-model="activeButton.event.value">
+                  <el-option v-for="panorama in activePanoramaGroup.panoramas" :key="panorama" :value="panorama"
+                    :label="panoramaInfo[panorama].name"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="选择视角" v-show="activeButton.event.type && activeButton.event.type == 'viewSwitch'">
+                <el-select v-model="activeButton.event.value">
+                  <el-option v-for="view in activePanorama.views" :key="view" :value="view"
+                    :label="workOption.view[view].name"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="弹框宽度" v-show="activeButton.event.type && activeButton.hasDiaLog">
+                <el-input v-model="activeButton.dialogStyle.width" />
+              </el-form-item>
+              <el-form-item label="弹框高度" v-show="activeButton.event.type && activeButton.hasDiaLog">
+                <el-input v-model="activeButton.dialogStyle.height" />
+              </el-form-item>
+              <el-form-item label="弹框背景色" v-show="activeButton.event.type && activeButton.hasDiaLog">
+                <el-input v-model="activeButton.dialogStyle.background" />
+              </el-form-item> -->
               <el-button class="w-full" @click="updateButton">保存</el-button>
             </el-form>
           </div>
+          <!-- <div v-else-if="rightFormType == 'buttonGroup'" class="flex flex-col divide-y divide-gray-300 divide-solid">
+            <div class="flex flex-row justify-between">
+              <div class="m-2 text-xl">分组</div>
+              <div class="flex flex-col justify-center mr-2" v-show="Object.keys(activePanorama).length > 0">
+                <el-icon class="border border-gray-300 border-solid p-2 rounded-md" @click="rightFormStatus = 'create'">
+                  <Plus />
+                </el-icon>
+              </div>
+            </div>
+            <el-form class="m-2 pt-4" v-if="rightFormStatus == 'create'">
+              <el-form-item label="分组名称">
+                <el-input v-model="formButton.text" />
+              </el-form-item>
+              <el-form-item label="分组样式">
+                <el-input v-model="formButton.width" />
+              </el-form-item>
+              <el-form-item ></el-form-item>
+            </el-form>
+            <el-form class="m-2 pt-4" v-if="rightFormStatus == 'edit'"></el-form>
+          </div> -->
           <div v-else-if="rightFormType == 'text'" class="flex flex-col divide-y divide-gray-300 divide-solid">
             <div class="flex flex-row justify-between">
               <div class="m-2 text-xl">文本</div>
