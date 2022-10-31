@@ -147,7 +147,7 @@ watch(activePanorama, (activePanorama) => {
 });
 
 
-function loadFilesystem (node, resolve) {
+function loadFilesystem(node, resolve) {
   if (node.level === 0) {
     http()
       .get(api.host + api.filesystem + "?filter[type]=2")
@@ -201,20 +201,20 @@ function loadFilesystem (node, resolve) {
       });
   }
 }
-function filesystemTreeClick (node) {
+function filesystemTreeClick(node) {
   activeFilesystemFolder.value = node;
 }
-function panoramaTreeClick (node) {
+function panoramaTreeClick(node) {
   activeSelectPanoramaFolder.value = node;
 }
 
-function updateEditString () {
+function updateEditString() {
   editString.value = JsonFormatter.format(JSON.stringify(workOption.value))
 }
 /**
  * 设置全景可展示区域的大小
  */
-function setPrviewSize () {
+function setPrviewSize() {
   prviewStyle.value = {
     width: document.getElementById("base-editor-content").offsetWidth + "px",
     height: document.getElementById("base-editor-content").offsetHeight + "px",
@@ -225,7 +225,7 @@ function setPrviewSize () {
  * 切换需要展示的全景
  * @param {*} xmlPath
  */
-function showPanorama (xmlPath) {
+function showPanorama(xmlPath) {
   document.getElementById("panorama").innerHTML = "";
   embedpano({
     swf: "/krpano/tour.swf",
@@ -243,7 +243,7 @@ function showPanorama (xmlPath) {
 /**
  * 初始化一个 panorama helper
  */
-function initPanorama () {
+function initPanorama() {
   document.getElementById("panorama").innerHTML = "";
   embedpano({
     swf: "/krpano/tour.swf",
@@ -261,11 +261,11 @@ function initPanorama () {
  * krpano 就绪事件
  * @param {*} krpano
  */
-function krpanoReady (krpanoImpl) {
+function krpanoReady(krpanoImpl) {
   krpano.value = krpanoImpl;
 }
 
-function showFlag (active) {
+function showFlag(active) {
   let krpanoImpl = krpano.value
   let flag = krpanoImpl.get("hotspot[" + active.name + "]")
   if (!flag) {
@@ -284,9 +284,9 @@ function showFlag (active) {
     }
   }
 }
-function showFlagGroup () {
+function showFlagGroup() {
 }
-function showSimpleHotspot (active) {
+function showSimpleHotspot(active) {
   let krpanoImpl = krpano.value
   let flag = krpanoImpl.get("hotspot[" + active.name + "]")
   if (!flag) {
@@ -303,7 +303,7 @@ function showSimpleHotspot (active) {
     );
   }
 }
-function showImgHotspot (active) {
+function showImgHotspot(active) {
   let krpanoImpl = krpano.value
   let flag = krpanoImpl.get("hotspot[" + active.name + "]")
   if (!flag) {
@@ -319,16 +319,16 @@ function showImgHotspot (active) {
     );
   }
 }
-function showView () {
+function showView() {
 
 }
-function showButton () { }
-function showText () { }
+function showButton() { }
+function showText() { }
 
 /**
  * 新增一个场景分组
  */
-function addSceneGroup () {
+function addSceneGroup() {
   showCreatePanoramaGroupDialogVisible.value = true;
 }
 
@@ -337,7 +337,7 @@ function addSceneGroup () {
  * @param {*} node
  * @param {*} resolve
  */
-function loadPanorama (node, resolve) {
+function loadPanorama(node, resolve) {
   if (node.level === 0) {
     http()
       .get(api.host + api.panorama + "?filter[type]=2")
@@ -402,12 +402,12 @@ function loadPanorama (node, resolve) {
  * 设置当前选中的 panorama
  * @param {*} active
  */
-function setActivePanorama (active) {
+function setActivePanorama(active) {
   // editFormPanorama.value = active;
   activePanorama.value = active;
   rightFormType.value = "panorama";
 }
-function setActivePanoramaGroup (context, event) {
+function setActivePanoramaGroup(context, event) {
   let name = context.paneName;
   activePanoramaGroup.value = workOption.value.panoramaGroup[name];
   rightFormType.value = "panoramaGroup";
@@ -415,7 +415,7 @@ function setActivePanoramaGroup (context, event) {
 /**
  * 新增场景分组
  */
-function storeSceneGroup () {
+function storeSceneGroup() {
   let u = uuid().split("-")[0];
   workOption.value.panoramaGroup[u] = {
     uuid: u,
@@ -433,7 +433,7 @@ function storeSceneGroup () {
 /**
  * 场景中的元素
  */
-function storeFlagGroup () {
+function storeFlagGroup() {
   let u = uuid().split("-")[0];
   workOption.value.flagGroup[u] = {
     uuid: u,
@@ -446,7 +446,7 @@ function storeFlagGroup () {
   rightFormStatus.value = "list";
   updateEditString()
 }
-function storeFlag () {
+function storeFlag() {
   let u = uuid().split("-")[0];
   let style
   for (let i in flagOption.styleList) {
@@ -477,7 +477,7 @@ function storeFlag () {
   updateEditString()
   showFlag(workOption.value.flag[u])
 }
-function storeSimpleHotspot () {
+function storeSimpleHotspot() {
   let u = uuid().split("-")[0];
 
   let option = Object.assign({}, {
@@ -499,7 +499,7 @@ function storeSimpleHotspot () {
   updateEditString()
   showSimpleHotspot(activeSimpleHotspot.value)
 }
-function storeImgHotspot () {
+function storeImgHotspot() {
   let u = uuid().split("-")[0];
   let option = Object.assign({}, {
     uuid: u,
@@ -520,11 +520,14 @@ function storeImgHotspot () {
   updateEditString()
   showImgHotspot(activeImgHotspot.value)
 }
-function storeView () {
+function storeView() {
   let u = uuid().split("-")[0];
   workOption.value.view[u] = {
     uuid: u,
     name: formView.value.name,
+    hlookat: formView.value.hlookat,
+    vlookat: formView.value.vlookat,
+    fov: formView.value.fov
   };
   activePanorama.value.views.push(u);
   workOption.value.panorama[activePanorama.value.hash_id] =
@@ -532,7 +535,7 @@ function storeView () {
   rightFormStatus.value = "list";
   updateEditString()
 }
-function storeButton () {
+function storeButton() {
   let u = uuid().split("-")[0];
   workOption.value.button[u] = {
     uuid: u,
@@ -544,7 +547,7 @@ function storeButton () {
   rightFormStatus.value = "list";
   updateEditString()
 }
-function storeText () {
+function storeText() {
   let u = uuid().split("-")[0];
   workOption.value.text[u] = {
     uuid: u,
@@ -557,15 +560,15 @@ function storeText () {
   updateEditString()
 }
 
-function editChange (text) {
+function editChange(text) {
   workOption.value = JSON.parse(text)
 }
-function updateFlagGroup () {
+function updateFlagGroup() {
   workOption.value.flagGroup[activeFlagGroup.value.uuid] = activeFlagGroup.value
   rightFormStatus.value = 'list'
   updateEditString()
 }
-function updateFlag () {
+function updateFlag() {
   let style
   for (let i in flagOption.styleList) {
     if (flagOption.styleList[i].uuid == activeFlag.value.style) {
@@ -580,7 +583,7 @@ function updateFlag () {
   updateEditString()
   showFlag(activeFlag.value)
 }
-function updateImgHotspotUrl () {
+function updateImgHotspotUrl() {
   console.log(formFilesystem)
   if (rightFormStatus == 'edit') {
     activeImgHotspot.value.url = formFilesystem.value.url
@@ -588,7 +591,7 @@ function updateImgHotspotUrl () {
     formImgHotspot.value.url = formFilesystem.value.url
   }
 }
-function updateSimpleHotspot () {
+function updateSimpleHotspot() {
   activeSimpleHotspot.value.text = activeSimpleHotspot.value.alias
   workOption.value.simpleHotspot[activeSimpleHotspot.value.uuid] = activeSimpleHotspot.value
   rightFormStatus.value = 'list'
@@ -596,23 +599,23 @@ function updateSimpleHotspot () {
   updateEditString()
   showSimpleHotspot(activeSimpleHotspot.value)
 }
-function updateImgHotspot () {
+function updateImgHotspot() {
   workOption.value.imgHotspot[activeImgHotspot.value.uuid] = activeImgHotspot.value
   rightFormStatus.value = 'list'
   updateEditString()
   showSimpleHotspot(activeImgHotspot.value)
 }
-function updateView () {
+function updateView() {
   workOption.value.view[activeView.value.uuid] = activeView.value
   rightFormStatus.value = 'list'
   updateEditString()
 }
-function updateButton () {
+function updateButton() {
   workOption.value.button[activeButton.value.uuid] = activeButton.value
   rightFormStatus.value = 'list'
   updateEditString()
 }
-function updateText () {
+function updateText() {
   workOption.value.text[activeText.value.uuid] = activeText.value
   rightFormStatus.value = 'list'
   updateEditString()
@@ -624,7 +627,7 @@ function updateText () {
  * 当前选中全景修改所属分组时, 需要的状态切换
  * @param {*} val
  */
-function panoramaGroupChange (val) {
+function panoramaGroupChange(val) {
   activePanoramaGroup.value.panoramas.splice(
     activePanoramaGroup.value.panoramas.indexOf(activePanorama.value.hash_id),
     1
@@ -647,7 +650,7 @@ function panoramaGroupChange (val) {
 /**
  * 往场景分组中添加场景
  */
-function storeScene () {
+function storeScene() {
   // 如果 workOption 中没有全景分组信息, 那么先创建一个默认分组
   if (Object.keys(workOption.value.panoramaGroup).length == 0) {
     // 先加入list
@@ -694,13 +697,28 @@ function storeScene () {
   updateEditString()
 }
 
+/**
+ * 
+ */
+function getAngle() {
+  console.log(rightFormStatus)
+  if (rightFormStatus.value == 'create') {
+    formView.value.hlookat = krpano.value.get("view.hlookat")
+    formView.value.vlookat = krpano.value.get("view.vlookat")
+    formView.value.fov = krpano.value.get("view.fov")
+  } else {
+    activeView.value.hlookat = krpano.value.get("view.hlookat")
+    activeView.value.vlookat = krpano.value.get("view.vlookat")
+    activeView.value.fov = krpano.value.get("view.fov")
+  }
 
+}
 
 /**
  * util 相关, 获取资源的 url
  * @param {*} url
  */
-function getUrl (url) {
+function getUrl(url) {
   let arr = url.split("/");
   return api.assetUrl + arr[4] + "/" + arr[5];
 }
@@ -1057,11 +1075,31 @@ function getUrl (url) {
               <el-form-item label="视角名称">
                 <el-input v-model="formView.name" />
               </el-form-item>
+              <el-button @click="getAngle()" class="my-2 w-full">点击获取当前角度</el-button>
+              <el-form-item label="hlookat">
+                <el-input v-model="formView.hlookat" />
+              </el-form-item>
+              <el-form-item label="vlookat">
+                <el-input v-model="formView.vlookat" />
+              </el-form-item>
+              <el-form-item label="fov">
+                <el-input v-model="formView.fov" />
+              </el-form-item>
               <el-button class="w-full" @click="storeView">保存</el-button>
             </el-form>
             <el-form class="m-2 pt-4" v-if="rightFormStatus == 'edit'">
               <el-form-item label="视角名称">
                 <el-input v-model="activeView.name" />
+              </el-form-item>
+              <el-button @click="getAngle()">点击获取当前角度</el-button>
+              <el-form-item label="hlookat">
+                <el-input v-model="activeView.hlookat" />
+              </el-form-item>
+              <el-form-item label="vlookat">
+                <el-input v-model="activeView.vlookat" />
+              </el-form-item>
+              <el-form-item label="fov">
+                <el-input v-model="activeView.fov" />
               </el-form-item>
               <el-button class="w-full" @click="updateView">保存</el-button>
             </el-form>
