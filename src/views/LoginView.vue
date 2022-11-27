@@ -33,7 +33,7 @@ watch(
   () => authStore.isAuth,
   (isAuth) => {
     if (isAuth) {
-      router.push("/storehouse");
+      router.push("/material-library/manage/storehouse");
     } else {
       let accessToken = localStorage.getItem("accessToken");
       let tokenType = localStorage.getItem("tokenType");
@@ -49,7 +49,7 @@ watch(
     immediate: true,
   }
 );
-function login () {
+function login() {
   loginFormRef.value.validate((valid) => {
     if (!valid) return;
     authStore.login(form.value);

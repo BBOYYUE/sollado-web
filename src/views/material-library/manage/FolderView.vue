@@ -4,8 +4,8 @@ import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useFilesystemStore } from "@/stores/filesystem";
 import { ElMessage } from "element-plus";
-import * as api from "../util/api";
-import * as purpose from "../common/purpose";
+import * as api from "@/util/api";
+import * as purpose from "@/common/purpose";
 import { Timer, UploadFilled, ArrowRight } from "@element-plus/icons-vue";
 
 const authStore = useAuthStore();
@@ -36,7 +36,7 @@ const successMsg = (msg) => {
   });
 };
 
-function onFileUploadSuccess (respond) {
+function onFileUploadSuccess(respond) {
   if (respond.code == 200) {
     successMsg("上传成功!");
     filesystem.addFile(respond.data);
@@ -44,7 +44,7 @@ function onFileUploadSuccess (respond) {
     errorMsg("上传失败!");
   }
 }
-function getPurposeInfo (val) {
+function getPurposeInfo(val) {
   for (let item in purpose) {
     if (purpose[item].val == val) {
       return purpose[item].key;
@@ -52,26 +52,26 @@ function getPurposeInfo (val) {
   }
 }
 
-function downloadFile (id) {
+function downloadFile(id) {
   filesystem.downloadFile(id);
 }
 
-function deleteFile (id) {
+function deleteFile(id) {
   filesystem.deleteFile(id);
   setTimeout(function () {
     filesystem.getFolder();
   }, 1000);
 }
-function goToActive (row) {
+function goToActive(row) {
   if (row.type == 1) {
     let hashId = row.hash_id ?? row.hashId;
-    router.push("/folder/" + hashId + "?name=" + row.name);
+    router.push("/material-library/manage/folder/" + hashId + "?name=" + row.name);
   } else if (row.type == 0) {
     window.open(row.path, "_blank ");
   }
 }
 
-function storeFolder () {
+function storeFolder() {
   let formData = Object.assign(
     {},
     {
@@ -85,25 +85,25 @@ function storeFolder () {
   filesystem.storeFolder(formData);
 }
 
-function goBack () {
+function goBack() {
   let len = filesystem.history.length;
   if (len > 1) {
     router.push(
-      "/folder/" +
+      "/material-library/manage/folder/" +
       filesystem.history[len - 2].hashId +
       "?name=" +
       filesystem.history[len - 2].name
     );
   } else {
-    router.push("/storehouse");
+    router.push("/material-library/manage/storehouse");
   }
   filesystem.history.pop();
 }
-function search (name) {
+function search(name) {
   filesystem.setFilterByName(name);
   filesystem.getFolder();
 }
-function pageClick (page) {
+function pageClick(page) {
   filesystem.setPage(page);
   filesystem.getFolder();
 }

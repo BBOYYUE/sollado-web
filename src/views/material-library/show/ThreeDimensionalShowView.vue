@@ -1,8 +1,8 @@
 <script setup>
 import http from "@/util/http";
-import * as api from "../util/api";
+import * as api from "@/util/api";
 import { onActivated, onMounted, watch, ref } from "vue";
-import SceneUtil from "../util/scene"
+import SceneUtil from "@/util/scene"
 
 let scene = ref({})
 const threeDimensional = ref({});

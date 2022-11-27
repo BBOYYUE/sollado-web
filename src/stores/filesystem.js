@@ -5,6 +5,10 @@ import queryBuilder from "../util/queryBuilder";
 import { useAppStore } from "@/stores/app";
 const appStore = useAppStore();
 
+/**
+ * 文件管理器的状态
+ */
+
 export const useFilesystemStore = defineStore("filesystem", {
   state: () => {
     return {
@@ -28,13 +32,13 @@ export const useFilesystemStore = defineStore("filesystem", {
     };
   },
   actions: {
-    clearHistory () {
+    clearHistory() {
       while (this.history.length > 0) {
         this.history.pop();
       }
       console.log(this.history);
     },
-    getStorehouse () {
+    getStorehouse() {
       appStore.loading();
       this.queryBuilder.filter.type = 2;
       this.queryBuilder.filter.parent_id = undefined;
@@ -50,7 +54,7 @@ export const useFilesystemStore = defineStore("filesystem", {
           appStore.ready();
         });
     },
-    getFolder () {
+    getFolder() {
       this.queryBuilder.filter.parent_id = this.active.hashId;
       appStore.loading();
       http()
@@ -63,10 +67,10 @@ export const useFilesystemStore = defineStore("filesystem", {
           appStore.ready();
         });
     },
-    setFilterByName (name) {
+    setFilterByName(name) {
       this.queryBuilder.filter.name = name;
     },
-    setActive (active) {
+    setActive(active) {
       let hashIdList = [];
       this.history.map((history) => {
         hashIdList.push(history.hashId);
@@ -77,13 +81,13 @@ export const useFilesystemStore = defineStore("filesystem", {
       }
       this.active = active;
     },
-    setPage (page) {
+    setPage(page) {
       this.queryBuilder.page = page;
     },
-    addFile (file) {
+    addFile(file) {
       this.folder.data.push(file);
     },
-    storeFolder (form) {
+    storeFolder(form) {
       appStore.loading();
       http()
         .post(api.host + api.filesystem, form)
@@ -95,7 +99,7 @@ export const useFilesystemStore = defineStore("filesystem", {
           appStore.ready();
         });
     },
-    deleteFile (id) {
+    deleteFile(id) {
       appStore.loading();
       http()
         .delete(
@@ -111,7 +115,7 @@ export const useFilesystemStore = defineStore("filesystem", {
       //     }
       // })
     },
-    downloadFile (id) {
+    downloadFile(id) {
       window.open(api.host + api.filesystem + id);
     },
   },

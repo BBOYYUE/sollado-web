@@ -5,6 +5,9 @@ import queryBuilder from "../util/queryBuilder";
 import { useAppStore } from "@/stores/app";
 const appStore = useAppStore();
 
+/**
+ * 3D模型管理器
+ */
 export const useThreeDimensionalStore = defineStore("threeDimensional", {
   state: () => {
     return {
@@ -29,7 +32,7 @@ export const useThreeDimensionalStore = defineStore("threeDimensional", {
     };
   },
   actions: {
-    getStorehouse () {
+    getStorehouse() {
       this.queryBuilder.filter.type = 2;
       this.queryBuilder.filter.parent_id = undefined;
       this.queryBuilder.filter.name = undefined;
@@ -45,7 +48,7 @@ export const useThreeDimensionalStore = defineStore("threeDimensional", {
           appStore.ready();
         });
     },
-    getFolder () {
+    getFolder() {
       this.queryBuilder.filter.parent_id = this.active.hashId;
       appStore.loading();
       http()
@@ -58,10 +61,10 @@ export const useThreeDimensionalStore = defineStore("threeDimensional", {
           appStore.ready();
         });
     },
-    setFilterByName (name) {
+    setFilterByName(name) {
       this.queryBuilder.filter.name = name;
     },
-    setActive (active) {
+    setActive(active) {
       let hashIdList = [];
       this.history.map((history) => {
         hashIdList.push(history.hashId);
@@ -72,10 +75,10 @@ export const useThreeDimensionalStore = defineStore("threeDimensional", {
       }
       this.active = active;
     },
-    setPage (page) {
+    setPage(page) {
       this.queryBuilder.page = page;
     },
-    storeFolder (form) {
+    storeFolder(form) {
       appStore.loading();
       http()
         .post(api.host + api.threeDimensional, form)
@@ -87,13 +90,13 @@ export const useThreeDimensionalStore = defineStore("threeDimensional", {
           appStore.ready();
         });
     },
-    addWorkingList (id) {
+    addWorkingList(id) {
       this.workingList.add(id);
     },
-    delWorkingList (id) {
+    delWorkingList(id) {
       this.workingList.delete(id);
     },
-    storeThreeDimensional (form) {
+    storeThreeDimensional(form) {
       appStore.loading();
       http()
         .post(api.host + api.threeDimensional, form)
@@ -114,7 +117,7 @@ export const useThreeDimensionalStore = defineStore("threeDimensional", {
           appStore.ready();
         });
     },
-    deleteThreeDimensional (id) {
+    deleteThreeDimensional(id) {
       appStore.loading();
       http()
         .delete(api.host + api.threeDimensional + id)

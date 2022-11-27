@@ -6,64 +6,113 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: () => import("../views/LoginView.vue"),
-    },
-    {
-      path: "/panorama-list/:id?",
-      name: "panoramaList",
-      component: () => import("../views/panoramaListView.vue"),
-      props: true,
-    },
-    {
-      path: "/three-dimensional-list/:id?",
-      name: "threeDimensionalList",
-      component: () => import("../views/threeDimensionalListView.vue"),
-      props: true,
+      component: () => import("@/views/LoginView.vue"),
+      meta: {
+        pagetype: 'auth',
+        alias: '登录页'
+      }
     },
     {
       path: "/login",
       name: "login",
-      component: () => import("../views/LoginView.vue"),
+      component: () => import("@/views/LoginView.vue"),
+      meta: {
+        pagetype: 'auth',
+        alias: "登录页"
+      }
     },
     {
-      path: "/panorama/:id?",
-      name: "panorama",
-      component: () => import("../views/panoramaShowView.vue"),
-      props: true,
+      path: '/material-library',
+      name: 'material-library',
+      component: () => import("@/views/material-library/Index.vue"),
+      children: [
+        {
+          path: 'manage',
+          name: 'materialLibraryManage',
+          component: () => import("@/views/material-library/manage/Index.vue"),
+          children: [
+            {
+              path: "folder/:id",
+              name: "materialLibraryManageFolder",
+              component: () => import("@/views/material-library/manage/FolderView.vue"),
+              props: true
+
+            },
+            {
+              path: 'storehouse',
+              name: 'materialLibraryManageStorehouse',
+              component: () => import("@/views/material-library/manage/StorehouseView.vue"),
+            },
+            {
+              path: "panorama-list/:id?",
+              name: 'materialLibraryManagePanoramaList',
+              component: () => import("@/views/material-library/manage/PanoramaListView.vue"),
+              props: true
+            },
+            {
+              path: "three-dimensional-list/:id?",
+              name: "materialLibraryManageThreeDimensionalList",
+              component: () => import("@/views/material-library/manage/ThreeDimensionalListView.vue"),
+              props: true
+            }
+          ]
+        },
+        {
+          path: 'show',
+          name: 'materialLibraryShow',
+          component: () => import("@/views/material-library/show/Index.vue"),
+          children: [
+            {
+              path: "panorama/:id?",
+              name: "materialLibraryManagePanorama",
+              component: () => import("@/views/material-library/show/panoramaShowView.vue"),
+              props: true,
+            },
+            {
+              path: "three-dimensional/:id?",
+              name: "materialLibraryManageThreeDimensional",
+              component: () => import("@/views/material-library/show/threeDimensionalShowView.vue"),
+              props: true,
+            },
+          ]
+        },
+      ]
     },
     {
-      path: "/three-dimensional/:id?",
-      name: "threeDimensional",
-      component: () => import("../views/threeDimensionalShowView.vue"),
-      props: true,
-    },
-    {
-      path: "/storehouse",
-      name: "storehouse",
-      component: () => import("../views/StorehouseView.vue"),
-    },
-    {
-      path: "/folder/:id",
-      name: "folder",
-      component: () => import("../views/FolderView.vue"),
-      props: true,
-    },
-    {
-      path: "/panorama-work",
-      name: "panoramaWork",
-      component: () => import("../views/PanoramaWorkView.vue"),
-    },
-    {
-      path: "/panorama-work-edit/:id?",
-      name: "panoramaWorkEdit",
-      component: () => import("../views/PanoramaWorkEditView.vue"),
-      props: true,
-    },
-    {
-      path: "/panorama-work-show/:id?",
-      name: "panoramaWorkShow",
-      component: () => import("../views/PanoramaWorkShowView.vue"),
-      props: true,
+      path: "/work",
+      name: "work",
+      component: () => import("@/views/works/Index.vue"),
+      children: [
+        {
+          path: 'manage',
+          name: 'workManage',
+          component: () => import("@/views/works/manage/Index.vue"),
+          children: [
+            {
+              path: "panorama-work",
+              name: "panoramaWork",
+              component: () => import("@/views/works/manage/PanoramaWorkView.vue"),
+              meta: {
+                pagetype: 'manage',
+                alias: '全景作品'
+              }
+            },
+          ]
+        },
+        {
+          path: 'editor',
+          name: 'workEditor',
+          component: () => import("@/views/works/editor/Index.vue"),
+          children: [
+            {
+              path: "panorama-work-edit/:id?",
+              name: "panoramaWorkEdit",
+              component: () => import("@/views/works/editor/PanoramaWorkEditView.vue"),
+              props: true,
+            },
+          ]
+        }
+      ],
     },
   ],
 });

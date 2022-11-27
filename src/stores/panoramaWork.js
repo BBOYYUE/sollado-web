@@ -5,6 +5,10 @@ import queryBuilder from "../util/queryBuilder";
 import { useAppStore } from "@/stores/app";
 const appStore = useAppStore();
 
+/**
+ * 全景作品管理器
+ */
+
 export const usePanoramaWorkStore = defineStore("panoramaWork", {
   state: () => {
     return {
@@ -27,7 +31,7 @@ export const usePanoramaWorkStore = defineStore("panoramaWork", {
     };
   },
   actions: {
-    getAsset () {
+    getAsset() {
       this.queryBuilder.filter.parent_id = undefined;
       this.queryBuilder.filter.name = undefined;
       appStore.loading();
@@ -41,7 +45,7 @@ export const usePanoramaWorkStore = defineStore("panoramaWork", {
           appStore.ready();
         });
     },
-    getFolder () {
+    getFolder() {
       this.queryBuilder.filter.parent_id = this.active.hashId;
       appStore.loading();
       http()
@@ -54,10 +58,10 @@ export const usePanoramaWorkStore = defineStore("panoramaWork", {
           appStore.ready();
         });
     },
-    setFilterByName (name) {
+    setFilterByName(name) {
       this.queryBuilder.filter.name = name;
     },
-    setActive (active) {
+    setActive(active) {
       let hashIdList = [];
       this.history.map((history) => {
         hashIdList.push(history.hashId);
@@ -68,10 +72,10 @@ export const usePanoramaWorkStore = defineStore("panoramaWork", {
       }
       this.active = active;
     },
-    setPage (page) {
+    setPage(page) {
       this.queryBuilder.page = page;
     },
-    storeAsset (form) {
+    storeAsset(form) {
       appStore.loading();
       http()
         .post(api.host + api.panoramaWork, form)
@@ -83,13 +87,13 @@ export const usePanoramaWorkStore = defineStore("panoramaWork", {
           appStore.ready();
         });
     },
-    addWorkingList (id) {
+    addWorkingList(id) {
       this.workingList.add(id);
     },
-    delWorkingList (id) {
+    delWorkingList(id) {
       this.workingList.delete(id);
     },
-    storePanoramaWork (form) {
+    storePanoramaWork(form) {
       appStore.loading();
       http()
         .post(api.host + api.panoramaWork, form)
@@ -110,7 +114,7 @@ export const usePanoramaWorkStore = defineStore("panoramaWork", {
           appStore.ready();
         });
     },
-    deletePanoramaWork (id) {
+    deletePanoramaWork(id) {
       appStore.loading();
       http()
         .delete(api.host + api.panoramaWork + id)

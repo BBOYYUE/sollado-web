@@ -5,6 +5,10 @@ import queryBuilder from "../util/queryBuilder";
 import { useAppStore } from "@/stores/app";
 const appStore = useAppStore();
 
+/**
+ * 全景管理器的状态
+ */
+
 export const usePanoramaStore = defineStore("panorama", {
   state: () => {
     return {
@@ -29,7 +33,7 @@ export const usePanoramaStore = defineStore("panorama", {
     };
   },
   actions: {
-    getStorehouse () {
+    getStorehouse() {
       this.queryBuilder.filter.type = 2;
       this.queryBuilder.filter.parent_id = undefined;
       this.queryBuilder.filter.name = undefined;
@@ -45,7 +49,7 @@ export const usePanoramaStore = defineStore("panorama", {
           appStore.ready();
         });
     },
-    getFolder () {
+    getFolder() {
       this.queryBuilder.filter.parent_id = this.active.hashId;
       appStore.loading();
       http()
@@ -58,10 +62,10 @@ export const usePanoramaStore = defineStore("panorama", {
           appStore.ready();
         });
     },
-    setFilterByName (name) {
+    setFilterByName(name) {
       this.queryBuilder.filter.name = name;
     },
-    setActive (active) {
+    setActive(active) {
       let hashIdList = [];
       this.history.map((history) => {
         hashIdList.push(history.hashId);
@@ -72,10 +76,10 @@ export const usePanoramaStore = defineStore("panorama", {
       }
       this.active = active;
     },
-    setPage (page) {
+    setPage(page) {
       this.queryBuilder.page = page;
     },
-    storeFolder (form) {
+    storeFolder(form) {
       appStore.loading();
       http()
         .post(api.host + api.panorama, form)
@@ -87,13 +91,13 @@ export const usePanoramaStore = defineStore("panorama", {
           appStore.ready();
         });
     },
-    addWorkingList (id) {
+    addWorkingList(id) {
       this.workingList.add(id);
     },
-    delWorkingList (id) {
+    delWorkingList(id) {
       this.workingList.delete(id);
     },
-    storePanorama (form) {
+    storePanorama(form) {
       appStore.loading();
       http()
         .post(api.host + api.panorama, form)
@@ -114,7 +118,7 @@ export const usePanoramaStore = defineStore("panorama", {
           appStore.ready();
         });
     },
-    deletePanorama (id) {
+    deletePanorama(id) {
       appStore.loading();
       http()
         .delete(api.host + api.panorama + id)
