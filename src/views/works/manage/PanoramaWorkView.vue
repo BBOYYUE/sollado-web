@@ -18,7 +18,7 @@ let searchForm = ref({
 const form = ref({
   name: "",
 });
-function goBack() {
+function goBack () {
   let len = panoramaWork.history.length;
   if (len > 1) {
     router.push("/work/manage/panorama-work/" + panoramaWork.history[len - 2].hashId);
@@ -26,7 +26,7 @@ function goBack() {
   }
 }
 
-function goToActive(row) {
+function goToActive (row) {
   if (row.type == 1) {
     let hashId = row.hash_id ?? row.hashId;
     router.push("/work/manage/panorama-work/" + hashId + "?name=" + row.name);
@@ -35,16 +35,16 @@ function goToActive(row) {
   }
 }
 
-function search(name) {
+function search (name) {
   panoramaWork.setFilterByName(name);
   panoramaWork.getAsset();
 }
-function pageClick(page) {
+function pageClick (page) {
   panoramaWork.setPage(page);
   panoramaWork.getAsset();
 }
 
-function storeAsset() {
+function storeAsset () {
   let formData = Object.assign(
     {},
     {
@@ -56,23 +56,23 @@ function storeAsset() {
   panoramaWork.storeAsset(formData);
 }
 
-function deletePanoramaWork(id) {
+function deletePanoramaWork (id) {
   panoramaWork.deletePanoramaWork(id);
   setTimeout(function () {
     panoramaWork.getAsset();
   }, 1000);
 }
-function editPanoramaWork(id) {
+function editPanoramaWork (id) {
   try {
     // let features =
     //   "height=500, width=800, top=100, left=100, toolbar=no, menubar=no, scrollbars = no, resizable = no, location = no, personalbar=no, titlebar=no, status = no";
     // window.open("/panorama-work-edit/" + id, "全景作品编辑", features);
-    router.push("/work/editor/panorama-work-edit/" + id);
+    router.push(`/work/editor/panorama/${id}/work-info/`);
   } catch (e) {
     console.log(e);
   }
 }
-function showPanoramaWork(id) {
+function showPanoramaWork (id) {
   try {
     let features =
       "height=500, width=800, top=100, left=100, toolbar=no, menubar=no, scrollbars = no, resizable = no, location = no, status = no";
@@ -81,12 +81,12 @@ function showPanoramaWork(id) {
     console.log(e);
   }
 }
-function copyPanoramaWorkLink(id) {
+function copyPanoramaWorkLink (id) {
   let url =
     window.location.protocol + "//" + window.location.host + "/panorama/" + id;
   copy(url);
 }
-function copy(str) {
+function copy (str) {
   let transfer = document.createElement("input");
   document.body.appendChild(transfer);
   transfer.value = str; // 这里表示想要复制的内容
