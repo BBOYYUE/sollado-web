@@ -1,18 +1,26 @@
 <script setup>
-import { Picture, Files } from "@element-plus/icons-vue";
-import { computed, watch, ref, defineProps } from "vue";
+import { computed, watch, ref, onMounted, defineProps } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAppStore } from "@/stores/app";
+import { useEditorStore } from "@/stores/editor";
 
 const props = defineProps({
   id: String,
 });
+const editorStore = useEditorStore();
 const appStore = useAppStore();
 const route = useRoute();
 const router = useRouter();
+
+
 function goTo (url) {
   router.push(url);
 }
+onMounted(() => {
+  editorStore.getPanorama(props.id);
+})
+
+
 </script>
 <template>
   <div class="flex flex-col w-screen h-screen">
