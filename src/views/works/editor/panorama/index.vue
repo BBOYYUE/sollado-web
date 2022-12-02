@@ -5,7 +5,7 @@ import { useAppStore } from "@/stores/app";
 import { useEditorStore } from "@/stores/editor";
 
 const props = defineProps({
-  id: String,
+  workid: String,
 });
 const editorStore = useEditorStore();
 const appStore = useAppStore();
@@ -17,7 +17,8 @@ function goTo (url) {
   router.push(url);
 }
 onMounted(() => {
-  editorStore.getPanorama(props.id);
+  console.log(props)
+  editorStore.getPanorama(props.workid);
 })
 
 
@@ -29,19 +30,19 @@ onMounted(() => {
         <el-menu-item index="0" disabled>
           <template #title>徵羽宫</template>
         </el-menu-item>
-        <el-menu-item index="1" @click="router.push(`/work/editor/panorama/${props.id}/work-info`)">
+        <el-menu-item index="1" @click="router.push(`/work/editor/panorama/${props.workid}/work-info`)">
           <template #title>作品</template>
         </el-menu-item>
-        <el-menu-item index="2" @click="router.push(`/work/editor/panorama/${props.id}/scene`)">
+        <el-menu-item index="2" @click="router.push(`/work/editor/panorama/${props.workid}/scene`)">
           <template #title>场景</template>
         </el-menu-item>
-        <el-menu-item index="3" @click="router.push(`/work/editor/panorama/${props.id}/editor`)">
+        <el-menu-item index="3" @click="router.push(`/work/editor/panorama/${props.workid}/editor`)">
           <template #title>编辑器</template>
         </el-menu-item>
-        <el-menu-item index="4" @click="router.push(`/work/editor/panorama/${props.id}/assets`)">
+        <el-menu-item index="4" @click="router.push(`/work/editor/panorama/${props.workid}/assets`)">
           <template #title>资源列表</template>
         </el-menu-item>
-        <el-menu-item index="5" @click="router.push(`/work/editor/panorama/${props.id}/plugin`)">
+        <el-menu-item index="5" @click="router.push(`/work/editor/panorama/${props.workid}/plugin`)">
           <template #title>插件列表</template>
         </el-menu-item>
       </el-menu>

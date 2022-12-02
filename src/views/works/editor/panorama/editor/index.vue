@@ -1,9 +1,41 @@
 <script setup>
 import box from "@/components/box.vue"
-import { ref, watch } from "vue";
+import panorama from "@/components/panorama.vue"
+import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { useEditorStore } from "@/stores/editor";
+import { v4 as uuid } from "uuid";
+import * as api from "@/util/api";
 
 const activePluginName = ref('');
 const showPlugin = ref(false);
+const panoId = uuid().split("-")[0]
+const props = defineProps({
+  sceneid: String,
+});
+const editorStore = useEditorStore();
+const sceneGroup = computed(() => editorStore.sceneGroup)
+const scene = computed(() => editorStore.scene)
+const getXmlPath = (sceneId) => {
+  if (editorList.value[sceneId] && editorList.value[sceneId].xml && editorList.value[sceneId].xml[0]) {
+    return getUrl(editorList.value[sceneId].xml[0].path)
+  } else {
+    return ""
+  }
+}
+function getUrl (url) {
+  let arr = url.split("/");
+  return api.assetUrl + arr[4] + "/" + arr[5];
+}
+
+const editorList = ref({});
+watch(() => props.sceneid, function (sceneId) {
+  if (!editorList.value[sceneId]) {
+    editorList.value[sceneId] = scene.value[sceneId]
+  }
+}, {
+  immediate: true,
+})
+
 
 </script>
 <template>
@@ -12,7 +44,8 @@ const showPlugin = ref(false);
     <div class="w-full h-full flex flex-col">
       <box class="w-full flex-grow">
         <el-tabs type="card">
-          <el-tab-pane label="场景1">
+          <el-tab-pane :label="editor.name" v-for="editor, index in editorList">
+            <panorama :panoId="index" :xmlPath="getXmlPath(index)"></panorama>
           </el-tab-pane>
         </el-tabs>
       </box>

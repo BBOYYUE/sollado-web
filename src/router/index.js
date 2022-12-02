@@ -105,7 +105,7 @@ const router = createRouter({
           component: () => import("@/views/works/editor/Index.vue"),
           children: [
             {
-              path: "panorama/:id",
+              path: "panorama/:workid",
               name: 'workEditorPanorama',
               component: () => import('@/views/works/editor/panorama/index.vue'),
               props: true,
@@ -116,8 +116,9 @@ const router = createRouter({
                   component: () => import("@/views/works/editor/panorama/assets/index.vue"),
                 },
                 {
-                  path: "editor",
+                  path: "editor/:sceneid?",
                   name: 'workEditorEditor',
+                  props: true,
                   component: () => import("@/views/works/editor/panorama/editor/index.vue"),
                 },
                 {

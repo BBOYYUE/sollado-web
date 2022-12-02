@@ -8,6 +8,8 @@ const appStore = useAppStore();
 export const useEditorStore = defineStore("editor", {
   state: () => {
     return {
+      activeSceneGroup: {},
+      activeScene: {},
       work: {
         scenes: [],
         sceneGroups: []
@@ -31,18 +33,39 @@ export const useEditorStore = defineStore("editor", {
           appStore.ready();
         });
     },
-    addScene (scene, group_hash_id) {
-      if (this.sceneGroup[group_hash_id]) {
-        this.sceneGroup[group_hash_id].scenes.push(scene.hash_id)
-        this.work.scenes.push(scene.hash_id)
-      }
-      this.scene[scene.hash_id] = scene
+    setActiveSceneGroup (activeSceneGroup) {
+      console.log(activeSceneGroup)
+      this.activeSceneGroup = activeSceneGroup
     },
-    addSceneGroup (sceneGroup) {
-      this.sceneGroup[sceneGroup.hash_id] = Object.assign({}, sceneGroup, {
+    setActiveScene (activeScene) {
+      this.activeScene = activeScene
+    },
+    addScene (scene) {
+      // 如果当前的 acitveSceneGroup 的 scene list 为空, 那么就需要初始化, 以免报错
+      if (!this.sceneGroup[this.activeSceneGroup.hash_id].scenes) {
+        this.sceneGroup[this.activeSceneGroup.hash_id].scenes = []
+      }
+      // 将新增的场景 hash_id 加入当前选中的场景分组, 并且更新到 activeSceneGroup 对象. 
+      this.sceneGroup[this.activeSceneGroup.hash_id].scenes.push(Object.keys(scene))
+      this.activeSceneGroup = this.sceneGroup[this.activeSceneGroup.hash_id]
+
+      // 如果当前作品的 scenes list 也为空, 那么也需要出事话, 然后加入
+      if (!this.work.scenes) {
+        this.work.scenes = []
+      }
+      this.work.scenes.push(Object.keys(scene))
+
+      // 最后加入到 scene 中
+      this.scene = Object.assign({}, this.scene, scene);
+    },
+    addSceneGroup (scene_group) {
+      this.sceneGroup[scene_group.hash_id] = Object.assign({}, scene_group, {
         scenes: []
       });
-      this.work.sceneGroups.push(sceneGroup.hash_id)
+      if (!this.work.sceneGroups) {
+        this.work.sceneGroups = []
+      }
+      this.work.sceneGroups.push(scene_group.hash_id)
     }
   }
 });

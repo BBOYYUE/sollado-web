@@ -33,7 +33,7 @@ watch(() => panoramaName, function (panoramaName) {
 <template>
   <div class="flex flex-row justify-between">
     <el-image class="w-64 h-32" :src="thumbPath"></el-image>
-    <div class="h-32 flex flex-col mr-12 justify-center">
+    <div class="h-32 flex flex-col justify-center">
       <div class="text-lg font-semibold">{{ panoramaName }}</div>
     </div>
   </div>
