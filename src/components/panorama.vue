@@ -6,20 +6,55 @@ const props = defineProps({
   panoId: String
 });
 
+onMounted(() => {
+  if (props.panoId) {
+    if (props.xmlPath) {
+      showPanorama(props.panoId, props.xmlPath)
+    } else {
+      initPanorama(props.panoId)
+    }
+  }
+});
 watch(() => props.panoId, function (panoId) {
-  console.log(panoId)
-}, {
-  immediate: true,
+  if (panoId) {
+    if (props.xmlPath) {
+      showPanorama(panoId, props.xmlPath)
+    } else {
+      initPanorama(panoId)
+    }
+  }
 })
-function initPanorama () {
-  document.getElementById("panorama").innerHTML = "";
+function krpanoReady(krpano) {
+  console.log(krpano)
+}
+function initPanorama(panoId) {
+  document.getElementById(panoId).innerHTML = "";
+  let boxHeight = document.getElementById('panoramaBox').offsetHeight;
+  document.getElementById(panoId).style.height = 'calc(' + boxHeight + 'px - 5rem)';
   embedpano({
     swf: "/krpano/tour.swf",
     xml: "/krpano/test.xml",
-    target: "panorama",
+    target: panoId,
     html5: "auto",
     mobilescale: 1.0,
     passQueryParameters: true,
+    onready: krpanoReady,
+    consolelog: true,
+  });
+}
+
+function showPanorama(panoId, xmlPath) {
+  document.getElementById(panoId).innerHTML = "";
+  let boxHeight = document.getElementById('panoramaBox').offsetHeight;
+  document.getElementById(panoId).style.height = 'calc(' + boxHeight + 'px - 5rem)';
+  embedpano({
+    swf: "/krpano/tour.swf",
+    xml: "/krpano/tour.xml",
+    target: panoId,
+    html5: "auto",
+    mobilescale: 1.0,
+    passQueryParameters: true,
+    initvars: { xmlPath: xmlPath },
     onready: krpanoReady,
     consolelog: true,
   });

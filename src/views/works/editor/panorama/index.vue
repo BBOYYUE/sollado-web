@@ -13,7 +13,7 @@ const route = useRoute();
 const router = useRouter();
 
 
-function goTo (url) {
+function goTo(url) {
   router.push(url);
 }
 onMounted(() => {
@@ -36,9 +36,9 @@ onMounted(() => {
         <el-menu-item index="2" @click="router.push(`/work/editor/panorama/${props.workid}/scene`)">
           <template #title>场景</template>
         </el-menu-item>
-        <el-menu-item index="3" @click="router.push(`/work/editor/panorama/${props.workid}/editor`)">
+        <!-- <el-menu-item index="3" @click="router.push(`/work/editor/panorama/${props.workid}/editor`)">
           <template #title>编辑器</template>
-        </el-menu-item>
+        </el-menu-item> -->
         <el-menu-item index="4" @click="router.push(`/work/editor/panorama/${props.workid}/assets`)">
           <template #title>资源列表</template>
         </el-menu-item>

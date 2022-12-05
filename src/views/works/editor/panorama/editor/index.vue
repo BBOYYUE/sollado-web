@@ -5,7 +5,10 @@ import { computed, watch, ref, onMounted, defineProps } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import { v4 as uuid } from "uuid";
 import * as api from "@/util/api";
+import { useRoute, useRouter } from "vue-router";
+import hostspotIcon from "@/views/works/editor/panorama/plugin/hotspot/icon.vue"
 
+const router = useRouter();
 const activePluginName = ref('');
 const showPlugin = ref(false);
 const panoId = uuid().split("-")[0]
@@ -22,7 +25,7 @@ const getXmlPath = (sceneId) => {
     return ""
   }
 }
-function getUrl (url) {
+function getUrl(url) {
   let arr = url.split("/");
   return api.assetUrl + arr[4] + "/" + arr[5];
 }
@@ -42,22 +45,36 @@ watch(() => props.sceneid, function (sceneId) {
   <div class="static">
 
     <div class="w-full h-full flex flex-col">
-      <box class="w-full flex-grow">
-        <el-tabs type="card">
-          <el-tab-pane :label="editor.name" v-for="editor, index in editorList">
+      <div class="w-full flex-grow" id="panoramaBox">
+        <div class="border border-solid border-gray-100 shadow-md rounded-md mx-6 mt-4 p-6">
+          <div v-for="editor, index in editorList" :key="index">
             <panorama :panoId="index" :xmlPath="getXmlPath(index)"></panorama>
-          </el-tab-pane>
-        </el-tabs>
-      </box>
+          </div>
+        </div>
+      </div>
 
       <!-- 底部功能区 -->
       <div class="w-full">
-        <div class="m-6 shadow-md border border-solid border-gray-100 rounded-md">
-          <div class="flex flex-row justify-center">
-            <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4">
-              <el-icon class="w-8 h-8">
-                <Plus />
-              </el-icon>
+        <div class="mx-6 mb-6 shadow-md border border-solid border-gray-100 rounded-md">
+          <div class="flex flex-row justify-between divide-x divide-gray-200 divide-solid ">
+            <div class="flex flex-row justify-center ">
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 ">
+                <el-icon class="w-8 h-8" @click="router.go(-1)">
+                  <Back />
+                </el-icon>
+              </div>
+            </div>
+            <div class="flex flex-row justify-center flex-grow">
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4">
+                <hostspot-icon class="w-8 h-8"></hostspot-icon>
+              </div>
+            </div>
+            <div class="flex flex-row justify-center ">
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4">
+                <el-icon class="w-8 h-8">
+                  <Check />
+                </el-icon>
+              </div>
             </div>
           </div>
         </div>
