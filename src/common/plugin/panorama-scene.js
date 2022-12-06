@@ -1,3 +1,6 @@
+import panoramaScene from "@/components/icon/panorama-scene.vue"
 export default {
-  icon: import("@/components/icon/panorama-scene.vue")
+  component: {
+    icon: panoramaScene
+  }
 }

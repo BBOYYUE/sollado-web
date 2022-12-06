@@ -1,3 +1,6 @@
+import panoramaHotspot from "@/components/icon/panorama-hotspot.vue"
 export default {
-  icon: import("@/components/icon/panorama-hotspot.vue")
+  component: {
+    icon: panoramaHotspot
+  }
 }

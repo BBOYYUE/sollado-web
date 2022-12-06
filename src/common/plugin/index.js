@@ -1,5 +1,4 @@
-export default [
-  () => import('@/common/plugin/panorama-scene'),
-  () => import('@/common/plugin/panorama-hotspot'),
-  () => import('@/common/plugin/panorama-logic')
-]
+import panoramaScene from './panorama-scene'
+import panoramaHotspot from './panorama-hotspot'
+import panoramaLogic from './panorama-logic'
+export default [panoramaScene, panoramaHotspot, panoramaLogic]

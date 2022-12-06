@@ -61,7 +61,6 @@ export default class plugin {
     impl.storeGroup = (data) => { option.storeGroup(data); impl.storeGroup(data); }
 
     impl.component = Object.assign({}, impl.component, option.component);
-
     return impl;
   }
   component = {

@@ -1,3 +1,6 @@
+import panoramaLogic from "@/components/icon/panorama-logic.vue"
 export default {
-  icon: import("@/components/icon/panorama-logic.vue")
+  component: {
+    icon: panoramaLogic
+  }
 }
