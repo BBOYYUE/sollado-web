@@ -24,10 +24,10 @@ watch(() => props.panoId, function (panoId) {
     }
   }
 })
-function krpanoReady(krpano) {
+function krpanoReady (krpano) {
   console.log(krpano)
 }
-function initPanorama(panoId) {
+function initPanorama (panoId) {
   document.getElementById(panoId).innerHTML = "";
   let boxHeight = document.getElementById('panoramaBox').offsetHeight;
   document.getElementById(panoId).style.height = 'calc(' + boxHeight + 'px - 5rem)';
@@ -43,7 +43,7 @@ function initPanorama(panoId) {
   });
 }
 
-function showPanorama(panoId, xmlPath) {
+function showPanorama (panoId, xmlPath) {
   document.getElementById(panoId).innerHTML = "";
   let boxHeight = document.getElementById('panoramaBox').offsetHeight;
   document.getElementById(panoId).style.height = 'calc(' + boxHeight + 'px - 5rem)';

@@ -1,15 +1,28 @@
 <script setup>
 import box from "@/components/box.vue"
-import panorama from "@/components/panorama.vue"
+import panorama from "./panorama.vue"
 import { computed, watch, ref, onMounted, defineProps } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import { v4 as uuid } from "uuid";
 import * as api from "@/util/api";
 import { useRoute, useRouter } from "vue-router";
-import hostspotIcon from "@/views/works/editor/panorama/plugin/hotspot/icon.vue"
+import pluginCommon from "@/common/plugin/index.js"
+import pluginBase from "@/components/plugin/index.js"
+
+
+const pluginList = () => {
+  let list = []
+  let pluginBaseImpl = new pluginBase()
+  for (let index in pluginCommon) {
+    list.push(pluginBaseImpl.builder(pluginCommon[index]));
+  }
+  console.log(list);
+  return list
+}
+
 
 const router = useRouter();
-const activePluginName = ref('');
+const activePlugin = ref({});
 const showPlugin = ref(false);
 const panoId = uuid().split("-")[0]
 const props = defineProps({
@@ -18,27 +31,33 @@ const props = defineProps({
 const editorStore = useEditorStore();
 const sceneGroup = computed(() => editorStore.sceneGroup)
 const scene = computed(() => editorStore.scene)
-const getXmlPath = (sceneId) => {
-  if (editorList.value[sceneId] && editorList.value[sceneId].xml && editorList.value[sceneId].xml[0]) {
-    return getUrl(editorList.value[sceneId].xml[0].path)
-  } else {
-    return ""
-  }
-}
-function getUrl(url) {
+
+
+function getUrl (url) {
   let arr = url.split("/");
   return api.assetUrl + arr[4] + "/" + arr[5];
 }
+const pluginClick = function (plugin) {
+  activePlugin.value = plugin
+  showPlugin.value = true
+}
 
-const editorList = ref({});
-watch(() => props.sceneid, function (sceneId) {
-  if (!editorList.value[sceneId]) {
-    editorList.value[sceneId] = scene.value[sceneId]
-  }
-}, {
-  immediate: true,
-})
 
+// const getXmlPath = (sceneId) => {
+//   if (editorList.value[sceneId] && editorList.value[sceneId].xml && editorList.value[sceneId].xml[0]) {
+//     return getUrl(editorList.value[sceneId].xml[0].path)
+//   } else {
+//     return ""
+//   }
+// }
+// const editorList = ref({});
+// watch(() => props.sceneid, function (sceneId) {
+//   if (!editorList.value[sceneId]) {
+//     editorList.value[sceneId] = scene.value[sceneId]
+//   }
+// }, {
+//   immediate: true,
+// })
 
 </script>
 <template>
@@ -65,8 +84,9 @@ watch(() => props.sceneid, function (sceneId) {
               </div>
             </div>
             <div class="flex flex-row justify-center flex-grow">
-              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4">
-                <hostspot-icon class="w-8 h-8"></hostspot-icon>
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4"
+                v-for="plugin in pluginList()" :key="plugin">
+                <component :is="plugin.component.icon" class="w-8 h-8" @click="pluginClick(plugin)" />
               </div>
             </div>
             <div class="flex flex-row justify-center ">
@@ -81,9 +101,33 @@ watch(() => props.sceneid, function (sceneId) {
       </div>
     </div>
     <!-- 右侧插件容器 -->
-    <div class="absolute right-6 top-40 shadow-md border border-solid border-gray-100 rounded-md m-6 p-6"
-      v-show="showPlugin">
-      <components :is="activePluginName" />
+    <!-- shadow-md border border-solid border-gray-100 rounded-md m-6 p-6 -->
+    <div class="absolute right-14 top-32 " v-if="showPlugin">
+      <component :is="activePlugin.component.dashboard" @groupClick="activePlugin.groupClick"
+        @itemClick="activePlugin.click" @createGroup="activePlugin.createGroup" @create="activePlugin.create">
+      </component>
+
+      <component :is="activePlugin.component.groupEditForm" v-show="activePlugin.showGroupCreateForm"
+        @update="activePlugin.updateGroup" :defaultData="activePlugin.activeGroupData"
+        :field="activePlugin.groupUpdateField">
+      </component>
+      <component :is="activePlugin.component.groupCreateForm" v-show="activePlugin.showGroupUpdateForm"
+        @store="activePlugin.storeGroup" :field="activePlugin.groupStoreField">
+      </component>
+
+      <component :is="activePlugin.component.editForm" v-show="activePlugin.showCreateForm"
+        @update="activePlugin.update" :defaultData="activePlugin.activeData" :field="activePlugin.updateField">
+      </component>
+      <component :is="activePlugin.component.createForm" v-show="activePlugin.showUpdateForm"
+        @store="activePlugin.store" :field="activePlugin.storeField">
+      </component>
+
+      <component :is="activePlugin.component.groupInfo" v-show="activePlugin.showGroupInfo"
+        @editGroup="activePlugin.editGroup">
+      </component>
+      <component :is="activePlugin.component.info" v-show="activePlugin.showInfo" @edit="activePlugin.edit">
+      </component>
+
     </div>
   </div>
 </template>

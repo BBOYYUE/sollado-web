@@ -10,14 +10,24 @@ export const useEditorStore = defineStore("editor", {
     return {
       activeSceneGroup: {},
       activeScene: {},
+      activeHotspot: {},
+      activeHotspotGroup: {},
       work: {
         scenes: [],
         sceneGroups: []
       },
-      sceneGroup: {
-
-      },
       scene: {},
+      sceneGroup: {},
+      hotspot: {},
+      hotspotGroup: {},
+      layer: {},
+      layerGroup: {},
+      view: {},
+      viewGroup: {},
+      logic: {},
+      logicGroup: {},
+      button: {},
+      buttonGroup: {}
     }
   },
   actions: {
@@ -66,6 +76,20 @@ export const useEditorStore = defineStore("editor", {
         this.work.sceneGroups = []
       }
       this.work.sceneGroups.push(scene_group.hash_id)
+    },
+
+    setActiveHotspot (activeHotspot) {
+      this.activeHotspot = activeHotspot
+    },
+    setActiveHotspotGroup (activeHotspotGroup) {
+      this.activeHotspotGroup = activeHotspotGroup
+    },
+    addHotspot (hotspot) {
+
+    },
+    addHotspotGroup (hotspotGroup) {
+
     }
+
   }
 });

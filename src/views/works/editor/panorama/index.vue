@@ -4,6 +4,8 @@ import { useRoute, useRouter } from "vue-router";
 import { useAppStore } from "@/stores/app";
 import { useEditorStore } from "@/stores/editor";
 
+
+
 const props = defineProps({
   workid: String,
 });
@@ -13,7 +15,7 @@ const route = useRoute();
 const router = useRouter();
 
 
-function goTo(url) {
+function goTo (url) {
   router.push(url);
 }
 onMounted(() => {
