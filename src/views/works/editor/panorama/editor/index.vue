@@ -1,13 +1,13 @@
 <script setup>
 import box from "@/components/box.vue"
-import panorama from "./panorama.vue"
+// import panorama from "./panorama.vue"
 import { computed, watch, ref, onMounted, defineProps } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import { v4 as uuid } from "uuid";
 import * as api from "@/util/api";
 import { useRoute, useRouter } from "vue-router";
-import pluginCommon from "@/common/plugin/index.js"
-import pluginBase from "@/components/plugin/index.js"
+import pluginCommon from "@/common/plugin.js"
+import pluginBase from "@/components/plugin/base/index.js"
 
 
 const pluginList = () => {
@@ -29,18 +29,22 @@ const props = defineProps({
   sceneid: String,
 });
 const editorStore = useEditorStore();
-const sceneGroup = computed(() => editorStore.sceneGroup)
-const scene = computed(() => editorStore.scene)
+// const sceneGroup = computed(() => editorStore.sceneGroup)
+// const scene = computed(() => editorStore.scene)
 
 
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
+// function getUrl (url) {
+//   let arr = url.split("/");
+//   return api.assetUrl + arr[4] + "/" + arr[5];
+// }
 const pluginClick = function (plugin) {
   activePlugin.value = plugin
   showPlugin.value = true
+  editorStore.showDashboard()
 }
+watch(() => activePlugin, (val) => {
+  console.log(val)
+})
 
 
 // const getXmlPath = (sceneId) => {
@@ -67,7 +71,7 @@ const pluginClick = function (plugin) {
       <div class="w-full flex-grow" id="panoramaBox">
         <div class="border border-solid border-gray-100 shadow-md rounded-md mx-6 mt-4 p-6">
           <div v-for="editor, index in editorList" :key="index">
-            <panorama :panoId="index" :xmlPath="getXmlPath(index)"></panorama>
+            <!-- <panorama :panoId="index" :xmlPath="getXmlPath(index)"></panorama> -->
           </div>
         </div>
       </div>
@@ -102,32 +106,40 @@ const pluginClick = function (plugin) {
     </div>
     <!-- 右侧插件容器 -->
     <!-- shadow-md border border-solid border-gray-100 rounded-md m-6 p-6 -->
-    <div class="absolute right-14 top-32 " v-if="showPlugin">
-      <component :is="activePlugin.component.dashboard" @groupClick="activePlugin.groupClick"
-        @itemClick="activePlugin.click" @createGroup="activePlugin.createGroup" @create="activePlugin.create">
-      </component>
+    <div class="absolute right-0 top-32" v-if="showPlugin">
+      <div class="flex flex-row-reverse justify-center">
+        <component :is="activePlugin.component.dashboard" v-show="editorStore.showDashboardVisible"
+          @groupClick="activePlugin.groupClick" @itemClick="activePlugin.click" @createGroup="activePlugin.createGroup"
+          @create="activePlugin.create" :dataOption="activePlugin.dataOption" :alias="activePlugin.alias">
+        </component>
 
-      <component :is="activePlugin.component.groupEditForm" v-show="activePlugin.showGroupCreateForm"
-        @update="activePlugin.updateGroup" :defaultData="activePlugin.activeGroupData"
-        :field="activePlugin.groupUpdateField">
-      </component>
-      <component :is="activePlugin.component.groupCreateForm" v-show="activePlugin.showGroupUpdateForm"
-        @store="activePlugin.storeGroup" :field="activePlugin.groupStoreField">
-      </component>
+        <component :is="activePlugin.component.groupEditForm" v-show="editorStore.showGroupUpdateFormVisible"
+          @update="activePlugin.updateGroup" :defaultData="activePlugin.activeGroupData"
+          :field="activePlugin.fieldOption.groupUpdateField" :dataOption="activePlugin.dataOption"
+          :alias="activePlugin.alias">
+        </component>
+        <component :is="activePlugin.component.groupCreateForm" v-show="editorStore.showGroupCreateFormVisible"
+          @store="activePlugin.storeGroup" :field="activePlugin.fieldOption.groupStoreField"
+          :dataOption="activePlugin.dataOption" :alias="activePlugin.alias">
+        </component>
 
-      <component :is="activePlugin.component.editForm" v-show="activePlugin.showCreateForm"
-        @update="activePlugin.update" :defaultData="activePlugin.activeData" :field="activePlugin.updateField">
-      </component>
-      <component :is="activePlugin.component.createForm" v-show="activePlugin.showUpdateForm"
-        @store="activePlugin.store" :field="activePlugin.storeField">
-      </component>
+        <component :is="activePlugin.component.editForm" v-show="editorStore.showUpdateFormVisible"
+          @update="activePlugin.update" :defaultData="activePlugin.activeData"
+          :field="activePlugin.fieldOption.updateField" :dataOption="activePlugin.dataOption"
+          :alias="activePlugin.alias">
+        </component>
+        <component :is="activePlugin.component.createForm" v-show="editorStore.showCreateFormVisible"
+          @store="activePlugin.store" :field="activePlugin.fieldOption.storeField" :dataOption="activePlugin.dataOption"
+          :alias="activePlugin.alias">
+        </component>
 
-      <component :is="activePlugin.component.groupInfo" v-show="activePlugin.showGroupInfo"
-        @editGroup="activePlugin.editGroup">
-      </component>
-      <component :is="activePlugin.component.info" v-show="activePlugin.showInfo" @edit="activePlugin.edit">
-      </component>
-
+        <component :is="activePlugin.component.groupInfo" v-show="editorStore.showGroupInfoVisible"
+          @editGroup="activePlugin.editGroup" :dataOption="activePlugin.dataOption" :alias="activePlugin.alias">
+        </component>
+        <component :is="activePlugin.component.info" v-show="editorStore.showInfoVisible" @edit="activePlugin.edit"
+          :dataOption="activePlugin.dataOption" :alias="activePlugin.alias">
+        </component>
+      </div>
     </div>
   </div>
 </template>

@@ -5,39 +5,24 @@ const props = defineProps({
   info: Object,
 });
 
-const panoramaName = computed(() => {
+const group = computed(() => {
   if (props.info && props.info.name) {
-    return props.info.name;
+    return props.info;
   } else {
     return ""
   }
 });
-const thumbPath = computed(() => {
-  if (props.info && props.info.thumb && props.info.thumb[0]) {
-    return getUrl(props.info.thumb[0].path)
-  } else {
-    return ""
-  }
-});
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
-watch(() => panoramaName, function (panoramaName) {
-  console.log(panoramaName)
-},
-  {
-    immediate: true,
-  })
+
 </script>
 <template>
   <div class="flex flex-col ">
     <div class="flex flex-row justify-between ">
       <div class="flex-grow">
-        <div class="text-2xl font-bold w-48">{{ panoramaName }}</div>
+        <div class="text-2xl font-bold w-48">{{ group.name }}</div>
+        <div class="text-base mt-4">{{ group.info }}</div>
       </div>
       <div>
-        <el-image class="w-64 h-32 rounded-md" :src="thumbPath"></el-image>
+        <el-image class="w-32 h-32 rounded-md"></el-image>
       </div>
     </div>
     <div class="flex flex-row justify-between mt-6">

@@ -1,6 +1,6 @@
 import { useAppStore } from "@/stores/app";
 import dashboard from "./dashboard.vue"
-import icon from "../../../../../../components/icon/icon.vue"
+import icon from "../../../../../../components/icon/panorama-logic.vue"
 import form from "./form.vue"
 import info from "./info.vue"
 import groupForm from "./groupForm.vue"

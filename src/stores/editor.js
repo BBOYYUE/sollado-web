@@ -27,7 +27,16 @@ export const useEditorStore = defineStore("editor", {
       logic: {},
       logicGroup: {},
       button: {},
-      buttonGroup: {}
+      buttonGroup: {},
+
+      showDashboardVisible: false,
+      showGroupCreateFormVisible: false,
+      showGroupUpdateFormVisible: false,
+      showGroupInfoVisible: false,
+
+      showCreateFormVisible: false,
+      showUpdateFormVisible: false,
+      showInfoVisible: false
     }
   },
   actions: {
@@ -78,18 +87,70 @@ export const useEditorStore = defineStore("editor", {
       this.work.sceneGroups.push(scene_group.hash_id)
     },
 
+
     setActiveHotspot (activeHotspot) {
       this.activeHotspot = activeHotspot
     },
     setActiveHotspotGroup (activeHotspotGroup) {
       this.activeHotspotGroup = activeHotspotGroup
     },
+
+
     addHotspot (hotspot) {
 
     },
     addHotspotGroup (hotspotGroup) {
 
+    },
+
+    hideAll () {
+      this.showDashboardVisible = false
+      this.showGroupCreateFormVisible = false
+      this.showGroupUpdateFormVisible = false
+      this.showCreateFormVisible = false
+      this.showUpdateFormVisible = false
+      this.showGroupInfoVisible = false
+      this.showInfoVisible = false
+    },
+
+    showDashboard () {
+      this.hideAll()
+      this.showDashboardVisible = true
+    },
+    showInfo () {
+      this.hideAll()
+      this.showInfoVisible = true
+      this.showDashboardVisible = true
+    },
+    showCreate () {
+      this.hideAll()
+      this.showCreateFormVisible = true
+      this.showDashboardVisible = true
+    },
+
+    showEdit () {
+      this.hideAll()
+      this.showUpdateFormVisible = true
+      this.showDashboardVisible = true
+    },
+
+    showCreateGroup () {
+      this.hideAll()
+      this.showGroupCreateFormVisible = true
+      this.showDashboardVisible = true
+    },
+    showEditGroup () {
+      this.hideAll()
+      this.showGroupUpdateFormVisible = true
+      this.showDashboardVisible = true
+    },
+
+    showInfoGroup () {
+      this.hideAll()
+      this.showGroupInfoVisible = true
+      this.showDashboardVisible = true
     }
+
 
   }
 });
