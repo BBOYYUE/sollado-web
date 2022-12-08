@@ -113,8 +113,8 @@ const getData = function (form) {
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="$emit('onClose')">取消</el-button>
-        <el-button type="primary" @click="$emit('onSuccess', getData(formPanoramaList))">确定</el-button>
+        <el-button @click="('onClose')">取消</el-button>
+        <el-button type="primary" @click="('onSuccess', getData(formPanoramaList))">确定</el-button>
       </span>
     </template>
   </el-dialog>

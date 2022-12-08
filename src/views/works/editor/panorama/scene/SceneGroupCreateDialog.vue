@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { computed, watch, ref, onMounted, defineProps, defineEmits } from "vue";
 import http from "@/util/http";
 import * as api from "@/util/api";
 
@@ -7,7 +7,7 @@ const props = defineProps({
   visible: Boolean,
 });
 const form = ref({});
-
+const emit = defineEmits(['onClose'])
 </script>
 <template>
   <el-dialog v-model="props.visible" title="添加全景分组" width="500px">
@@ -16,9 +16,9 @@ const form = ref({});
     </el-form-item>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="$emit('onClose')">取消</el-button>
+        <el-button @click="('onClose')">取消</el-button>
         <el-button type="primary" @click="function () {
-          $emit('onSuccess', form)
+          ('onSuccess', form)
           form.value = {}
         }">确定</el-button>
       </span>

@@ -35,12 +35,12 @@ onMounted(() => {
         <el-menu-item index="1" @click="router.push(`/work/editor/panorama/${props.workid}/work-info`)">
           <template #title>作品</template>
         </el-menu-item>
-        <el-menu-item index="2" @click="router.push(`/work/editor/panorama/${props.workid}/scene`)">
+        <!-- <el-menu-item index="2" @click="router.push(`/work/editor/panorama/${props.workid}/scene`)">
           <template #title>场景</template>
-        </el-menu-item>
-        <!-- <el-menu-item index="3" @click="router.push(`/work/editor/panorama/${props.workid}/editor`)">
-          <template #title>编辑器</template>
         </el-menu-item> -->
+        <el-menu-item index="3" @click="router.push(`/work/editor/panorama/${props.workid}/editor`)">
+          <template #title>编辑器</template>
+        </el-menu-item>
         <el-menu-item index="4" @click="router.push(`/work/editor/panorama/${props.workid}/assets`)">
           <template #title>资源列表</template>
         </el-menu-item>

@@ -1,7 +1,7 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
-import { onActivated, onMounted, watch, ref } from "vue";
+import { onActivated, onMounted, watch, ref, defineProps } from "vue";
 import { usePanoramaWorkStore } from "@/stores/panoramaWork";
 import { Timer, ArrowRight } from "@element-plus/icons-vue";
 const authStore = useAuthStore();

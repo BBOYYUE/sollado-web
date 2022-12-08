@@ -37,7 +37,7 @@ const sizeClass = computed(() => {
 </script>
 <template>
   <div class="w-full">
-    <div class="border border-solid border-gray-100 shadow-md rounded-md" :class="sizeClass">
+    <div class="border border-solid border-gray-100 shadow-md rounded-md bg-white" :class="sizeClass">
       <slot></slot>
     </div>
   </div>

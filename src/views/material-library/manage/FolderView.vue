@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, defineProps } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useFilesystemStore } from "@/stores/filesystem";
@@ -36,7 +36,7 @@ const successMsg = (msg) => {
   });
 };
 
-function onFileUploadSuccess(respond) {
+function onFileUploadSuccess (respond) {
   if (respond.code == 200) {
     successMsg("上传成功!");
     filesystem.addFile(respond.data);
@@ -44,7 +44,7 @@ function onFileUploadSuccess(respond) {
     errorMsg("上传失败!");
   }
 }
-function getPurposeInfo(val) {
+function getPurposeInfo (val) {
   for (let item in purpose) {
     if (purpose[item].val == val) {
       return purpose[item].key;
@@ -52,17 +52,17 @@ function getPurposeInfo(val) {
   }
 }
 
-function downloadFile(id) {
+function downloadFile (id) {
   filesystem.downloadFile(id);
 }
 
-function deleteFile(id) {
+function deleteFile (id) {
   filesystem.deleteFile(id);
   setTimeout(function () {
     filesystem.getFolder();
   }, 1000);
 }
-function goToActive(row) {
+function goToActive (row) {
   if (row.type == 1) {
     let hashId = row.hash_id ?? row.hashId;
     router.push("/material-library/manage/folder/" + hashId + "?name=" + row.name);
@@ -71,7 +71,7 @@ function goToActive(row) {
   }
 }
 
-function storeFolder() {
+function storeFolder () {
   let formData = Object.assign(
     {},
     {
@@ -85,7 +85,7 @@ function storeFolder() {
   filesystem.storeFolder(formData);
 }
 
-function goBack() {
+function goBack () {
   let len = filesystem.history.length;
   if (len > 1) {
     router.push(
@@ -99,11 +99,11 @@ function goBack() {
   }
   filesystem.history.pop();
 }
-function search(name) {
+function search (name) {
   filesystem.setFilterByName(name);
   filesystem.getFolder();
 }
-function pageClick(page) {
+function pageClick (page) {
   filesystem.setPage(page);
   filesystem.getFolder();
 }

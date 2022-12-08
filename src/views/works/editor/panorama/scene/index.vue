@@ -1,6 +1,6 @@
 <script setup>
 import box from "@/components/box.vue"
-import SceneCard from "./SceneCard.vue";
+import SceneCard from "../../../../../components/plugin/panorama-scene/sceneCard.vue";
 import SceneSelectDialog from "./SceneSelectDialog.vue";
 import SceneGroupCreateDialog from "./SceneGroupCreateDialog.vue";
 import { computed, watch, ref, onMounted, defineProps } from "vue";

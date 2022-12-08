@@ -12,10 +12,7 @@ export const useEditorStore = defineStore("editor", {
       activeScene: {},
       activeHotspot: {},
       activeHotspotGroup: {},
-      work: {
-        scenes: [],
-        sceneGroups: []
-      },
+      work: {},
       scene: {},
       sceneGroup: {},
       hotspot: {},
@@ -60,19 +57,10 @@ export const useEditorStore = defineStore("editor", {
       this.activeScene = activeScene
     },
     addScene (scene) {
-      // 如果当前的 acitveSceneGroup 的 scene list 为空, 那么就需要初始化, 以免报错
-      if (!this.sceneGroup[this.activeSceneGroup.hash_id].scenes) {
-        this.sceneGroup[this.activeSceneGroup.hash_id].scenes = []
-      }
-      // 将新增的场景 hash_id 加入当前选中的场景分组, 并且更新到 activeSceneGroup 对象. 
-      this.sceneGroup[this.activeSceneGroup.hash_id].scenes.push(Object.keys(scene))
-      this.activeSceneGroup = this.sceneGroup[this.activeSceneGroup.hash_id]
-
-      // 如果当前作品的 scenes list 也为空, 那么也需要出事话, 然后加入
-      if (!this.work.scenes) {
-        this.work.scenes = []
-      }
-      this.work.scenes.push(Object.keys(scene))
+      // if (!this.work.scenes) {
+      //   this.work.scenes = []
+      // }
+      // this.work.scenes.push(Object.keys(scene))
 
       // 最后加入到 scene 中
       this.scene = Object.assign({}, this.scene, scene);
@@ -81,12 +69,11 @@ export const useEditorStore = defineStore("editor", {
       this.sceneGroup[scene_group.hash_id] = Object.assign({}, scene_group, {
         scenes: []
       });
-      if (!this.work.sceneGroups) {
-        this.work.sceneGroups = []
-      }
-      this.work.sceneGroups.push(scene_group.hash_id)
+      // if (!this.work.sceneGroups) {
+      //   this.work.sceneGroups = []
+      // }
+      // this.work.sceneGroups.push(scene_group.hash_id)
     },
-
 
     setActiveHotspot (activeHotspot) {
       this.activeHotspot = activeHotspot
@@ -94,13 +81,47 @@ export const useEditorStore = defineStore("editor", {
     setActiveHotspotGroup (activeHotspotGroup) {
       this.activeHotspotGroup = activeHotspotGroup
     },
-
-
     addHotspot (hotspot) {
+      console.log(hotspot)
+      this.hotspot[hotspot.hash_id] = hotspot;
+      console.log(this.hotspot)
 
     },
     addHotspotGroup (hotspotGroup) {
+      this.hotspotGroup[hotspotGroup.hash_id] = Object.assign({}, hotspotGroup, {
+        hotspots: []
+      })
+    },
 
+
+    setActiveLogic (activeLogic) {
+      this.activeLogic = activeLogic
+    },
+    setActiveLogicGroup (activeLogicGroup) {
+      this.activeLogicGroup = activeLogicGroup
+    },
+    addLogic (logic) {
+      this.logic[logic.hash_id] = logic;
+    },
+    addLogicGroup (logicGroup) {
+      this.logicGroup[logicGroup.hash_id] = Object.assign({}, logicGroup, {
+        logics: []
+      })
+    },
+
+    setActiveButton (activeButton) {
+      this.activeButton = activeButton
+    },
+    setActiveButtonGroup (activeButtonGroup) {
+      this.activeButtonGroup = activeButtonGroup
+    },
+    addButton (button) {
+      this.button[button.hash_id] = button;
+    },
+    addButtonGroup (buttonGroup) {
+      this.buttonGroup[buttonGroup.hash_id] = Object.assign({}, buttonGroup, {
+        buttons: []
+      })
     },
 
     hideAll () {

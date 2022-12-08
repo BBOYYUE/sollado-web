@@ -2,7 +2,7 @@
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
 import { EchoImpl } from "@/util/echo";
-import { onActivated, onMounted, watch, ref } from "vue";
+import { onActivated, onMounted, watch, ref, defineProps } from "vue";
 import { usePanoramaStore } from "@/stores/panorama";
 import { Timer, ArrowRight } from "@element-plus/icons-vue";
 import * as api from "@/util/api";
@@ -37,17 +37,17 @@ const filesystemProps = ref({
   children: "childFiles",
 });
 
-function getCheckedNodes() {
+function getCheckedNodes () {
   return formFileList.value;
 }
-function goBack() {
+function goBack () {
   let len = panorama.history.length;
   if (len > 1) {
     router.push("/material-library/manage/panorama-list/" + panorama.history[len - 2].hashId);
     panorama.history.pop();
   }
 }
-function goToActive(row) {
+function goToActive (row) {
   if (row.type == 1) {
     let hashId = row.hash_id ?? row.hashId;
     router.push("/material-library/manage/panorama-list/" + hashId + "?name=" + row.name);
@@ -56,16 +56,16 @@ function goToActive(row) {
   }
 }
 
-function search(name) {
+function search (name) {
   panorama.setFilterByName(name);
   panorama.getFolder();
 }
-function pageClick(page) {
+function pageClick (page) {
   panorama.setPage(page);
   panorama.getFolder();
 }
 
-function listenTest() {
+function listenTest () {
   EchoImpl.private("test").listen("TestPrivateChannel", (e) => {
     console.log(e);
   });
@@ -110,7 +110,7 @@ function listenTest() {
     });
 }
 
-function storeFolder() {
+function storeFolder () {
   let formData = Object.assign(
     {},
     {
@@ -124,7 +124,7 @@ function storeFolder() {
   panorama.storeFolder(formData);
 }
 
-function storeAsset() {
+function storeAsset () {
   let list = getCheckedNodes();
   console.log(list);
   let fileList = [];
@@ -150,19 +150,19 @@ function storeAsset() {
   }
 }
 
-function getStatus(id) {
+function getStatus (id) {
   if (panorama.workingList.has(id)) {
     return true;
   }
   return false;
 }
-function deletePanorama(id) {
+function deletePanorama (id) {
   panorama.deletePanorama(id);
   setTimeout(function () {
     panorama.getFolder();
   }, 1000);
 }
-function showPanorama(id) {
+function showPanorama (id) {
   try {
     let features =
       "height=720, width=1200, top=100, left=100, toolbar=no, menubar=no, scrollbars = no, resizable = no, location = yes, status = no";
@@ -172,12 +172,12 @@ function showPanorama(id) {
   }
 }
 
-function copyPanoramaLink(id) {
+function copyPanoramaLink (id) {
   let url =
     window.location.protocol + "//" + window.location.host + "/material-library/show/panorama/" + id;
   copy(url);
 }
-function copy(str) {
+function copy (str) {
   let transfer = document.createElement("input");
   document.body.appendChild(transfer);
   transfer.value = str; // 这里表示想要复制的内容
@@ -191,11 +191,11 @@ function copy(str) {
   document.body.removeChild(transfer);
 }
 
-function filesystemTreeClick(node) {
+function filesystemTreeClick (node) {
   activeFilesystemFolder.value = node;
 }
 
-function loadFilesystem(node, resolve) {
+function loadFilesystem (node, resolve) {
   if (node.level === 0) {
     http()
       .get(api.host + api.filesystem + "?filter[type]=2")

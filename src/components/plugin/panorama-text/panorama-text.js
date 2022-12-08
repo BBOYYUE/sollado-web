@@ -1,34 +1,34 @@
-import panoramaLogic from "@/components/icon/panorama-logic.vue"
+import panoramaText from "@/components/icon/panorama-text.vue"
 import { v4 as uuid } from "uuid";
 import { useEditorStore } from "@/stores/editor";
 
 const editorStore = useEditorStore();
 export default {
-  dataType: "logic",
-  dataGroupType: "logicGroup",
-  activeDataType: "activeLogic",
-  activeDataGroupType: "activeLogicGroup",
-  alias: "全景逻辑方法",
-  name: "panorama-logic",
+  dataType: "text",
+  dataGroupType: "textGroup",
+  activeDataType: "activeText",
+  activeDataGroupType: "activeTextGroup",
+  alias: "全景文本",
+  name: "panorama-text",
   domElementId: "panorama",
   store: (formData) => {
     let data = {
       hash_id: uuid().split("-")[0],
       name: formData.name,
       url: formData.url,
-      plugin: "panorama-logic"
+      plugin: "panorama-text"
     }
-    editorStore.addHotspot(data)
+    editorStore.addText(data)
   },
   storeGroup: (formData) => {
     let data = {
       hash_id: uuid().split("-")[0],
       name: formData.name,
-      plugin: "panorama-logic"
+      plugin: "panorama-text"
     }
-    editorStore.addLogicGroup(data)
+    editorStore.addTextGroup(data)
   },
   component: {
-    icon: panoramaLogic
+    icon: panoramaText
   }
 }

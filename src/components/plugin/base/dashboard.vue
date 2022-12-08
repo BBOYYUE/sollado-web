@@ -1,21 +1,40 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { computed, watch, ref, onMounted, defineProps, defineEmits } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import box from "@/components/box.vue"
 
-const emit = defineEmits(['itemClick', 'groupClick'])
+const emit = defineEmits(['itemClick', 'groupClick', 'create', 'createGroup'])
 const editorStore = useEditorStore();
 const props = defineProps({
   alias: String,
-  dataOption: Object
+  dataOption: Object,
+  name: String
 })
 
 const groupAlias = computed(() => {
   return props.alias + "分组"
 })
 
-const groupData = computed(() => editorStore[props.dataOption.dataGroupType])
-const itemData = computed(() => editorStore[props.dataOption.dataType])
+const groupData = computed(() => {
+  let data = editorStore[props.dataOption.dataGroupType]
+  let req = {}
+  for (let item in data) {
+    if (data[item] && data[item].plugin && data[item].plugin == props.name) {
+      req[item] = data[item]
+    }
+  }
+  return req
+})
+const itemData = computed(() => {
+  let data = editorStore[props.dataOption.dataType]
+  let req = {}
+  for (let item in data) {
+    if (data[item] && data[item].plugin && data[item].plugin == props.name) {
+      req[item] = data[item]
+    }
+  }
+  return req
+})
 
 const groupTabClick = function (pane) {
   emit('groupClick', groupData.value[pane.props.name])
@@ -27,7 +46,7 @@ const itemClick = function (item) {
 </script>
 <template>
   <div class="w-144">
-    <box>
+    <box size="md">
       <el-tabs>
         <el-tab-pane :label="props.alias">
           <div class="flex flex-row flex-wrap">
@@ -41,9 +60,9 @@ const itemClick = function (item) {
         <el-tab-pane :label="groupAlias">
           <el-tabs tab-position="right" @tab-click="groupTabClick">
             <el-tab-pane :key="group.hash_id" :label="group.name" v-for="group in groupData" :name="group.hash_id">
-              <box size="sm" marign="none" v-for="scene in group.scenes" :key="scene"
+              <!-- <box size="sm" marign="none" v-for="scene in group.scenes" :key="scene"
                 @click="itemClick(itemData[scene])">
-                {{ itemData[scene].name }}</box>
+                {{ itemData[scene].name }}</box> -->
             </el-tab-pane>
           </el-tabs>
           <el-button type="primary" class="mt-4" size="small" @click="$emit('createGroup')">添加{{ groupAlias

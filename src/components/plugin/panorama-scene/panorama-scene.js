@@ -1,38 +1,54 @@
 import icon from "@/components/icon/panorama-scene.vue"
 import groupInfo from "@/components/plugin/panorama-scene/groupInfo.vue"
-import groupCreateForm from "@/components/plugin/panorama-scene/groupCreateForm.vue"
 import info from "@/components/plugin/panorama-scene/info.vue"
 import createForm from "@/components/plugin/panorama-scene/createForm.vue"
+import { v4 as uuid } from "uuid";
+import { useEditorStore } from "@/stores/editor";
+
+const editorStore = useEditorStore();
 
 export default {
   dataType: "scene",
   dataGroupType: "sceneGroup",
   activeDataType: "activeScene",
   activeDataGroupType: "activeSceneGroup",
-  alias: "场景",
-  name: "scene",
+  alias: "全景场景",
+  name: "panorama-scene",
   domElementId: "panorama",
-  click: (panorama) => {
-    console.log(panorama)
+  store: (formData) => {
+    let data = {}
+    formData.map((panorama) => {
+      if (!data[panorama.hash_id]) {
+        panorama.plugin = 'panorama-scene'
+        data[panorama.hash_id] = panorama
+      }
+    })
+    editorStore.addScene(data)
   },
-  create: () => { },
-  edit: () => { },
-  update: () => { },
-  store: () => { },
-
+  edit: (info) => {
+    console.log(info)
+  },
   groupClick: (group) => {
     console.log(group)
   },
   createGroup: () => { },
-  editGroup: () => { },
+  editGroup: (group) => {
+    console.log(group)
+  },
   updateGroup: () => { },
-  storeGroup: () => { },
+  storeGroup: (formData) => {
+    let data = {
+      hash_id: uuid().split("-")[0],
+      name: formData.name,
+      plugin: "panorama-scene"
+    }
+    editorStore.addSceneGroup(data)
+  },
 
   component: {
     icon: icon,
     info: info,
     groupInfo: groupInfo,
-    groupCreateForm: groupCreateForm,
     createForm: createForm
   }
 }

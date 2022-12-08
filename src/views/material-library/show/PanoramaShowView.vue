@@ -1,7 +1,7 @@
 <script setup>
 import http from "@/util/http";
 import * as api from "@/util/api";
-import { onActivated, onMounted, watch, ref } from "vue";
+import { onActivated, onMounted, watch, ref, defineProps } from "vue";
 
 const panorama = ref({});
 const krpano = ref({});
@@ -17,11 +17,11 @@ onMounted(() => {
     });
 });
 
-function krpanoReady(krpano) {
+function krpanoReady (krpano) {
   krpano.value = krpano;
 }
 
-function init() {
+function init () {
   document.getElementById("panorama").innerHTML = "";
   embedpano({
     swf: "/krpano/tour.swf",

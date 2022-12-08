@@ -12,6 +12,7 @@ import { v4 as uuid } from "uuid";
 import { useEditorStore } from "@/stores/editor";
 import * as str from "@/common/str.js"
 
+
 const editorStore = useEditorStore()
 export default class plugin {
 
@@ -56,53 +57,54 @@ export default class plugin {
     impl.click = (activeItem) => {
       editorStore['set' + str.title(impl.dataOption.activeDataType)](activeItem)
       editorStore.showInfo()
-      option.click(activeItem);
+      if (option.click) option.click(activeItem);
     }
 
     impl.create = () => {
-      option.create();
+      if (option.create) option.create();
       editorStore.showCreate()
     }
 
     impl.edit = (activeItem) => {
-      option.edit(activeItem);
+      if (option.edit) option.edit(activeItem);
       editorStore.showEdit()
     }
     impl.update = (data) => {
-      option.update(data);
+      if (option.update) option.update(data);
     }
-    impl.store = (data) => {
-      option.store(data);
+    impl.store = (formData) => {
+      if (option.store) option.store(formData);
     }
 
     impl.groupClick = (activeGroup) => {
-      option.groupClick(activeGroup);
+      if (option.groupClick) option.groupClick(activeGroup);
+      console.log(impl.dataOption.activeDataGroupType)
       editorStore['set' + str.title(impl.dataOption.activeDataGroupType)](activeGroup)
       editorStore.showInfoGroup()
     }
     impl.createGroup = () => {
-      option.createGroup();
+      if (option.createGroup) option.createGroup();
       editorStore.showCreateGroup()
     }
     impl.editGroup = (activeGroup) => {
-      option.editGroup(activeGroup);
+      if (option.editGroup) option.editGroup(activeGroup);
       editorStore.showEditGroup()
     }
     impl.updateGroup = (data) => {
-      option.updateGroup(data);
+      if (option.updateGroup) option.updateGroup(data);
     }
-    impl.storeGroup = (data) => {
-      option.storeGroup(data);
+    impl.storeGroup = (formData) => {
+      if (option.storeGroup) option.storeGroup(formData);
     }
 
 
-    impl.dataOption.activeDataType = option.activeDataType
-    impl.dataOption.activeDataGroupType = option.activeDataGroupType
-    impl.dataOption.dataType = option.dataType;
-    impl.dataOption.dataGroupType = option.dataGroupType;
-    impl.alias = option.alias;
-    impl.name = option.name;
-    impl.domElementId = option.domElementId;
+    impl.dataOption.activeDataType = option.activeDataType ?? ''
+    impl.dataOption.activeDataGroupType = option.activeDataGroupType ?? ''
+    impl.dataOption.dataType = option.dataType ?? '';
+    impl.dataOption.dataGroupType = option.dataGroupType ?? '';
+    impl.alias = option.alias ?? '';
+    impl.name = option.name ?? '';
+    impl.domElementId = option.domElementId ?? '';
 
     impl.component = Object.assign({}, impl.component, option.component);
     let editorStore = useEditorStore();
