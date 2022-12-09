@@ -12,6 +12,9 @@ export const useEditorStore = defineStore("editor", {
       activeScene: {},
       activeHotspot: {},
       activeHotspotGroup: {},
+      activeView: {},
+      acitveViewGroup: {},
+
       work: {},
       scene: {},
       sceneGroup: {},
@@ -57,11 +60,6 @@ export const useEditorStore = defineStore("editor", {
       this.activeScene = activeScene
     },
     addScene (scene) {
-      // if (!this.work.scenes) {
-      //   this.work.scenes = []
-      // }
-      // this.work.scenes.push(Object.keys(scene))
-
       // 最后加入到 scene 中
       this.scene = Object.assign({}, this.scene, scene);
     },
@@ -69,10 +67,6 @@ export const useEditorStore = defineStore("editor", {
       this.sceneGroup[scene_group.hash_id] = Object.assign({}, scene_group, {
         scenes: []
       });
-      // if (!this.work.sceneGroups) {
-      //   this.work.sceneGroups = []
-      // }
-      // this.work.sceneGroups.push(scene_group.hash_id)
     },
 
     setActiveHotspot (activeHotspot) {
@@ -82,10 +76,7 @@ export const useEditorStore = defineStore("editor", {
       this.activeHotspotGroup = activeHotspotGroup
     },
     addHotspot (hotspot) {
-      console.log(hotspot)
       this.hotspot[hotspot.hash_id] = hotspot;
-      console.log(this.hotspot)
-
     },
     addHotspotGroup (hotspotGroup) {
       this.hotspotGroup[hotspotGroup.hash_id] = Object.assign({}, hotspotGroup, {
@@ -121,6 +112,21 @@ export const useEditorStore = defineStore("editor", {
     addButtonGroup (buttonGroup) {
       this.buttonGroup[buttonGroup.hash_id] = Object.assign({}, buttonGroup, {
         buttons: []
+      })
+    },
+
+    setActiveView (activeView) {
+      this.activeView = activeView
+    },
+    setActiveViewGroup (activeViewGroup) {
+      this.activeViewGroup = activeViewGroup
+    },
+    addView (view) {
+      this.view[view.hash_id] = view;
+    },
+    addViewGroup (viewGroup) {
+      this.buttonGroup[viewGroup.hash_id] = Object.assign({}, viewGroup, {
+        views: []
       })
     },
 

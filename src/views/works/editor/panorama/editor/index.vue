@@ -8,6 +8,7 @@ import * as api from "@/util/api";
 import { useRoute, useRouter } from "vue-router";
 import pluginCommon from "@/common/plugin.js"
 import pluginBase from "@/components/plugin/base/index.js"
+import plugin from "./plugin.vue"
 
 
 const pluginList = () => {
@@ -45,7 +46,6 @@ watch(() => activePlugin, (val) => {
       <div class="w-full flex-grow" id="panoramaBox">
         <div class="border border-solid border-gray-100 shadow-md rounded-md mx-6 mt-4 p-2">
           <panorama-scene :info="activeScene"></panorama-scene>
-          <!-- <panorama :panoId="activeScene.hash_uuid" :info="activeScene" :xmlPath="activeScene.xml[0].path"></panorama> -->
         </div>
       </div>
 
@@ -53,6 +53,7 @@ watch(() => activePlugin, (val) => {
       <div class="w-full">
         <div class="mx-6 mb-6 shadow-md border border-solid border-gray-100 rounded-md">
           <div class="flex flex-row justify-between divide-x divide-gray-200 divide-solid ">
+            <!-- 返回按钮 -->
             <div class="flex flex-row justify-center ">
               <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 ">
                 <el-icon class="w-8 h-8" @click="router.go(-1)">
@@ -60,12 +61,14 @@ watch(() => activePlugin, (val) => {
                 </el-icon>
               </div>
             </div>
+            <!-- 插件列表 -->
             <div class="flex flex-row justify-center flex-grow">
               <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4"
                 v-for="plugin in pluginList()" :key="plugin">
                 <component :is="plugin.component.icon" class="w-8 h-8" @click="pluginClick(plugin)" />
               </div>
             </div>
+            <!-- 保存按钮 -->
             <div class="flex flex-row justify-center ">
               <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4">
                 <el-icon class="w-8 h-8">
@@ -77,44 +80,8 @@ watch(() => activePlugin, (val) => {
         </div>
       </div>
     </div>
-    <!-- 右侧插件容器 -->
-    <!-- shadow-md border border-solid border-gray-100 rounded-md m-6 p-6 -->
-    <div class="absolute right-10 top-24" v-if="showPlugin">
-      <div class="flex flex-row-reverse justify-center">
-        <component :is="activePlugin.component.dashboard" v-show="editorStore.showDashboardVisible"
-          @groupClick="activePlugin.groupClick" @itemClick="activePlugin.click" @createGroup="activePlugin.createGroup"
-          @create="activePlugin.create" :dataOption="activePlugin.dataOption" :alias="activePlugin.alias"
-          :name="activePlugin.name"></component>
-
-
-        <component :is="activePlugin.component.groupEditForm" v-show="editorStore.showGroupUpdateFormVisible"
-          @update="activePlugin.updateGroup" :defaultData="activePlugin.activeGroupData"
-          :field="activePlugin.fieldOption.groupUpdateField" :dataOption="activePlugin.dataOption"
-          :alias="activePlugin.alias" :name="activePlugin.name">
-        </component>
-        <component :is="activePlugin.component.groupCreateForm" v-show="editorStore.showGroupCreateFormVisible"
-          @store="activePlugin.storeGroup" :field="activePlugin.fieldOption.groupStoreField"
-          :dataOption="activePlugin.dataOption" :alias="activePlugin.alias" :name="activePlugin.name">
-        </component>
-
-        <component :is="activePlugin.component.editForm" v-show="editorStore.showUpdateFormVisible"
-          @update="activePlugin.update" :defaultData="activePlugin.activeData"
-          :field="activePlugin.fieldOption.updateField" :dataOption="activePlugin.dataOption"
-          :alias="activePlugin.alias" :name="activePlugin.name">
-        </component>
-        <component :is="activePlugin.component.createForm" v-show="editorStore.showCreateFormVisible"
-          @store="activePlugin.store" :field="activePlugin.fieldOption.storeField" :dataOption="activePlugin.dataOption"
-          :alias="activePlugin.alias" :name="activePlugin.name">
-        </component>
-
-        <component :is="activePlugin.component.groupInfo" v-show="editorStore.showGroupInfoVisible"
-          @editGroup="activePlugin.editGroup" :dataOption="activePlugin.dataOption" :alias="activePlugin.alias"
-          :name="activePlugin.name">
-        </component>
-        <component :is="activePlugin.component.info" v-show="editorStore.showInfoVisible" @edit="activePlugin.edit"
-          :dataOption="activePlugin.dataOption" :alias="activePlugin.alias" :name="activePlugin.name">
-        </component>
-      </div>
+    <div v-if="showPlugin">
+      <plugin :activePlugin="activePlugin"></plugin>
     </div>
   </div>
 </template>

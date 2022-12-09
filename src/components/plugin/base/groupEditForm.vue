@@ -14,9 +14,9 @@ const props = defineProps({
 const group = computed(() => editorStore[props.dataOption.activeDataGroupType])
 
 const form = ref({})
-watch(() => group, (group) => {
+watch(() => group.value, (group) => {
   if (group) {
-    form = group
+    form.value = group
   }
 })
 </script>

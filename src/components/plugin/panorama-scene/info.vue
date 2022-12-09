@@ -42,7 +42,7 @@ watch(() => panoramaName, function (panoramaName) {
       <div class="flex flex-col ">
         <div class="flex flex-row justify-between ">
           <div class="flex-grow">
-            <div class="text-2xl font-bold w-48">{{ panoramaName }}</div>
+            <div class="text-xl font-bold w-48">{{ panoramaName }}</div>
           </div>
           <div>
             <el-image class="w-64 h-32 rounded-md" :src="thumbPath"></el-image>

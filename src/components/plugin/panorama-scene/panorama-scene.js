@@ -2,6 +2,7 @@ import icon from "@/components/icon/panorama-scene.vue"
 import groupInfo from "@/components/plugin/panorama-scene/groupInfo.vue"
 import info from "@/components/plugin/panorama-scene/info.vue"
 import createForm from "@/components/plugin/panorama-scene/createForm.vue"
+import editForm from "@/components/plugin/panorama-scene/editForm.vue"
 import { v4 as uuid } from "uuid";
 import { useEditorStore } from "@/stores/editor";
 
@@ -49,6 +50,7 @@ export default {
     icon: icon,
     info: info,
     groupInfo: groupInfo,
-    createForm: createForm
+    createForm: createForm,
+    editForm: editForm
   }
 }
