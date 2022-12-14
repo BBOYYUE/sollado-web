@@ -26,17 +26,9 @@ export default {
     })
     editorStore.addScene(data)
   },
-  edit: (info) => {
-    console.log(info)
+  update: (newData, oldData) => {
+    editorStore.updateScene(newData, oldData)
   },
-  groupClick: (group) => {
-    console.log(group)
-  },
-  createGroup: () => { },
-  editGroup: (group) => {
-    console.log(group)
-  },
-  updateGroup: () => { },
   storeGroup: (formData) => {
     let data = {
       hash_id: uuid().split("-")[0],

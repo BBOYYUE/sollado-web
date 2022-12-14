@@ -69,8 +69,8 @@ export default class plugin {
       if (option.edit) option.edit(activeItem);
       editorStore.showEdit()
     }
-    impl.update = (data) => {
-      if (option.update) option.update(data);
+    impl.update = (newData, oldData) => {
+      if (option.update) option.update(newData, oldData);
     }
     impl.store = (formData) => {
       if (option.store) option.store(formData);

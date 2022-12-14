@@ -16,7 +16,7 @@ const info = computed(() => editorStore[props.dataOption.activeDataType])
 <template>
   <div>
     <box size="md">
-      <div class="flex flex-col " v-if="info">
+      <div class="flex flex-col ">
         <div class="flex flex-row justify-between ">
           <div class="flex-grow">
             <div class="text-xl font-bold w-48">{{ info.name }}</div>

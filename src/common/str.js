@@ -1,3 +1,5 @@
+import plural from 'plural';
+// 首字母大写
 export const title = (str) => {
   // 使用扩展运算符（...）拆分为字符        
   const characters = [...str];
@@ -5,3 +7,4 @@ export const title = (str) => {
   str = characters.join("");
   return str;
 }
+

@@ -1,6 +1,7 @@
 import icon from "@/components/icon/panorama-logic-link.vue"
 import { v4 as uuid } from "uuid";
 import { useEditorStore } from "@/stores/editor";
+import createForm from "./createForm.vue"
 
 const editorStore = useEditorStore();
 export default {
@@ -29,6 +30,7 @@ export default {
     editorStore.addLogicGroup(data)
   },
   component: {
-    icon: icon
+    icon: icon,
+    createForm: createForm
   }
 }

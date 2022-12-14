@@ -1,22 +1,19 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps, onActivated } from "vue";
-import { useEditorStore } from "@/stores/editor";
+import { ref, defineEmits, computed, defineProps, watch } from "vue"
 import box from "@/components/box.vue"
+import { useEditorStore } from "@/stores/editor";
+import urlList from "./urlList"
+// import * as simpleHotspot from "@/common/simpleHotspot.vue"
 
+const emit = defineEmits(['update'])
 const props = defineProps({
-  dataOption: Object
+  dataOption: Object,
+  alias: String
 })
 const editorStore = useEditorStore();
-const emit = defineEmits(['update']);
-
 const info = computed(() => editorStore[props.dataOption.activeDataType])
 const groups = computed(() => editorStore[props.dataOption.dataGroupType])
-
-
 const form = ref({})
-// onMounted(() => {
-//   console.log(info, form)
-// })
 
 watch(() => info.value, (info) => {
   if (info) {
@@ -26,19 +23,26 @@ watch(() => info.value, (info) => {
   }
 }, {
   immediate: true,
-}
-)
-function update () {
-  emit('update', form.value, { ...info.value });
-}
+})
 
+
+function update () {
+  if (form.value.name) {
+    emit('update', form.value, { ...info.value });
+  }
+}
 
 </script>
 <template>
   <div>
     <box size="md">
-      <el-form-item label="场景名称">
-        <el-input v-model="form.name"></el-input>
+      <el-form-item :label="props.alias + '名称'">
+        <el-input v-model="form.name" />
+      </el-form-item>
+      <el-form-item :label="props.alias + '样式'">
+        <el-select v-model="form.url">
+          <el-option v-for="item in urlList" :key="item.url" :label="item.text" :value="item.url" />
+        </el-select>
       </el-form-item>
       <el-form-item label="所属分组">
         <el-select v-model="form.group_id">
@@ -48,8 +52,7 @@ function update () {
         </el-select>
       </el-form-item>
       <span>
-        <!-- <el-button type="primary" size="small" @click="$emit('store', getData(formPanoramaList))">确定</el-button> -->
-        <el-button type="primary" size="small" @click="update">确定</el-button>
+        <el-button size="small" type="primary" @click="update">确定</el-button>
       </span>
     </box>
   </div>

@@ -2,6 +2,7 @@
 import { computed, watch, ref, onMounted, defineProps, defineEmits } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import box from "@/components/box.vue"
+import plural from 'plural';
 
 const emit = defineEmits(['itemClick', 'groupClick', 'create', 'createGroup'])
 const editorStore = useEditorStore();
@@ -11,6 +12,10 @@ const props = defineProps({
   name: String
 })
 
+
+const dataTypePlural = computed(() => {
+  return plural(props.dataOption.dataType)
+})
 const groupAlias = computed(() => {
   return props.alias + "分组"
 })
@@ -61,9 +66,9 @@ const itemClick = function (item) {
         <el-tab-pane :label="groupAlias">
           <el-tabs tab-position="right" @tab-click="groupTabClick">
             <el-tab-pane :key="group.hash_id" :label="group.name" v-for="group in groupData" :name="group.hash_id">
-              <!-- <box size="sm" marign="none" v-for="scene in group.scenes" :key="scene"
-                @click="itemClick(itemData[scene])">
-                {{ itemData[scene].name }}</box> -->
+              <box size="sm" marign="none" v-for="hash_id in group[dataTypePlural]" :key="hash_id"
+                @click="itemClick(itemData[hash_id])">
+                {{ itemData[hash_id].name }}</box>
             </el-tab-pane>
           </el-tabs>
           <el-button type="primary" class="mt-4" size="small" @click="$emit('createGroup')">添加{{ groupAlias

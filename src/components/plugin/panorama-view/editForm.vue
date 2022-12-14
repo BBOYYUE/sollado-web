@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits, computed, defineProps } from "vue"
+import { ref, defineEmits, computed, defineProps, watch } from "vue"
 import box from "@/components/box.vue"
 import { useEditorStore } from "@/stores/editor";
 
@@ -8,13 +8,26 @@ const props = defineProps({
 })
 const editorStore = useEditorStore();
 const form = ref({})
-const emit = defineEmits(['store'])
+
+const emit = defineEmits(['update'])
+const info = computed(() => editorStore[props.dataOption.activeDataType])
 const groups = computed(() => editorStore[props.dataOption.dataGroupType])
-function store () {
+function update () {
   if (form.value.name) {
-    emit('store', form.value);
+    emit('update', form.value, { ...info.value });
   }
 }
+watch(() => info.value, (info) => {
+  if (info) {
+    // 这里需要区分初始值和修改后的值, 所以使用了深拷贝. 
+    // 如果是浅拷贝的话 form 修改的时候 info 也会跟着修改
+    console.log(info)
+    form.value = { ...info }
+  }
+}, {
+  immediate: true,
+}
+)
 function getView () {
   let krpano = document.getElementById('krpanoSWFObject')
   form.value.hlookat = krpano.get("view.hlookat");
@@ -56,8 +69,15 @@ function setView () {
       <el-form-item label="最大视场:">
         <el-input v-model="form.fovmax"></el-input>
       </el-form-item>
+      <el-form-item label="所属分组">
+        <el-select v-model="form.group_id">
+          <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
+              info.name
+          }}</el-option>
+        </el-select>
+      </el-form-item>
       <span>
-        <el-button type="primary" size="small" @click="store">确定</el-button>
+        <el-button type="primary" size="small" @click="update">确定</el-button>
         <el-button type="primary" size="small" @click="getView">获取场景当前视角</el-button>
         <el-button type="primary" size="small" @click="setView">展示视角</el-button>
       </span>

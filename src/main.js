@@ -10,7 +10,6 @@ import { json } from '@codemirror/lang-json'
 import { lineNumbers, gutter } from "@codemirror/view"
 import App from "./App.vue";
 import router from "./router";
-
 import "./assets/main.css";
 const app = createApp(App);
 app.use(ElementPlus);
@@ -19,7 +18,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 app.use(createPinia());
 app.use(router);
-
 app.use(VueCodemirror, {
   // optional default global options
   autofocus: true,

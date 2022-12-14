@@ -84,6 +84,10 @@ const getData = function (form) {
   })
   return data;
 }
+function store () {
+  emit('store', getData(formPanoramaList.value))
+}
+
 </script>
 <template>
   <div>
@@ -109,7 +113,7 @@ const getData = function (form) {
         </div>
       </div>
       <span>
-        <el-button type="primary" size="small" @click="$emit('store', getData(formPanoramaList))">确定</el-button>
+        <el-button type="primary" size="small" @click="store">确定</el-button>
       </span>
     </box>
   </div>
