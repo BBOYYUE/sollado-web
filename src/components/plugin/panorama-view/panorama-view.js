@@ -25,6 +25,7 @@ export default {
       fovmax: formData.fovmax,
       fovmin: formData.fovmin,
       maxpixelzoom: formData.maxpixelzoom,
+      group_id: formData.group_id,
       plugin: "panorama-view"
     }
     editorStore.addView(data)
@@ -39,6 +40,12 @@ export default {
       plugin: "panorama-view"
     }
     editorStore.addViewGroup(data)
+  },
+  delGroup: (hash_id) => {
+    editorStore.delViewGroup(hash_id)
+  },
+  del: (hash_id) => {
+    editorStore.delView(hash_id)
   },
   component: {
     icon: icon,

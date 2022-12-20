@@ -7,7 +7,8 @@ const editorStore = useEditorStore();
 </script>
 <template>
   <div class="absolute right-10 top-24">
-    <div class="flex flex-row-reverse justify-center">
+    <!-- <div class="flex flex-row-reverse justify-center"> -->
+    <div class="flex flex-col justify-start">
       <div v-show="editorStore.showDashboardVisible">
         <component :is="activePlugin.component.dashboard" @groupClick="activePlugin.groupClick"
           @itemClick="activePlugin.click" @createGroup="activePlugin.createGroup" @create="activePlugin.create"
@@ -40,12 +41,13 @@ const editorStore = useEditorStore();
       </div>
       <div v-show="editorStore.showGroupInfoVisible">
         <component :is="activePlugin.component.groupInfo" @editGroup="activePlugin.editGroup"
-          :dataOption="activePlugin.dataOption" :alias="activePlugin.alias" :name="activePlugin.name">
+          @delGroup="activePlugin.delGroup" :dataOption="activePlugin.dataOption" :alias="activePlugin.alias"
+          :name="activePlugin.name">
         </component>
       </div>
       <div v-show="editorStore.showInfoVisible">
-        <component :is="activePlugin.component.info" @edit="activePlugin.edit" :dataOption="activePlugin.dataOption"
-          :alias="activePlugin.alias" :name="activePlugin.name">
+        <component :is="activePlugin.component.info" @del="activePlugin.del" @edit="activePlugin.edit"
+          :dataOption="activePlugin.dataOption" :alias="activePlugin.alias" :name="activePlugin.name">
         </component>
       </div>
     </div>

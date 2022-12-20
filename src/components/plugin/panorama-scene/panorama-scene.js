@@ -16,6 +16,13 @@ export default {
   alias: "全景场景",
   name: "panorama-scene",
   domElementId: "panorama",
+  delGroup: (hash_id) => {
+    editorStore.delSceneGroup(hash_id)
+  },
+  del: (hash_id) => {
+    console.log(hash_id)
+    editorStore.delScene(hash_id)
+  },
   store: (formData) => {
     let data = {}
     formData.map((panorama) => {

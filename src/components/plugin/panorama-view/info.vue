@@ -22,9 +22,9 @@ const info = computed(() => editorStore[props.dataOption.activeDataType])
             <div class="text-xl font-bold w-48">{{ info.name }}</div>
           </div>
         </div>
-        <div class="flex flex-row justify-between mt-6">
-          <el-link type="primary" @click="$emit('edit', info)">编辑</el-link>
-          <div class="text-xs text-gray-400 ml-4">上一次编辑: 2022年11月30日</div>
+        <div class="flex flex-row">
+          <el-link type="primary" @click="$emit('edit', info)" class="mx-1">编辑</el-link>
+          <el-link type="danger" @click="$emit('del', info.hash_id)" class="mx-1">移除</el-link>
         </div>
       </div>
     </box>

@@ -84,7 +84,7 @@ const getData = function (form) {
   })
   return data;
 }
-function store () {
+function store() {
   emit('store', getData(formPanoramaList.value))
 }
 

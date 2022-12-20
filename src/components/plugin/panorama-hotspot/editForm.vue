@@ -26,7 +26,7 @@ watch(() => info.value, (info) => {
 })
 
 
-function update () {
+function update() {
   if (form.value.name) {
     emit('update', form.value, { ...info.value });
   }
@@ -49,6 +49,12 @@ function update () {
           <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
               info.name
           }}</el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="props.alias + '点击跳转到场景:'">
+        <el-select v-model="form.linkSceneHashId">
+          <el-option v-for="scene in editorStore.scene" :key="scene.hash_id" :label="scene.name"
+            :value="scene.hash_id" />
         </el-select>
       </el-form-item>
       <span>

@@ -5,41 +5,10 @@ import createForm from "./createForm.vue"
 import editForm from "./editForm.vue"
 import { v4 as uuid } from "uuid";
 import { useEditorStore } from "@/stores/editor";
-const template = {
-  onloaded: 'hotspot_animate();add_all_the_time_tooltip();',
-  edge: 'top',
-  distorted: false,
-  scale: '0.4',
-  crop: '0|0|128|128',
-  framewidth: '128',
-  frameheight: '128',
-  frame: 0,
-  zoom: false,
-  onclick: 'hotspotOnclick',
-  ondown: 'hotspotOndown',
-  onup: 'hotspotOnup',
-  lastframe: 24,
-  visible: true
-}
+import { showHotspot } from "@/util/krpanoUtil.js";
+
 const editorStore = useEditorStore();
-function showHotspot (data) {
-  let krpano = document.getElementById('krpanoSWFObject')
-  let option = Object.assign({}, template, data)
-  option.name = 'hotspot_' + data.hash_id
-  let flag = krpano.get("hotspot[" + option.name + "]")
-  if (!flag) {
-    krpano.call("addhotspot(" + option.name + ")")
-  } else {
-    krpano.call("removehotspot(" + option.name + ")")
-    krpano.call("addhotspot(" + option.name + ")")
-  }
-  for (let item in option) {
-    krpano.set(
-      "hotspot[" + 'hotspot_' + option.hash_id + "]." + item,
-      option[item]
-    );
-  }
-}
+
 export default {
   dataType: "hotspot",
   dataGroupType: "hotspotGroup",
@@ -57,17 +26,24 @@ export default {
       plugin: "panorama-hotspot",
       text: formData.name,
       ath: krpano.get("view.hlookat"),
-      atv: krpano.get("view.vlookat")
+      atv: krpano.get("view.vlookat"),
+      linklandce: formData.linklandce,
+      group_id: formData.group_id
     }
-    showHotspot(data)
+    showHotspot(data, 'hotspot')
     editorStore.addHotspot(data)
   },
   update: (newData, oldData) => {
-    showHotspot(newData)
+    showHotspot(newData, 'hotspot')
     editorStore.updateHotspot(newData, oldData)
   },
 
-
+  delGroup: (hash_id) => {
+    editorStore.delHotspotGroup(hash_id)
+  },
+  del: (hash_id) => {
+    editorStore.delHotspot(hash_id)
+  },
   storeGroup: (formData) => {
     let data = {
       hash_id: uuid().split("-")[0],
@@ -79,7 +55,6 @@ export default {
   component: {
     icon: panoramaHotspot,
     createForm: createForm,
-    editForm: editForm,
-    info: info
+    editForm: editForm
   }
 }

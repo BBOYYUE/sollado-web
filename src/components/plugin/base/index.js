@@ -42,12 +42,15 @@ export default class plugin {
   edit = () => { }
   update = () => { }
   store = () => { }
+  del = () => { }
+
 
   groupClick = () => { }
   createGroup = () => { }
   editGroup = () => { }
   updateGroup = () => { }
   storeGroup = () => { }
+  delGroup = () => { }
 
 
 
@@ -75,6 +78,9 @@ export default class plugin {
     impl.store = (formData) => {
       if (option.store) option.store(formData);
     }
+    impl.del = (formData) => {
+      if (option.store) option.del(formData);
+    }
 
     impl.groupClick = (activeGroup) => {
       if (option.groupClick) option.groupClick(activeGroup);
@@ -96,7 +102,9 @@ export default class plugin {
     impl.storeGroup = (formData) => {
       if (option.storeGroup) option.storeGroup(formData);
     }
-
+    impl.delGroup = (formData) => {
+      if (option.store) option.delGroup(formData);
+    }
 
     impl.dataOption.activeDataType = option.activeDataType ?? ''
     impl.dataOption.activeDataGroupType = option.activeDataGroupType ?? ''

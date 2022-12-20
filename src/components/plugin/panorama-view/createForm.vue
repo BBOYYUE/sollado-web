@@ -10,12 +10,13 @@ const editorStore = useEditorStore();
 const form = ref({})
 const emit = defineEmits(['store'])
 const groups = computed(() => editorStore[props.dataOption.dataGroupType])
-function store () {
+function store() {
   if (form.value.name) {
     emit('store', form.value);
+    form.value = {}
   }
 }
-function getView () {
+function getView() {
   let krpano = document.getElementById('krpanoSWFObject')
   form.value.hlookat = krpano.get("view.hlookat");
   form.value.vlookat = krpano.get("view.vlookat");
@@ -24,7 +25,7 @@ function getView () {
   form.value.fovmin = form.value.fov - 20
   form.value.maxpixelzoom = ''
 }
-function setView () {
+function setView() {
   let krpano = document.getElementById('krpanoSWFObject')
   krpano.set("view.hlookat", form.value.hlookat);
   krpano.set("view.vlookat", form.value.vlookat);
@@ -55,6 +56,13 @@ function setView () {
       </el-form-item>
       <el-form-item label="最大视场:">
         <el-input v-model="form.fovmax"></el-input>
+      </el-form-item>
+      <el-form-item label="所属分组">
+        <el-select v-model="form.group_id">
+          <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
+              info.name
+          }}</el-option>
+        </el-select>
       </el-form-item>
       <span>
         <el-button type="primary" size="small" @click="store">确定</el-button>

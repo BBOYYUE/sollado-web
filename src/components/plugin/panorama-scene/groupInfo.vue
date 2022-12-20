@@ -25,12 +25,11 @@ const group = computed(() => editorStore[props.dataOption.activeDataGroupType])
             <el-image class="w-32 h-32 rounded-md"></el-image>
           </div>
         </div>
-        <div class="flex flex-row justify-between mt-6">
-          <el-link type="primary" @click="$emit('editGroup', group)">编辑</el-link>
-          <div class="text-xs text-gray-400 ml-4">上一次编辑: 2022年11月30日</div>
+        <div class="flex flex-row">
+          <el-link type="primary" @click="$emit('editGroup', group)" class="mx-1">编辑</el-link>
+          <el-link type="danger" @click="$emit('delGroup', group.hash_id)" class="mx-1">移除</el-link>
         </div>
       </div>
-      <!-- <scene-group-card :info="group"></scene-group-card> -->
     </box>
   </div>
 </template>

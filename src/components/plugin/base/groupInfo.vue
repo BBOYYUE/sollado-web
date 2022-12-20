@@ -15,9 +15,9 @@ const group = computed(() => editorStore[props.dataOption.activeDataGroupType])
     <box size="md">
       <div class="flex flex-col ">
         <div class="text-2xl font-bold w-48">{{ group.name }}</div>
-        <div class="flex flex-row justify-between mt-6">
-          <el-link type="primary" @click="$emit('editGroup', group)">编辑</el-link>
-          <div class="text-xs text-gray-400 ml-4">上一次编辑: 2022年11月30日</div>
+        <div class="flex flex-row">
+          <el-link type="primary" @click="$emit('editGroup', group)" class="mx-1">编辑</el-link>
+          <el-link type="danger" @click="$emit('delGroup', group.hash_id)" class="mx-1">移除</el-link>
         </div>
       </div>
     </box>

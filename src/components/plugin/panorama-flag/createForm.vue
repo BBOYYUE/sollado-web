@@ -10,15 +10,18 @@ const props = defineProps({
   field: Object
 })
 const form = ref({})
-
-function store () {
+const groups = computed(() => editorStore[props.dataOption.dataGroupType])
+function store() {
   styleList.map((item) => {
     if (item.uuid == form.value.styleUuid) {
       form.value.css = item.style.css
       form.value.mobilecss = item.style.mobilecss
     }
   })
-  emit('store', form.value)
+  if (form.value.name) {
+    emit('store', form.value)
+    form.value = {}
+  }
 }
 
 
@@ -32,6 +35,13 @@ function store () {
       <el-form-item :label="props.alias + '样式'">
         <el-select v-model="form.styleUuid">
           <el-option v-for="item in styleList" :key="item.uuid" :label="item.text" :value="item.uuid" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="所属分组">
+        <el-select v-model="form.group_id">
+          <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
+              info.name
+          }}</el-option>
         </el-select>
       </el-form-item>
       <span>

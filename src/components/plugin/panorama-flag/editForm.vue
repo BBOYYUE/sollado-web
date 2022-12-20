@@ -14,7 +14,7 @@ const editorStore = useEditorStore();
 const info = computed(() => editorStore[props.dataOption.activeDataType])
 const groups = computed(() => editorStore[props.dataOption.dataGroupType])
 
-function update () {
+function update() {
   if (form.value.name) {
     styleList.map((item) => {
       if (item.uuid == form.value.styleUuid) {
@@ -46,6 +46,13 @@ watch(() => info.value, (info) => {
       <el-form-item :label="props.alias + '样式'">
         <el-select v-model="form.styleUuid">
           <el-option v-for="item in styleList" :key="item.uuid" :label="item.text" :value="item.uuid" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="所属分组">
+        <el-select v-model="form.group_id">
+          <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
+              info.name
+          }}</el-option>
         </el-select>
       </el-form-item>
       <span>
