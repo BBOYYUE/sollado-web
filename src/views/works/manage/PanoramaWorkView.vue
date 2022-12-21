@@ -76,7 +76,7 @@ function showPanoramaWork (id) {
   try {
     let features =
       "height=500, width=800, top=100, left=100, toolbar=no, menubar=no, scrollbars = no, resizable = no, location = no, status = no";
-    window.open("/work/show/panorama-work-show/" + id, "全景作品预览", features);
+    window.open("/work/show/panorama/" + id, "全景作品预览", features);
   } catch (e) {
     console.log(e);
   }

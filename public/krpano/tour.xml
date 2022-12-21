@@ -1,4 +1,4 @@
-﻿<krpano version="1.20.9" title="Virtual Tour">
+<krpano version="1.20.9" title="Virtual Tour">
   <!-- <krpano version="1.20.9" title="Virtual Tour" debugmode="true" debugkeys="true" debugjsactions="true" debugjsplugins="true"> -->
   <layer name="copyright" url="%SWFPATH%/plugins/textfield.swf" html="阿尔法视觉科技提供技术支持" align="lefttop" x="-12" y="-3" width="160" height="16" keep="true" visible="true" backgroundalpha="0" backgroundcolor="#000" css="text-align:left; color:#fff; font-family:SimHei; font-size:12px;-webkit-transform:scale(.8);" />
   <include url="skin/vtourskin.xml" />
@@ -16,7 +16,6 @@
   </action>
   <action name="hotspotOnclick">
 		jscall(calc('let event = new Event("hotspotOnclick");event.hotspot = "' + get(name) + '"; window.dispatchEvent(event);'))
-    
   </action>
   <action name="hotspotOnup">
 		jscall(calc('let event = new Event("hotspotOnup");event.hotspot = "' + get(name) + '"; window.dispatchEvent(event);'))
@@ -44,7 +43,7 @@
   <!-- 地标 -->
   <!-- <style name="spot" url="%SWFPATH%/skin/vtourskin_mapspot.png" scale="0.8" oy="-40" align="lefttop" edge="center" zorder="2" onclick="subtxt(spotid,get(name),4,2);if(spotid != scene[get(xml.scene)].index,
 loadscene(get(scene[get(spotid)].name),null,MERGE,BLEND(1)); );" /> -->
-  <style name="spot" url="%SWFPATH%/skin/vtourskin_mapspot.png" scale="0.5" oy="-30" align="lefttop" edge="center" zorder="2" />
+  <!-- <style name="spot" url="%SWFPATH%/skin/vtourskin_mapspot.png" scale="0.5" oy="-30" align="lefttop" edge="center" zorder="2" /> -->
 
   <include name="xmlPath" url="%$xmlPath%" />
 </krpano>

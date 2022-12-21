@@ -12,9 +12,9 @@ const group = computed(() => editorStore[props.dataOption.activeDataGroupType])
 </script>
 <template>
   <div v-if="group">
-    <box size="md">
+    <box size="xs">
       <div class="flex flex-col ">
-        <div class="text-2xl font-bold w-48">{{ group.name }}</div>
+        <div class="text-2xl font-bold w-48">{{ group?.name }}</div>
         <div class="flex flex-row">
           <el-link type="primary" @click="$emit('editGroup', group)" class="mx-1">编辑</el-link>
           <el-link type="danger" @click="$emit('delGroup', group.hash_id)" class="mx-1">移除</el-link>

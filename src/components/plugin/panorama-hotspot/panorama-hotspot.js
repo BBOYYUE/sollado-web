@@ -34,6 +34,7 @@ export default {
     editorStore.addHotspot(data)
   },
   update: (newData, oldData) => {
+    newData.text = newData.name
     showHotspot(newData, 'hotspot')
     editorStore.updateHotspot(newData, oldData)
   },

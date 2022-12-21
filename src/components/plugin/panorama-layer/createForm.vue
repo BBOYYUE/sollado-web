@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 <template>
   <div>
-    <box size="md">
+    <box size="xs">
       <el-form-item :label="props.alias + '名称'">
         <el-input v-model="form.name" />
       </el-form-item>

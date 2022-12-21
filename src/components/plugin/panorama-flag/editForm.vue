@@ -14,8 +14,8 @@ const editorStore = useEditorStore();
 const info = computed(() => editorStore[props.dataOption.activeDataType])
 const groups = computed(() => editorStore[props.dataOption.dataGroupType])
 
-function update() {
-  if (form.value.name) {
+function update () {
+  if (form.value.name && form.value.styleUuid) {
     styleList.map((item) => {
       if (item.uuid == form.value.styleUuid) {
         form.value.css = item.style.css
@@ -39,7 +39,7 @@ watch(() => info.value, (info) => {
 </script>
 <template>
   <div>
-    <box size="md">
+    <box size="xs">
       <el-form-item :label="props.alias + '名称'">
         <el-input v-model="form.name" />
       </el-form-item>

@@ -15,11 +15,11 @@ const info = computed(() => editorStore[props.dataOption.activeDataType])
 </script>
 <template>
   <div>
-    <box size="md">
+    <box size="xs">
       <div class="flex flex-col ">
         <div class="flex flex-row justify-between ">
           <div class="flex-grow">
-            <div class="text-xl font-bold w-48">{{ info.name }}</div>
+            <div class="text-xl font-bold w-48">{{ info?.name }}</div>
           </div>
         </div>
         <div class="flex flex-row">

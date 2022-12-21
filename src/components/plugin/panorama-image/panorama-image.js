@@ -1,4 +1,4 @@
-import icon from "@/components/icon/panorama-flag.vue"
+import icon from "@/components/icon/panorama-image.vue"
 import { v4 as uuid } from "uuid";
 import { useEditorStore } from "@/stores/editor";
 import createForm from "./createForm.vue"
@@ -13,29 +13,27 @@ export default {
   dataGroupType: "hotspotGroup",
   activeDataType: "activeHotspot",
   activeDataGroupType: "activeHotspotGroup",
-  alias: "全景标牌",
-  name: "panorama-flag",
+  alias: "全景热点图片",
+  name: "panorama-image",
   domElementId: "panorama",
   store: (formData) => {
     let krpano = document.getElementById('krpanoSWFObject')
     let data = {
       hash_id: uuid().split("-")[0],
       name: formData.name,
-      styleUuid: formData.styleUuid,
-      css: formData.css,
-      mobilecss: formData.mobilecss,
-      plugin: "panorama-flag",
+      url: formData.url,
+      scale: formData.scale,
+      plugin: "panorama-image",
       text: formData.name,
       ath: krpano.get("view.hlookat"),
       atv: krpano.get("view.vlookat"),
       group_id: formData.group_id
     }
-    showHotspot(data, 'flag')
+    showHotspot(data, 'image')
     editorStore.addHotspot(data)
   },
   update: (newData, oldData) => {
-    newData.text = newData.name
-    showHotspot(newData, 'flag')
+    showHotspot(newData, 'image')
     editorStore.updateHotspot(newData, oldData)
   },
   delGroup: (hash_id) => {
@@ -48,7 +46,7 @@ export default {
     let data = {
       hash_id: uuid().split("-")[0],
       name: formData.name,
-      plugin: "panorama-flag"
+      plugin: "panorama-image"
     }
     editorStore.addHotspotGroup(data)
   },

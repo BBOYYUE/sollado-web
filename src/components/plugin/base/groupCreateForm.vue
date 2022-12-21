@@ -15,7 +15,7 @@ const form = ref({})
 </script>
 <template>
   <div>
-    <box size="md">
+    <box size="xs">
       <el-form-item label="分组名称">
         <el-input v-model="form.name" />
       </el-form-item>

@@ -50,7 +50,7 @@ function setView () {
 </script>
 <template>
   <div>
-    <box size="md">
+    <box size="xs">
       <el-form-item label="视角名称:">
         <el-input v-model="form.name"></el-input>
       </el-form-item>

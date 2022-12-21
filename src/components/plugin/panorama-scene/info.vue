@@ -26,7 +26,7 @@ const thumbPath = computed(() => {
     return ""
   }
 });
-function viewChange(v) {
+function viewChange (v) {
   emit('update', form.value, { ...info.value });
 }
 const form = ref({})
@@ -46,7 +46,7 @@ watch(() => info.value, (info) => {
 )
 
 
-function getUrl(url) {
+function getUrl (url) {
   let arr = url.split("/");
   return api.assetUrl + arr[4] + "/" + arr[5];
 }
@@ -59,7 +59,7 @@ watch(() => panoramaName, function (panoramaName) {
 </script>
 <template>
   <div class="flex flex-col">
-    <box size="md">
+    <box size="xs">
       <div class="flex flex-col ">
         <div class="flex flex-row justify-between ">
           <div class="flex-grow">
@@ -79,7 +79,7 @@ watch(() => panoramaName, function (panoramaName) {
       </div>
       <!-- <scene-card :info="info"></scene-card> -->
     </box>
-    <box size="md">
+    <box size="xs">
       当前场景默认视角:
       <el-select v-model="info.defalutView" @change="viewChange">
         <el-option v-for="view in info.views" :key="view" :label="editorStore.view[view].name" :value="view" />

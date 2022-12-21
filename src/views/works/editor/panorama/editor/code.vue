@@ -38,7 +38,7 @@ watch(() => editorStore, (editorStore) => {
 })
 </script>
 <template>
-  <div style="width: 900px; height: 700px;">
+  <div style="width: 700px; height: 700px;" class="absolute left-10 top-24">
     <box size="xs">
       <vue-codemirror v-model="editString" @change="editChange" style="height: 700px"></vue-codemirror>
     </box>

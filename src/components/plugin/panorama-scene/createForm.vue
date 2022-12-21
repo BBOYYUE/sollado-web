@@ -84,14 +84,14 @@ const getData = function (form) {
   })
   return data;
 }
-function store() {
+function store () {
   emit('store', getData(formPanoramaList.value))
 }
 
 </script>
 <template>
   <div>
-    <box class="md">
+    <box size="xs">
       <div class="flex flex-row justify-between" style="height: 300px">
         <el-tree :props="panoramaTreeProps" :load="loadPanorama" lazy ref="treeRef" class="flex flex-grow"
           @node-click="panoramaTreeClick" />

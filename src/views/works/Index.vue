@@ -16,7 +16,9 @@ function goTo (url) {
 watch(
   () => authStore.isAuth,
   (isAuth) => {
-    if (!isAuth) {
+    if (route.meta.isAuth == false) {
+      return;
+    } else if (!isAuth) {
       router.push("/login");
     }
   },

@@ -74,7 +74,10 @@ const router = createRouter({
               component: () => import("@/views/material-library/show/threeDimensionalShowView.vue"),
               props: true,
             },
-          ]
+          ],
+          meta: {
+            isAuth: false
+          }
         },
       ]
     },
@@ -139,12 +142,28 @@ const router = createRouter({
               ]
             },
 
+            // {
+            //   path: "panorama-work-edit/:id?",
+            //   name: "panoramaWorkEdit",
+            //   component: () => import("@/views/works/editor/PanoramaWorkEditView.vue"),
+            //   props: true,
+            // },
+          ]
+        },
+        {
+          path: 'show',
+          name: 'workShow',
+          component: () => import("@/views/works/show/Index.vue"),
+          children: [
             {
-              path: "panorama-work-edit/:id?",
-              name: "panoramaWorkEdit",
-              component: () => import("@/views/works/editor/PanoramaWorkEditView.vue"),
+              path: "panorama/:workid",
+              name: 'workShowPanorama',
+              component: () => import('@/views/works/show/PanoramaWorkShowView.vue'),
               props: true,
-            },
+              meta: {
+                isAuth: false
+              }
+            }
           ]
         }
       ],

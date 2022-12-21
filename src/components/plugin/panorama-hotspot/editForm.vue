@@ -26,8 +26,8 @@ watch(() => info.value, (info) => {
 })
 
 
-function update() {
-  if (form.value.name) {
+function update () {
+  if (form.value.name && form.value.url) {
     emit('update', form.value, { ...info.value });
   }
 }
@@ -35,7 +35,7 @@ function update() {
 </script>
 <template>
   <div>
-    <box size="md">
+    <box size="xs">
       <el-form-item :label="props.alias + '名称'">
         <el-input v-model="form.name" />
       </el-form-item>

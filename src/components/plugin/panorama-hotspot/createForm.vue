@@ -13,8 +13,8 @@ const props = defineProps({
 const groups = computed(() => editorStore[props.dataOption.dataGroupType])
 const form = ref({})
 const editorStore = useEditorStore();
-function store() {
-  if (form.value.name) {
+function store () {
+  if (form.value.name && form.value.url) {
     emit('store', form.value)
     form.value = {}
   }
@@ -23,7 +23,7 @@ function store() {
 </script>
 <template>
   <div>
-    <box size="md">
+    <box size="xs">
       <el-form-item :label="props.alias + '名称:'">
         <el-input v-model="form.name" />
       </el-form-item>

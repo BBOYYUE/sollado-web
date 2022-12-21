@@ -10,7 +10,6 @@ const pluginList = () => {
   let list = []
   let pluginBaseImpl = new pluginBase()
   for (let index in pluginCommon) {
-    console.log(pluginCommon[index])
     list.push(pluginBaseImpl.builder(pluginCommon[index]));
   }
   return list

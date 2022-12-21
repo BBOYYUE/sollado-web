@@ -14,7 +14,7 @@ const group = computed(() => editorStore[props.dataOption.activeDataGroupType])
 </script>
 <template>
   <div>
-    <box size="md">
+    <box size="xs">
       <div class="flex flex-col ">
         <div class="flex flex-row justify-between ">
           <div class="flex-grow">

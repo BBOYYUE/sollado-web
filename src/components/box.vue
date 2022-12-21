@@ -4,6 +4,7 @@ const props = defineProps({
   size: String,
   marign: String,
   padding: String,
+  bgColor: String
 })
 const sizeClass = computed(() => {
 
@@ -31,13 +32,17 @@ const sizeClass = computed(() => {
       c = props.padding != 'none' ? c + ' p-6 ' : c + ''
       break
   }
+  if (props.bgColor) {
+    c = c + ' ' + props.bgColor + ' '
+  }
+  c = props?.bgColor ? c + ' ' + props.bgColor + ' ' : c + ' bg-white '
   return c
 
 })
 </script>
 <template>
   <div class="w-full">
-    <div class="border border-solid border-gray-100 shadow-md rounded-md bg-white" :class="sizeClass">
+    <div class="border border-solid border-gray-100 shadow-md rounded-md" :class="sizeClass">
       <slot></slot>
     </div>
   </div>

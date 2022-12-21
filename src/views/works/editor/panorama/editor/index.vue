@@ -9,6 +9,10 @@ import { useRoute, useRouter } from "vue-router";
 import pluginCommon from "@/common/plugin.js"
 import pluginBase from "@/components/plugin/base/index.js"
 import plugin from "./plugin.vue"
+import infoIcon from "@/components/icon/panorama-info.vue"
+import dashboardIcon from "@/components/icon/panorama-dashboard.vue"
+import codeIcon from "@/components/icon/panorama-editor.vue"
+import codeEditor from "./code.vue"
 
 
 const pluginList = () => {
@@ -24,6 +28,7 @@ const activeScene = computed(() => editorStore.activeScene)
 const router = useRouter();
 const activePlugin = ref({});
 const showPlugin = ref(false);
+const showCode = ref(false);
 const panoId = uuid().split("-")[0]
 const props = defineProps({
   sceneid: String,
@@ -37,6 +42,19 @@ const pluginClick = function (plugin) {
 watch(() => activePlugin, (val) => {
   console.log(val)
 })
+
+function toggleDashboard () {
+  editorStore.toggleDashboard()
+}
+function toggleCode () {
+  showCode.value = !showCode.value
+}
+function toggleInfo () {
+  editorStore.toggleInfo()
+}
+function saveWork () {
+  editorStore.updateWork()
+}
 
 </script>
 <template>
@@ -55,22 +73,32 @@ watch(() => activePlugin, (val) => {
           <div class="flex flex-row justify-between divide-x divide-gray-200 divide-solid ">
             <!-- 返回按钮 -->
             <div class="flex flex-row justify-center ">
-              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 ">
+              <!-- <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 ">
                 <el-icon class="w-8 h-8" @click="router.go(-1)">
                   <Back />
                 </el-icon>
+              </div> -->
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 " @click="toggleDashboard">
+                <dashboard-icon class="w-8 h-8"></dashboard-icon>
+
+              </div>
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 " @click="toggleInfo">
+                <info-icon class="w-8 h-8"></info-icon>
+              </div>
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 " @click="toggleCode">
+                <code-icon class="w-8 h-8"></code-icon>
               </div>
             </div>
             <!-- 插件列表 -->
             <div class="flex flex-row justify-center flex-grow">
               <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4"
-                v-for="plugin in pluginList()" :key="plugin">
-                <component :is="plugin.component.icon" class="w-8 h-8" @click="pluginClick(plugin)" />
+                v-for="plugin in pluginList()" :key="plugin" @click="pluginClick(plugin)">
+                <component :is="plugin.component.icon" class="w-8 h-8" />
               </div>
             </div>
             <!-- 保存按钮 -->
             <div class="flex flex-row justify-center ">
-              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4">
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4" @click="saveWork">
                 <el-icon class="w-8 h-8">
                   <Check />
                 </el-icon>
@@ -82,6 +110,9 @@ watch(() => activePlugin, (val) => {
     </div>
     <div v-if="showPlugin">
       <plugin :activePlugin="activePlugin"></plugin>
+    </div>
+    <div v-if="showCode">
+      <code-editor></code-editor>
     </div>
   </div>
 </template>
