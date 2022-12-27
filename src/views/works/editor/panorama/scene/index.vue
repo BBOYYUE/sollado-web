@@ -3,7 +3,7 @@ import box from "@/components/box.vue"
 import SceneCard from "./sceneCard.vue";
 import SceneSelectDialog from "./SceneSelectDialog.vue";
 import SceneGroupCreateDialog from "./SceneGroupCreateDialog.vue";
-import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { computed, watch, ref, onMounted } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import { v4 as uuid } from "uuid";
 import { useRoute, useRouter } from "vue-router";

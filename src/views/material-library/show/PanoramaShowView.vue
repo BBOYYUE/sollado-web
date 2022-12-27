@@ -1,7 +1,7 @@
 <script setup>
 import http from "@/util/http";
 import * as api from "@/util/api";
-import { onActivated, onMounted, watch, ref, defineProps } from "vue";
+import { onActivated, onMounted, watch, ref } from "vue";
 
 const panorama = ref({});
 const krpano = ref({});

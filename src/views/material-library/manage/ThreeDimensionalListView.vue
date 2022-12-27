@@ -2,7 +2,7 @@
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
 import { EchoImpl } from "@/util/echo";
-import { onActivated, onMounted, watch, ref, defineProps } from "vue";
+import { onActivated, onMounted, watch, ref } from "vue";
 import { useThreeDimensionalStore } from "@/stores/threeDimensional";
 import { Timer, ArrowRight } from "@element-plus/icons-vue";
 import * as api from "@/util/api";
@@ -420,13 +420,13 @@ watch(
           @node-click="filesystemTreeClick" />
         <div class="shadow-inner p-2 m-2 overflow-y-auto" style="width: 300px">
           <div v-if="
-            threeDimensionalFileList[activeFilesystemFolder.hashId] &&
-            threeDimensionalFileList[activeFilesystemFolder.hashId].length > 0
-          " class="w-full">
+  threeDimensionalFileList[activeFilesystemFolder.hashId] &&
+  threeDimensionalFileList[activeFilesystemFolder.hashId].length > 0
+" class="w-full">
             <el-checkbox-group v-model="formFileList" class="flex flex-col">
               <el-checkbox :label="file.hashId" size="large" v-for="file in threeDimensionalFileList[
-                activeFilesystemFolder.hashId
-              ]" :key="file">
+  activeFilesystemFolder.hashId
+]" :key="file">
                 {{ file.name }}
               </el-checkbox>
             </el-checkbox-group>

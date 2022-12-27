@@ -85,10 +85,6 @@ function loadFilesystem (node, resolve) {
       });
   }
 }
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
 
 </script>
 <template>
@@ -123,7 +119,7 @@ function getUrl (url) {
           " class="w-full">
             <el-radio-group v-model="form.url">
               <el-radio v-for="file in panoramaFileList[activeFilesystemFolder.hashId]" :key="file"
-                :label="getUrl(panoramaFileInfo[file.hashId].path)">{{ file.name }}
+                :label="api.getUrl(panoramaFileInfo[file.hashId].path)">{{ file.name }}
               </el-radio>
             </el-radio-group>
           </div>

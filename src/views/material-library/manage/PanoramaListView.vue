@@ -2,7 +2,7 @@
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
 import { EchoImpl } from "@/util/echo";
-import { onActivated, onMounted, watch, ref, defineProps } from "vue";
+import { onActivated, onMounted, watch, ref } from "vue";
 import { usePanoramaStore } from "@/stores/panorama";
 import { Timer, ArrowRight } from "@element-plus/icons-vue";
 import * as api from "@/util/api";
@@ -66,9 +66,6 @@ function pageClick (page) {
 }
 
 function listenTest () {
-  EchoImpl.private("test").listen("TestPrivateChannel", (e) => {
-    console.log(e);
-  });
   EchoImpl.private("panorama-task." + authStore.user.id)
     .listen("PanoramaTaskWait", (res) => {
       taskList.value.push({
@@ -408,9 +405,9 @@ watch(
           @node-click="filesystemTreeClick" />
         <div class="shadow-inner p-2 m-2 overflow-y-auto" style="width: 300px">
           <div v-if="
-            panoramaFileList[activeFilesystemFolder.hashId] &&
-            panoramaFileList[activeFilesystemFolder.hashId].length > 0
-          " class="w-full">
+  panoramaFileList[activeFilesystemFolder.hashId] &&
+  panoramaFileList[activeFilesystemFolder.hashId].length > 0
+" class="w-full">
             <el-checkbox-group v-model="formFileList" class="flex flex-col">
               <el-checkbox :label="file.hashId" size="large"
                 v-for="file in panoramaFileList[activeFilesystemFolder.hashId]" :key="file">

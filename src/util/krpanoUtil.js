@@ -2,8 +2,6 @@ export function showHotspot (data, type) {
   let krpano = document.getElementById('krpanoSWFObject')
   let option = Object.assign({}, template[type], data)
   option.name = type + '_' + data.hash_id
-  console.log(option)
-
   let flag = krpano.get("hotspot[" + option.name + "]")
   if (!flag) {
     krpano.call("addhotspot(" + option.name + ")")
@@ -26,9 +24,14 @@ export function showView (view) {
   krpano.set("view.vlookat", view.vlookat);
 }
 
+export function showPhotoGroupButton (data) {
+  let krpano = document.getElementById('krpanoSWFObject')
+  krpano.call("create_photo_album(" + 'photo_' + data.hash_id + "," + data.name + "," + data.thumburl + "," + 75 + "," + 75 + ", leftBottom, " + data.x + ", " + data.y + "," + data.active + ")");
+}
+
 export function showPhotoButton (data) {
   let krpano = document.getElementById('krpanoSWFObject')
-  krpano.call("create_photo_album(" + data.hash_id + "," + data.name + "," + data.thumburl + "," + 156 + "," + 156 + ',leftBottom,' + data.x + "," + data.y + ")");
+  krpano.call("create_photo(" + 'photo_' + data.hash_id + "," + data.name + "," + data.thumburl + "," + 75 + "," + 75 + ", leftBottom, " + data.x + ", " + data.y + "," + data.active + ")");
 }
 
 const template = {

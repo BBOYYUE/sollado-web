@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps, onActivated } from "vue";
+import { computed, watch, ref, onMounted, onActivated } from "vue";
 import * as api from "@/util/api";
 import { useEditorStore } from "@/stores/editor";
 import * as krpanoUtil from "@/util/krpanoUtil.js"
@@ -9,14 +9,10 @@ const props = defineProps({
   info: Object
 });
 
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
 
 
 const getXmlPath = (info) => {
-  return info && info.xml ? getUrl(info.xml[0].path) : ""
+  return info && info.xml ? api.getUrl(info.xml[0].path) : ""
 }
 onMounted(() => {
   if (props.info && props.info.xml && props.info.hash_id) {

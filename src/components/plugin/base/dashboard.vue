@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps, defineEmits } from "vue";
+import { computed, watch, ref, onMounted, defineEmits } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import box from "@/components/box.vue"
 import plural from 'plural';
@@ -131,10 +131,10 @@ const itemClick = function (item) {
             <box size="sm" marign="none" class="mt-1" :bgColor="hash_id == activeData.hash_id ? 'bg-blue-200' : ''"
               v-for="(info, hash_id) in itemData" :key="hash_id"
               v-show="!info.scene_id || info.scene_id == activeScene.hash_id" @click="itemClick(info)">{{ info.name
-              }}</box>
+}}</box>
           </div>
           <el-button type="primary" class="mt-4" size="small" @click="$emit('create')">添加{{ props.alias
-          }}</el-button>
+}}</el-button>
         </el-tab-pane>
         <el-tab-pane :label="groupAlias">
           <el-tabs tab-position="right" @tab-click="groupTabClick">
@@ -146,7 +146,7 @@ const itemClick = function (item) {
             </el-tab-pane>
           </el-tabs>
           <el-button type="primary" class="mt-4" size="small" @click="$emit('createGroup')">添加{{ groupAlias
-          }}</el-button>
+            }}</el-button>
         </el-tab-pane>
       </el-tabs>
     </box>

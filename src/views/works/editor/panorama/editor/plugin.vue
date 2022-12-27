@@ -12,20 +12,26 @@ onMounted(() => {
 
 </script>
 <template>
-  <div class="absolute right-10 top-24" id="plugin-box">
+  <!-- <div class="absolute right-10 top-24" id="plugin-box"> -->
+  <div id="plugin-box" style="width:36rem;">
     <!-- <div class="flex flex-row-reverse justify-center"> -->
     <div class="flex flex-col justify-start h-full">
-      <div class="bg-white shadow-inner mt-1 h-1/3 overflow-y-auto rounded-md"
+      <el-scrollbar class="bg-white shadow-inner mt-1 h-1/3 overflow-y-auto rounded-md"
         v-show="editorStore.showDashboardVisible">
+        <!-- <div class="bg-white shadow-inner mt-1 h-1/3 overflow-y-auto rounded-md"
+          v-show="editorStore.showDashboardVisible"> -->
         <div v-show="editorStore.showDashboardVisible">
           <component :is="activePlugin.component.dashboard" @groupClick="activePlugin.groupClick"
             @itemClick="activePlugin.click" @createGroup="activePlugin.createGroup" @create="activePlugin.create"
             :dataOption="activePlugin.dataOption" :alias="activePlugin.alias" :name="activePlugin.name">
           </component>
         </div>
-      </div>
-      <div class="bg-white shadow-inner mt-1 h-2/3 overflow-y-auto rounded-md"
+        <!-- </div> -->
+      </el-scrollbar>
+      <el-scrollbar class="bg-white shadow-inner mt-1 h-2/3 overflow-y-auto rounded-md"
         v-show="editorStore.showGroupUpdateFormVisible || editorStore.showGroupCreateFormVisible || editorStore.showUpdateFormVisible || editorStore.showCreateFormVisible">
+        <!-- <div class="bg-white shadow-inner mt-1 h-2/3 overflow-y-auto rounded-md"
+          v-show="editorStore.showGroupUpdateFormVisible || editorStore.showGroupCreateFormVisible || editorStore.showUpdateFormVisible || editorStore.showCreateFormVisible"> -->
         <div v-show="editorStore.showGroupUpdateFormVisible">
           <component :is="activePlugin.component.groupEditForm" @update="activePlugin.updateGroup"
             :defaultData="activePlugin.activeGroupData" :field="activePlugin.fieldOption.groupUpdateField"
@@ -50,7 +56,10 @@ onMounted(() => {
             :alias="activePlugin.alias" :name="activePlugin.name">
           </component>
         </div>
-      </div>
+        <!-- </div> -->
+      </el-scrollbar>
+      <!-- <el-scrollbar class="bg-white shadow-inner mt-1 h-2/3 overflow-y-auto rounded-md"
+        v-show="editorStore.showGroupInfoVisible || editorStore.showInfoVisible"> -->
       <div class="bg-white shadow-inner mt-1 h-2/3 overflow-y-auto rounded-md"
         v-show="editorStore.showGroupInfoVisible || editorStore.showInfoVisible">
         <div v-show="editorStore.showGroupInfoVisible">
@@ -65,6 +74,7 @@ onMounted(() => {
           </component>
         </div>
       </div>
+      <!-- </el-scrollbar> -->
     </div>
   </div>
 </template>

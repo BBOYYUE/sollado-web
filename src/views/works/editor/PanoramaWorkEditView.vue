@@ -1,6 +1,6 @@
 <script setup>
 import BaseEdit from "@/components/base-editor.vue";
-import { onActivated, onMounted, watch, ref, defineProps } from "vue";
+import { onActivated, onMounted, watch, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
 import { Plus, Edit } from "@element-plus/icons-vue";
@@ -167,7 +167,7 @@ watch(
   }
 );
 watch(activePanorama, (activePanorama) => {
-  showPanorama(getUrl(activePanorama.xml[0].path));
+  showPanorama(api.getUrl(activePanorama.xml[0].path));
 });
 
 
@@ -748,14 +748,7 @@ function getAngle () {
 
 }
 
-/**
- * util 相关, 获取资源的 url
- * @param {*} url
- */
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
+
 </script>
 <template>
   <div>
@@ -851,9 +844,9 @@ function getUrl (url) {
             </div>
             <div v-if="rightFormStatus == 'list'" class="m-2 pt-4">
               <div v-for="flagGroup in activePanorama.flagGroups" :key="flagGroup" v-show="
-                activePanorama.flagGroups &&
-                activePanorama.flagGroups.length > 0
-              ">
+  activePanorama.flagGroups &&
+  activePanorama.flagGroups.length > 0
+">
                 <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between"
                   @click="activeFlagGroup = workOption.flagGroup[flagGroup]">
                   <div class=" flex flex-col justify-center">
@@ -868,9 +861,9 @@ function getUrl (url) {
                 </div>
               </div>
               <div v-show="
-                !activePanorama.flagGroups ||
-                activePanorama.flagGroups.length == 0
-              ">
+  !activePanorama.flagGroups ||
+  activePanorama.flagGroups.length == 0
+">
                 <el-empty />
               </div>
             </div>
@@ -913,8 +906,8 @@ function getUrl (url) {
                 </div>
               </div>
               <div v-show="
-                !activePanorama.flags || activePanorama.flags.length == 0
-              ">
+  !activePanorama.flags || activePanorama.flags.length == 0
+">
                 <el-empty />
               </div>
             </div>
@@ -970,9 +963,9 @@ function getUrl (url) {
             </div>
             <div v-if="rightFormStatus == 'list'" class="m-2 pt-4">
               <div v-for="simpleHotspot in activePanorama.simpleHotspots" :key="simpleHotspot" v-show="
-                activePanorama.simpleHotspots &&
-                activePanorama.simpleHotspots.length > 0
-              ">
+  activePanorama.simpleHotspots &&
+  activePanorama.simpleHotspots.length > 0
+">
                 <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between"
                   @click="activeSimpleHotspot = workOption.simpleHotspot[simpleHotspot]">
                   <div class="flex flex-col justify-center">
@@ -989,9 +982,9 @@ function getUrl (url) {
                 </div>
               </div>
               <div v-show="
-                !activePanorama.simpleHotspots ||
-                activePanorama.simpleHotspots.length == 0
-              ">
+  !activePanorama.simpleHotspots ||
+  activePanorama.simpleHotspots.length == 0
+">
                 <el-empty />
               </div>
             </div>
@@ -1033,9 +1026,9 @@ function getUrl (url) {
             </div>
             <div v-if="rightFormStatus == 'list'" class="m-2 pt-4">
               <div v-for="imgHotspot in activePanorama.imgHotspots" :key="imgHotspot" v-show="
-                activePanorama.imgHotspots &&
-                activePanorama.imgHotspots.length > 0
-              ">
+  activePanorama.imgHotspots &&
+  activePanorama.imgHotspots.length > 0
+">
                 <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between">
                   <div class="flex flex-col justify-center">
                     <div>{{ workOption.imgHotspot[imgHotspot].alias }}</div>
@@ -1049,9 +1042,9 @@ function getUrl (url) {
                 </div>
               </div>
               <div v-show="
-                !activePanorama.imgHotspots ||
-                activePanorama.imgHotspots.length == 0
-              ">
+  !activePanorama.imgHotspots ||
+  activePanorama.imgHotspots.length == 0
+">
                 <el-empty />
               </div>
             </div>
@@ -1108,8 +1101,8 @@ function getUrl (url) {
                 </div>
               </div>
               <div v-show="
-                !activePanorama.views || activePanorama.views.length == 0
-              ">
+  !activePanorama.views || activePanorama.views.length == 0
+">
                 <el-empty />
               </div>
             </div>
@@ -1157,8 +1150,8 @@ function getUrl (url) {
             </div>
             <div v-if="rightFormStatus == 'list'" class="m-2 pt-4">
               <div v-for="button in activePanorama.buttons" :key="button" v-show="
-                activePanorama.buttons && activePanorama.buttons.length > 0
-              ">
+  activePanorama.buttons && activePanorama.buttons.length > 0
+">
                 <div class="border border-gray-200 border-solid p-2 shadow rounded flex flex-row justify-between">
                   <div class="flex flex-col justify-center">
                     <div>{{ workOption.button[button].text }}</div>
@@ -1172,8 +1165,8 @@ function getUrl (url) {
                 </div>
               </div>
               <div v-show="
-                !activePanorama.buttons || activePanorama.buttons.length == 0
-              ">
+  !activePanorama.buttons || activePanorama.buttons.length == 0
+">
                 <el-empty />
               </div>
             </div>
@@ -1372,8 +1365,8 @@ function getUrl (url) {
                 </div>
               </div>
               <div v-show="
-                !activePanorama.texts || activePanorama.texts.length == 0
-              ">
+  !activePanorama.texts || activePanorama.texts.length == 0
+">
                 <el-empty />
               </div>
             </div>
@@ -1420,12 +1413,12 @@ function getUrl (url) {
           <el-tab-pane :label="group.name" v-for="(group, uuid) in workOption.panoramaGroup" :key="uuid" :name="uuid">
             <div class="w-full h-full overflow-auto">
               <div v-if="
-                workOption.panoramaGroup[uuid].panoramas &&
-                workOption.panoramaGroup[uuid].panoramas.length > 0
-              " class="flex flex-row">
+  workOption.panoramaGroup[uuid].panoramas &&
+  workOption.panoramaGroup[uuid].panoramas.length > 0
+" class="flex flex-row">
                 <div v-for="panorama in workOption.panoramaGroup[uuid].panoramas" :key="panorama" class="mx-2"
                   @click="setActivePanorama(panoramaInfo[panorama])">
-                  <el-image style="width: 100px; height: 50px" :src="getUrl(panoramaInfo[panorama].thumb[0].path)">
+                  <el-image style="width: 100px; height: 50px" :src="api.getUrl(panoramaInfo[panorama].thumb[0].path)">
                   </el-image>
                 </div>
                 <div style="width: 47px; height: 47px"
@@ -1460,14 +1453,14 @@ function getUrl (url) {
           @node-click="panoramaTreeClick" />
         <div class="shadow-inner p-2 m-2 overflow-y-auto" style="width: 300px">
           <div v-if="
-            activeSelectPanoramaFolder.hashId &&
-            treePanoramaList[activeSelectPanoramaFolder.hashId] &&
-            treePanoramaList[activeSelectPanoramaFolder.hashId].length > 0
-          " class="w-full">
+  activeSelectPanoramaFolder.hashId &&
+  treePanoramaList[activeSelectPanoramaFolder.hashId] &&
+  treePanoramaList[activeSelectPanoramaFolder.hashId].length > 0
+" class="w-full">
             <el-checkbox-group v-model="formPanoramaList" class="flex flex-col">
               <el-checkbox :label="panorama.hashId" size="large" v-for="panorama in treePanoramaList[
-                activeSelectPanoramaFolder.hashId
-              ]" :key="panorama">
+  activeSelectPanoramaFolder.hashId
+]" :key="panorama">
                 {{ panorama.name }}
               </el-checkbox>
             </el-checkbox-group>
@@ -1503,12 +1496,12 @@ function getUrl (url) {
           @node-click="filesystemTreeClick" />
         <div class="shadow-inner p-2 m-2 overflow-y-auto" style="width: 300px">
           <div v-if="
-            panoramaFileList[activeFilesystemFolder.hashId] &&
-            panoramaFileList[activeFilesystemFolder.hashId].length > 0
-          " class="w-full">
+  panoramaFileList[activeFilesystemFolder.hashId] &&
+  panoramaFileList[activeFilesystemFolder.hashId].length > 0
+" class="w-full">
             <el-radio-group v-model="formFilesystem.url">
               <el-radio v-for="file in panoramaFileList[activeFilesystemFolder.hashId]" :key="file"
-                :label="getUrl(panoramaFileInfo[file.hashId].path)">{{ file.name }}
+                :label="api.getUrl(panoramaFileInfo[file.hashId].path)">{{ file.name }}
               </el-radio>
             </el-radio-group>
           </div>

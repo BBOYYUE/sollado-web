@@ -1,7 +1,7 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
-import { onActivated, onMounted, watch, ref, defineProps } from "vue";
+import { onActivated, onMounted, watch, ref } from "vue";
 import { usePanoramaWorkStore } from "@/stores/panoramaWork";
 import { Timer, ArrowRight } from "@element-plus/icons-vue";
 const authStore = useAuthStore();
@@ -83,7 +83,7 @@ function showPanoramaWork (id) {
 }
 function copyPanoramaWorkLink (id) {
   let url =
-    window.location.protocol + "//" + window.location.host + "/panorama/" + id;
+    window.location.protocol + "//" + window.location.host + "/work/show/panorama/" + id;
   copy(url);
 }
 function copy (str) {

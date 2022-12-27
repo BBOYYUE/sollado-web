@@ -1,7 +1,7 @@
 <script setup>
 import http from "@/util/http";
 import * as api from "@/util/api";
-import { onActivated, onMounted, watch, ref, defineProps } from "vue";
+import { onActivated, onMounted, watch, ref, computed } from "vue";
 import * as krpanoUtil from "@/util/krpanoUtil.js"
 
 const work = ref({});
@@ -21,27 +21,32 @@ const props = defineProps({
   workid: String,
 });
 
-watch(() => activeScene.value, (scene) => {
-  showPanorama(getXmlPath(scene))
-  showButton(scene)
+
+watch(() => activeScene.value, (activeScene) => {
+  showPanorama(getXmlPath(activeScene))
+  if (hasGroup.value) {
+    showButtonGroup(sceneGroup.value)
+    let data = {}
+    for (let index in activeSceneGroup.value.scenes) {
+      let hashId = activeSceneGroup.value.scenes[index]
+      data[hashId] = scene.value[hashId]
+    }
+    showButton(data)
+  }
   setTimeout(() => {
-    showHotspot(scene)
+    showHotspot(activeScene)
   }, 1000)
   setTimeout(() => {
-    showView(scene)
-  }, 3000)
+    showView(activeScene)
+  }, 1000)
 })
 const getXmlPath = (info) => {
-  return info && info.xml ? getUrl(info.xml[0].path) : ""
+  return info && info.xml ? api.getUrl(info.xml[0].path) : ""
 }
 const getThumbPath = (info) => {
-  return info && info.tile ? getUrl(info.tile[0].path) : ""
+  return info && info.tile ? api.getUrl(info.tile[0].path) : api.getUrl(info.thumb[0].path)
 }
 
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
 function showPanorama (xmlPath) {
   document.getElementById('panorama').innerHTML = "";
   embedpano({
@@ -79,14 +84,34 @@ function showView (info) {
   }
 }
 function showButton (info) {
-  if (hasGroup.value) {
-    krpanoUtil.showPhotoButton({
-      hash_id: info.hash_id,
-      name: info.name,
-      thumburl: getThumbPath(info),
-      x: 10,
-      y: 10
-    })
+  let i = 0
+  for (let index in info) {
+    let data = {
+      hash_id: info[index].hash_id,
+      name: info[index].name,
+      thumburl: getThumbPath(info[index]),
+      x: 10 + i * 70,
+      y: hasGroup.value ? 160 : 85,
+      active: info[index].hash_id == activeScene.value.hash_id
+    }
+    i++;
+    krpanoUtil.showPhotoButton(data)
+  }
+}
+
+function showButtonGroup (info) {
+  let i = 0
+  for (let index in info) {
+    let data = {
+      hash_id: info[index].hash_id,
+      name: info[index].name,
+      thumburl: getThumbPath(scene.value[info[index].scenes[0]]),
+      x: 10 + i * 70,
+      y: 85,
+      active: info[index].hash_id == activeSceneGroup.value.hash_id
+    }
+    i++;
+    krpanoUtil.showPhotoGroupButton(data)
   }
 }
 
@@ -111,20 +136,45 @@ onMounted(() => {
       }
 
     });
+
+  window.addEventListener('sceneGroupOnclick', sceneGroupOnclick)
+  window.addEventListener('sceneOnclick', sceneOnclick)
+  window.addEventListener('hotspotOnclick', hotspotOnclick)
+
 });
+function sceneGroupOnclick (event) {
+  let hash_id = event.sceneGroup.split('_')[1];
+  for (let index in sceneGroup.value) {
+    if (index.toLowerCase() == hash_id) {
+      activeSceneGroup.value = sceneGroup.value[index]
+    }
+  }
+  activeScene.value = scene.value[activeSceneGroup.value.scenes[0]]
+}
+function sceneOnclick (event) {
+  let hash_id = event.scene.split('_')[1];
+  for (let index in scene.value) {
+    if (index.toLowerCase() == hash_id) {
+      activeScene.value = scene.value[index]
+    }
+  }
+}
+function hotspotOnclick (event) {
+  console.log(event.hotspot)
+}
+
 function krpanoReady (krpano) {
-  console.log(krpano)
 }
 function init () {
-  console.log(sceneGroup.value, scene.value)
   let sceneGroupHashIdList = Object.keys(sceneGroup.value);
   let sceneHashIdList = Object.keys(scene.value)
   if (sceneGroupHashIdList.length > 0) {
     hasGroup.value = true
     activeSceneGroup.value = sceneGroup.value[sceneGroupHashIdList[0]];
-    activeScene.value = scene.value[activeSceneGroup.scenes[0]]
+    activeScene.value = scene.value[activeSceneGroup.value.scenes[0]]
   } else {
-    activeScene.value = scene.value[sceneHashIdList[1]]
+    hasGroup.value = false
+    activeScene.value = scene.value[sceneHashIdList[0]]
   }
 }
 

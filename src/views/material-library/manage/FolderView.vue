@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, defineProps } from "vue";
+import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useFilesystemStore } from "@/stores/filesystem";
@@ -226,9 +226,9 @@ watch(
     <el-dialog v-model="dialogFileVisible" title="上传文件" width="500px">
       <div class="w-full h-full overflow-auto" style="height: 300px">
         <el-upload drag :action="api.host + api.filesystem" multiple :data="{
-          parent_id: props.id,
-          type: 0,
-        }" :headers="{
+  parent_id: props.id,
+  type: 0,
+}" :headers="{
   Authorization: authStore.tokenType + ' ' + authStore.accessToken,
 }" :on-success="onFileUploadSuccess" class="mx-4">
           <el-icon class="el-icon--upload" style="height: 150px">

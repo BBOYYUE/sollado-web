@@ -1,7 +1,7 @@
 <script setup>
 import box from "@/components/box.vue"
 import panoramaScene from "@/components/panoramaScene.vue"
-import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { computed, watch, ref, onMounted } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import { v4 as uuid } from "uuid";
 import * as api from "@/util/api";
@@ -61,9 +61,14 @@ function saveWork () {
   <div class="static">
 
     <div class="w-full h-full flex flex-col">
-      <div class="w-full flex-grow" id="panoramaBox">
-        <div class="border border-solid border-gray-100 shadow-md rounded-md mx-6 mt-4 p-2">
-          <panorama-scene :info="activeScene"></panorama-scene>
+      <div class="flex flex-row flex-grow ">
+        <div class="w-full flex-grow " id="panoramaBox">
+          <div class="border border-solid border-gray-100 shadow-md rounded-md mt-1 ml-6  mr-2 p-2 flex-grow">
+            <panorama-scene :info="activeScene"></panorama-scene>
+          </div>
+        </div>
+        <div v-if="showPlugin" style="width:40rem;">
+          <plugin :activePlugin="activePlugin"></plugin>
         </div>
       </div>
 
@@ -78,27 +83,29 @@ function saveWork () {
                   <Back />
                 </el-icon>
               </div> -->
-              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 " @click="toggleDashboard">
+              <!-- <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 " @click="toggleDashboard">
                 <dashboard-icon class="w-8 h-8"></dashboard-icon>
 
               </div>
               <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 " @click="toggleInfo">
                 <info-icon class="w-8 h-8"></info-icon>
-              </div>
-              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 " @click="toggleCode">
+              </div> -->
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 cursor-pointer"
+                @click="toggleCode">
                 <code-icon class="w-8 h-8"></code-icon>
               </div>
             </div>
             <!-- 插件列表 -->
             <div class="flex flex-row justify-center flex-grow">
-              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4"
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 cursor-pointer"
                 v-for="plugin in pluginList()" :key="plugin" @click="pluginClick(plugin)">
                 <component :is="plugin.component.icon" class="w-8 h-8" />
               </div>
             </div>
             <!-- 保存按钮 -->
             <div class="flex flex-row justify-center ">
-              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4" @click="saveWork">
+              <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 cursor-pointer"
+                @click="saveWork">
                 <el-icon class="w-8 h-8">
                   <Check />
                 </el-icon>
@@ -108,9 +115,7 @@ function saveWork () {
         </div>
       </div>
     </div>
-    <div v-if="showPlugin">
-      <plugin :activePlugin="activePlugin"></plugin>
-    </div>
+
     <div v-if="showCode">
       <code-editor></code-editor>
     </div>

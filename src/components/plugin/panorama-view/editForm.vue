@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits, computed, defineProps, watch } from "vue"
+import { ref, defineEmits, computed, watch } from "vue"
 import box from "@/components/box.vue"
 import { useEditorStore } from "@/stores/editor";
 
@@ -72,8 +72,8 @@ function setView () {
       <el-form-item label="所属分组">
         <el-select v-model="form.group_id">
           <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
-              info.name
-          }}</el-option>
+    info.name
+}}</el-option>
         </el-select>
       </el-form-item>
       <span>

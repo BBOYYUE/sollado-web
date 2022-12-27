@@ -4,9 +4,7 @@
 //   host = "http://laravel.test/";
 // } else {
 // }
-// const host = "https://filesystem.api.sollado.com/";
-// const host = "http://laravel.test/";
-const host = "https://api.sollado.com/";
+const host = "http://laravel.test/";
 // const host = "https://api.sollado.com/";
 const filesystem = "api/v1/filesystem/";
 const auth = "api/v1/authorizations/";
@@ -14,8 +12,16 @@ const panorama = "api/v1/panorama/";
 const threeDimensional = "api/v1/three-dimensional/";
 const panoramaWork = "api/v1/panorama-work/";
 const broadcaster = "api/v1/broadcasting/auth";
-// const assetUrl = "http://127.0.0.1:9000/sollado-api/";
-const assetUrl = "https://oss.sollado.com/";
+const assetUrl = "http://127.0.0.1:9000/sollado-api/";
+// const assetUrl = "https://oss.sollado.com/";
+const getUrl = function (url) {
+  let arr = url.split("/");
+  if (assetUrl == "https://oss.sollado.com/") {
+    return assetUrl + arr[3] + "/" + arr[4];
+  } else {
+    return assetUrl + arr[4] + "/" + arr[5];
+  }
+}
 export {
   host,
   filesystem,
@@ -25,4 +31,5 @@ export {
   assetUrl,
   threeDimensional,
   panoramaWork,
+  getUrl
 };

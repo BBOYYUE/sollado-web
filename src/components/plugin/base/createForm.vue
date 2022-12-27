@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps, defineEmits } from "vue";
+import { computed, watch, ref, onMounted, defineEmits } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import http from "@/util/http";
 import * as api from "@/util/api";

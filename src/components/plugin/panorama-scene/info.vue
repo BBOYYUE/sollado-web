@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { computed, watch, ref, onMounted } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import box from "@/components/box.vue"
 import * as api from "@/util/api";
@@ -21,7 +21,7 @@ const panoramaName = computed(() => {
 });
 const thumbPath = computed(() => {
   if (info.value && info.value.thumb && info.value.thumb[0]) {
-    return getUrl(info.value.thumb[0].path)
+    return api.getUrl(info.value.thumb[0].path)
   } else {
     return ""
   }
@@ -46,10 +46,7 @@ watch(() => info.value, (info) => {
 )
 
 
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
+
 watch(() => panoramaName, function (panoramaName) {
   console.log(panoramaName)
 },

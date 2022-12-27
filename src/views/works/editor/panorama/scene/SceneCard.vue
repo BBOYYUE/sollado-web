@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { computed, watch, ref, onMounted } from "vue";
 import * as api from "@/util/api";
 const props = defineProps({
   info: Object,
@@ -14,15 +14,12 @@ const panoramaName = computed(() => {
 });
 const thumbPath = computed(() => {
   if (props.info && props.info.thumb && props.info.thumb[0]) {
-    return getUrl(props.info.thumb[0].path)
+    return api.getUrl(props.info.thumb[0].path)
   } else {
     return ""
   }
 });
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
+
 watch(() => panoramaName, function (panoramaName) {
   console.log(panoramaName)
 },

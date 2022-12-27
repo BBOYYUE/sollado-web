@@ -1,49 +1,93 @@
 <krpano version="1.20.9" title="Virtual Tour">
-  <!-- <krpano version="1.20.9" title="Virtual Tour" debugmode="true" debugkeys="true" debugjsactions="true" debugjsplugins="true"> -->
-  <layer name="copyright" url="%SWFPATH%/plugins/textfield.swf" html="阿尔法视觉科技提供技术支持" align="lefttop" x="-12" y="-3" width="160" height="16" keep="true" visible="true" backgroundalpha="0" backgroundcolor="#000" css="text-align:left; color:#fff; font-family:SimHei; font-size:12px;-webkit-transform:scale(.8);" />
+  <!-- <krpano version="1.20.9" title="Virtual Tour" debugmode="true" debugkeys="true"
+  debugjsactions="true" debugjsplugins="true"> -->
+  <layer name="copyright" url="%SWFPATH%/plugins/textfield.swf" html="阿尔法视觉科技提供技术支持" align="lefttop"
+    x="-12" y="-3" width="160" height="16" keep="true" visible="true" backgroundalpha="0"
+    backgroundcolor="#000"
+    css="text-align:left; color:#fff; font-family:SimHei; font-size:12px;-webkit-transform:scale(.8);" />
   <include url="skin/vtourskin.xml" />
   <include url="plugins/flag.xml" />
+  <include url="plugins/scroll.xml" />
+  <include url="plugins/button.xml" />
   <!-- startup action - load the first scene -->
   <action name="startup" autorun="onstart">
-		if(startscene === null OR !scene[get(startscene)], copy(startscene,scene[0].name); );
-		loadscene(get(startscene), null, MERGE);
-		if(startactions !== null, startactions() );
+    if(startscene === null OR !scene[get(startscene)], copy(startscene,scene[0].name); );
+    loadscene(get(startscene), null, MERGE);
+    if(startactions !== null, startactions() );
   </action>
   <include url="skin/vtourskin_design_alpha.xml" />
 
+  <action name="sceneGroupOndown">
+    jscall(calc('let event = new Event("sceneGroupOndown");event.sceneGroup = "' + get(name) + '";
+    window.dispatchEvent(event);'))
+  </action>
+  <action name="sceneGroupOnclick">
+    trace(get(name));
+    jscall(calc('let event = new Event("sceneGroupOnclick");event.sceneGroup = "' + get(name) + '";
+    window.dispatchEvent(event);'))
+  </action>
+  <action name="sceneGroupOnup">
+    jscall(calc('let event = new Event("sceneGroupOnup");event.sceneGroup = "' + get(name) + '";
+    window.dispatchEvent(event);'))
+  </action>
+
+  <action name="sceneOndown">
+    jscall(calc('let event = new Event("sceneOndown");event.scene = "' + get(name) + '";
+    window.dispatchEvent(event);'))
+  </action>
+  <action name="sceneOnclick">
+    trace(get(name));
+    jscall(calc('let event = new Event("sceneOnclick");event.scene = "' + get(name) + '";
+    window.dispatchEvent(event);'))
+  </action>
+  <action name="sceneOnup">
+    jscall(calc('let event = new Event("sceneOnup");event.scene = "' + get(name) + '";
+    window.dispatchEvent(event);'))
+  </action>
+
   <action name="hotspotOndown">
-		jscall(calc('let event = new Event("hotspotOndown");event.hotspot = "' + get(name) + '"; window.dispatchEvent(event);'))
+    jscall(calc('let event = new Event("hotspotOndown");event.hotspot = "' + get(name) + '";
+    window.dispatchEvent(event);'))
   </action>
   <action name="hotspotOnclick">
-		jscall(calc('let event = new Event("hotspotOnclick");event.hotspot = "' + get(name) + '"; window.dispatchEvent(event);'))
+    trace(get(name));
+    jscall(calc('let event = new Event("hotspotOnclick");event.hotspot = "' + get(name) + '";
+    window.dispatchEvent(event);'))
   </action>
   <action name="hotspotOnup">
-		jscall(calc('let event = new Event("hotspotOnup");event.hotspot = "' + get(name) + '"; window.dispatchEvent(event);'))
+    jscall(calc('let event = new Event("hotspotOnup");event.hotspot = "' + get(name) + '";
+    window.dispatchEvent(event);'))
   </action>
-  <action name="hotspot_animate">  inc(frame,1,get(lastframe),0); mul(ypos,frame,frameheight); txtadd(crop,'0|',get(ypos),'|',get(framewidth),'|',get(frameheight)); delayedcall(0.03, if(loaded, hotspot_animate() ) );  </action>
+  <action name="hotspot_animate"> inc(frame,1,get(lastframe),0); mul(ypos,frame,frameheight);
+    txtadd(crop,'0|',get(ypos),'|',get(framewidth),'|',get(frameheight)); delayedcall(0.03,
+    if(loaded, hotspot_animate() ) ); </action>
   <action name="set_flag">
-    txtadd(tooltipname, 'tooltip_', get(name)); 
-		set(plugin[get(tooltipname)].url,'%SWFPATH%/plugins/textfield.swf'); 
-		txtadd(plugin[get(tooltipname)].parent, 'hotspot[', get(name), ']'); 
-		addplugin(get(tooltipname)); 
-		set(plugin[get(tooltipname)].align,top); 
-		set(plugin[get(tooltipname)].edge,bottom); 
-		set(plugin[get(tooltipname)].backgroundalpha,0);
-		set(plugin[get(tooltipname)].x,0); 
-		set(plugin[get(tooltipname)].y,4);
-		set(plugin[get(tooltipname)].autowidth,true); 
-		set(plugin[get(tooltipname)].autoheight,true);    
-		set(plugin[get(tooltipname)].vcenter,true);
-    set(plugin[get(tooltipname)].onclick,"hotspotOnclick"); 
-		set(plugin[get(tooltipname)].ondown,"hotspotOndown");
-		set(plugin[get(tooltipname)].onup,"hotspotOnup");
+    txtadd(tooltipname, 'tooltip_', get(name));
+    set(plugin[get(tooltipname)].url,'%SWFPATH%/plugins/textfield.swf');
+    txtadd(plugin[get(tooltipname)].parent, 'hotspot[', get(name), ']');
+    addplugin(get(tooltipname));
+    set(plugin[get(tooltipname)].align,top);
+    set(plugin[get(tooltipname)].edge,bottom);
+    set(plugin[get(tooltipname)].backgroundalpha,0);
+    set(plugin[get(tooltipname)].x,0);
+    set(plugin[get(tooltipname)].y,4);
+    set(plugin[get(tooltipname)].autowidth,true);
+    set(plugin[get(tooltipname)].autoheight,true);
+    set(plugin[get(tooltipname)].vcenter,true);
+    set(plugin[get(tooltipname)].onclick,"hotspotOnclick");
+    set(plugin[get(tooltipname)].ondown,"hotspotOndown");
+    set(plugin[get(tooltipname)].onup,"hotspotOnup");
     copy(plugin[get(tooltipname)].html,text);
-    if(device.mobile, copy(plugin[get(tooltipname)].css, mobilecss), copy(plugin[get(tooltipname)].css, css));
+    if(device.mobile, copy(plugin[get(tooltipname)].css, mobilecss),
+    copy(plugin[get(tooltipname)].css, css));
   </action>
   <!-- 地标 -->
-  <!-- <style name="spot" url="%SWFPATH%/skin/vtourskin_mapspot.png" scale="0.8" oy="-40" align="lefttop" edge="center" zorder="2" onclick="subtxt(spotid,get(name),4,2);if(spotid != scene[get(xml.scene)].index,
+  <!-- <style name="spot" url="%SWFPATH%/skin/vtourskin_mapspot.png" scale="0.8" oy="-40"
+  align="lefttop" edge="center" zorder="2" onclick="subtxt(spotid,get(name),4,2);if(spotid !=
+  scene[get(xml.scene)].index,
 loadscene(get(scene[get(spotid)].name),null,MERGE,BLEND(1)); );" /> -->
-  <!-- <style name="spot" url="%SWFPATH%/skin/vtourskin_mapspot.png" scale="0.5" oy="-30" align="lefttop" edge="center" zorder="2" /> -->
+  <!-- <style name="spot" url="%SWFPATH%/skin/vtourskin_mapspot.png" scale="0.5" oy="-30"
+  align="lefttop" edge="center" zorder="2" /> -->
 
   <include name="xmlPath" url="%$xmlPath%" />
 </krpano>

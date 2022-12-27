@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps, onActivated } from "vue";
+import { computed, watch, ref, onMounted, onActivated } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import box from "@/components/box.vue"
 
@@ -43,8 +43,8 @@ function update () {
       <el-form-item label="所属分组">
         <el-select v-model="form.group_id">
           <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
-              info.name
-          }}</el-option>
+    info.name
+}}</el-option>
         </el-select>
       </el-form-item>
       <span>

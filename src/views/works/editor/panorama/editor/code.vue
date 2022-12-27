@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { computed, watch, ref, onMounted } from "vue";
 import { useEditorStore } from "@/stores/editor";
 import JsonFormatter from "json-string-formatter";
 import box from "@/components/box.vue"

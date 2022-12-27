@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits, computed, defineProps, watch } from "vue"
+import { ref, defineEmits, computed, watch } from "vue"
 import box from "@/components/box.vue"
 import { v4 as uuid } from "uuid";
 import http from "@/util/http";
@@ -86,10 +86,7 @@ function loadFilesystem (node, resolve) {
       });
   }
 }
-function getUrl (url) {
-  let arr = url.split("/");
-  return api.assetUrl + arr[4] + "/" + arr[5];
-}
+
 watch(() => info.value, (info) => {
   if (info) {
     // 这里需要区分初始值和修改后的值, 所以使用了深拷贝. 
@@ -118,8 +115,8 @@ watch(() => info.value, (info) => {
       <el-form-item label="所属分组">
         <el-select v-model="form.group_id">
           <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
-              info.name
-          }}</el-option>
+    info.name
+}}</el-option>
         </el-select>
       </el-form-item>
       <span>
@@ -132,12 +129,12 @@ watch(() => info.value, (info) => {
           @node-click="filesystemTreeClick" />
         <div class="shadow-inner p-2 m-2 overflow-y-auto" style="width: 300px">
           <div v-if="
-            panoramaFileList[activeFilesystemFolder.hashId] &&
-            panoramaFileList[activeFilesystemFolder.hashId].length > 0
-          " class="w-full">
+  panoramaFileList[activeFilesystemFolder.hashId] &&
+  panoramaFileList[activeFilesystemFolder.hashId].length > 0
+" class="w-full">
             <el-radio-group v-model="form.url">
               <el-radio v-for="file in panoramaFileList[activeFilesystemFolder.hashId]" :key="file"
-                :label="getUrl(panoramaFileInfo[file.hashId].path)">{{ file.name }}
+                :label="api.getUrl(panoramaFileInfo[file.hashId].path)">{{ file.name }}
               </el-radio>
             </el-radio-group>
           </div>

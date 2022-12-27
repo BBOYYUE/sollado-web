@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps } from "vue";
+import { computed, watch, ref, onMounted } from "vue";
 import http from "@/util/http";
 import * as api from "@/util/api";
 const visible = ref(false);
@@ -96,14 +96,14 @@ const getData = function (form) {
         @node-click="panoramaTreeClick" />
       <div class="shadow-inner p-2 m-2 overflow-y-auto" style="width: 300px">
         <div v-if="
-          activeSelectPanoramaFolder.hashId &&
-          treePanoramaList[activeSelectPanoramaFolder.hashId] &&
-          treePanoramaList[activeSelectPanoramaFolder.hashId].length > 0
-        " class="w-full">
+  activeSelectPanoramaFolder.hashId &&
+  treePanoramaList[activeSelectPanoramaFolder.hashId] &&
+  treePanoramaList[activeSelectPanoramaFolder.hashId].length > 0
+" class="w-full">
           <el-checkbox-group v-model="formPanoramaList" class="flex flex-col">
             <el-checkbox :label="panorama.hashId" size="large" v-for="panorama in treePanoramaList[
-              activeSelectPanoramaFolder.hashId
-            ]" :key="panorama">
+  activeSelectPanoramaFolder.hashId
+]" :key="panorama">
               {{ panorama.name }}
             </el-checkbox>
           </el-checkbox-group>

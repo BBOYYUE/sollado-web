@@ -1,11 +1,15 @@
 <krpano>
   <action name="toggle_button_active">
     txtadd(container_name, get(name), '_container');
-    if(layer[get(name)].active == 'false', set(layer[get(name)].active, 'true'), set(layer[get(name)].active, 'false'));
-    if(layer[get(name)].active == 'true', set(layer[get(container_name)].bgalpha, get(layer[get(name)].activeOpacity)),set(layer[get(container_name)].bgalpha, get(layer[get(name)].baseOpacity)));
+    if(layer[get(name)].active == 'false', set(layer[get(name)].active, 'true'),
+    set(layer[get(name)].active, 'false'));
+    if(layer[get(name)].active == 'true', set(layer[get(container_name)].bgalpha,
+    get(layer[get(name)].activeOpacity)),set(layer[get(container_name)].bgalpha,
+    get(layer[get(name)].baseOpacity)));
   </action>
   <action name="init_roundbasebutton">
-    if(layer[get(name)].active, set(layer[get(name)].bgalpha, get(layer[get(name)].activeOpacity)), set(layer[get(name)].backgroundalpha, get(layer[get(name)].baseOpacity)));
+    if(layer[get(name)].active, set(layer[get(name)].bgalpha, get(layer[get(name)].activeOpacity)),
+    set(layer[get(name)].backgroundalpha, get(layer[get(name)].baseOpacity)));
   </action>
   <action name="init_roundbasebutton_text">
     set(layer[get(name)].html, get(layer[get(name)].text));
@@ -95,7 +99,8 @@
     bgroundedge="999"
     bgshadow="2 0 1 2 0x000000 .1 "
   ></style>
-  <action name="create_button" args="button_name,text,width,height,x,y,align,bgcolor,baseOpacity,activeOpacity,bgroundedge">
+  <action name="create_button"
+    args="button_name,text,width,height,x,y,align,bgcolor,baseOpacity,activeOpacity,bgroundedge">
     set(button_name,%1);
     set(text,%2);
     set(width,%3);
@@ -113,8 +118,9 @@
     div(paddingLeft, 2);
     sub(paddingLeft, 20);
 
-    txtadd(fontcss, "text-align:left; color:#fff; font-family:SimHei; font-size:12px;padding:", get(paddingTop),  'px', ' ', get(paddingLeft), 'px');
-    txtadd(bgshadow,  "0 0 1 2 ", get(bgcolor)  , " ", ".2");
+    txtadd(fontcss, "text-align:left; color:#fff; font-family:SimHei; font-size:12px;padding:",
+    get(paddingTop), 'px', ' ', get(paddingLeft), 'px');
+    txtadd(bgshadow, "0 0 1 2 ", get(bgcolor) , " ", ".2");
     txtadd(button_container_name, get(button_name), '_container');
     addLayer(get(button_container_name));
     set(layer[get(button_container_name)].type, "container");
@@ -151,29 +157,33 @@
   </action>
   <action name="init_photo">
     txtadd(frame_name, get(name), '_frame');
-    if(layer[get(name)].active, set(layer[get(frame_name)].crop, "156|156|156|156"), set(layer[get(frame_name)].crop, "156|0|156|156"));
-    trace(get(layer[get(frame_name)].name));
+    if(layer[get(name)].active, set(layer[get(frame_name)].crop, "156|156|156|156"),
+    set(layer[get(frame_name)].crop, "156|0|156|156"));
 
   </action>
   <action name="toggle_photo_active">
     txtadd(frame_name, get(name), '_frame');
-    if(layer[get(name)].active == 'false', set(layer[get(name)].active, 'true'), set(layer[get(name)].active, 'false'));
-    if(layer[get(name)].active == 'true', set(layer[get(frame_name)].crop, "156|156|156|156"),set(layer[get(frame_name)].crop, "156|0|156|156"));
+    if(layer[get(name)].active == 'false', set(layer[get(name)].active, 'true'),
+    set(layer[get(name)].active, 'false'));
+    if(layer[get(name)].active == 'true', set(layer[get(frame_name)].crop,
+    "156|156|156|156"),set(layer[get(frame_name)].crop, "156|0|156|156"));
   </action>
 
   <action name="init_photo_album">
     txtadd(frame_name, get(name), '_frame');
-    if(layer[get(name)].active, set(layer[get(frame_name)].crop, "0|156|156|156"), set(layer[get(frame_name)].crop, "0|0|156|156"));
-    trace(get(layer[get(frame_name)].name));
+    if(layer[get(name)].active, set(layer[get(frame_name)].crop, "0|156|156|156"),
+    set(layer[get(frame_name)].crop, "0|0|156|156"));
 
   </action>
   <action name="toggle_photo_album_active">
     txtadd(frame_name, get(name), '_frame');
-    if(layer[get(name)].active == 'false', set(layer[get(name)].active, 'true'), set(layer[get(name)].active, 'false'));
-    if(layer[get(name)].active == 'true', set(layer[get(frame_name)].crop, "0|156|156|156"),set(layer[get(frame_name)].crop, "0|0|156|156"));
+    if(layer[get(name)].active == 'false', set(layer[get(name)].active, 'true'),
+    set(layer[get(name)].active, 'false'));
+    if(layer[get(name)].active == 'true', set(layer[get(frame_name)].crop,
+    "0|156|156|156"),set(layer[get(frame_name)].crop, "0|0|156|156"));
   </action>
 
-  <action name="create_photo" args="photo_name,text,url,width,height,align, x,y">
+  <action name="create_photo" args="photo_name,text,url,width,height,align, x,y, active">
     set(photo_name,%1);
     set(text,%2);
     set(url,%3);
@@ -182,6 +192,8 @@
     set(align,%6);
     set(x,%7);
     set(y,%8);
+    set(active,%9);
+
 
     set(container_name, get(photo_name));
     txtadd(container_name, '_container');
@@ -189,7 +201,6 @@
     txtadd(frame_name, '_frame');
     set(text_name, get(photo_name));
     txtadd(text_name, '_text');
-    trace(get(container_name));
 
     set(content_width, get(width));
     set(content_height, get(height));
@@ -199,69 +210,67 @@
     mul(content_height, '.76');
     mul(content_bottom, '.12');
     addLayer(get(container_name));
-    set(layer[get(container_name)], 
-      type="container",
-      visible="true",
-      keep="true",
-      align=get(align),
-      x=get(x),
-      y=get(y),
-      maskchildren="true",
-      width=get(width),
-      height=get(height)
+    set(layer[get(container_name)],
+    type="container",
+    visible="true",
+    keep="true",
+    align=get(align),
+    x=get(x),
+    y=get(y),
+    maskchildren="true",
+    width=get(width),
+    height=get(height)
     );
     addLayer(get(frame_name));
-    trace(get(frame_name));
-    set(layer[get(frame_name)], 
-      type="image",
-      visible="true",
-      keep="true",
-      width=get(width),
-      height=get(height),
-      align="center",
-      url="%SWFPATH%/skin/auto_thumbs.png",
-      crop="156|0|156|156",
-      parent=get(container_name)
+    set(layer[get(frame_name)],
+    type="image",
+    visible="true",
+    keep="true",
+    width=get(width),
+    height=get(height),
+    align="center",
+    url="%SWFPATH%/skin/auto_thumbs.png",
+    crop="156|0|156|156",
+    parent=get(container_name)
     );
 
 
     addLayer(get(photo_name));
-    set(layer[get(photo_name)], 
-      style="photo"
-      type="image",
-      visible="true",
-      keep="true",
-      width=get(content_width),
-      height=get(content_height),
-      align="center",
-      url=get(url),
-      active="true",
-      parent=get(container_name)
+    set(layer[get(photo_name)],
+    style="photo"
+    type="image",
+    visible="true",
+    keep="true",
+    width=get(content_width),
+    height=get(content_height),
+    align="center",
+    url=get(url),
+    active=get(active),
+    parent=get(container_name)
     );
     set(layer[get(photo_name)].onloaded, "init_photo");
-    set(layer[get(photo_name)].onclick, "toggle_photo_active");
+    set(layer[get(photo_name)].onclick, "sceneOnclick");
 
 
-    
     addLayer(get(text_name));
-    set(layer[get(text_name)], 
-      type="text",
-      visible="true",
-      keep="true",
-      height="20",
-      align="bottom",
-      bgcolor="0x000000",
-      css="text-align:center; color:#fff; font-family:SimHei; font-size:12px;",
-      url="%SWFPATH%/plugins/textfield.swf",
-      bgalpha=".3",
-      width=get(content_width),
-      y=get(content_bottom),
-      html=get(text),
-      parent=get(container_name)
+    set(layer[get(text_name)],
+    type="text",
+    visible="true",
+    keep="true",
+    height="20",
+    align="bottom",
+    bgcolor="0x000000",
+    css="text-align:center; color:#fff; font-family:SimHei; font-size:12px;",
+    url="%SWFPATH%/plugins/textfield.swf",
+    bgalpha=".3",
+    width=get(content_width),
+    y=get(content_bottom),
+    html=get(text),
+    parent=get(container_name)
     );
 
   </action>
-  <action name="create_photo_album" args="photo_name,text,url,width,height,align, x,y">
+  <action name="create_photo_album" args="photo_name,text,url,width,height,align,x,y,active">
     set(photo_name,%1);
     set(text,%2);
     set(url,%3);
@@ -270,6 +279,7 @@
     set(align,%6);
     set(x,%7);
     set(y,%8);
+    set(active,%9);
 
     set(container_name, get(photo_name));
     txtadd(container_name, '_container');
@@ -277,75 +287,72 @@
     txtadd(frame_name, '_frame');
     set(text_name, get(photo_name));
     txtadd(text_name, '_text');
-    trace(get(container_name));
 
     set(content_width, get(width));
     set(content_height, get(height));
     set(content_bottom, get(height));
 
+
     mul(content_width, '.76');
     mul(content_height, '.76');
     mul(content_bottom, '.12');
     addLayer(get(container_name));
-    set(layer[get(container_name)], 
-      type="container",
-      visible="true",
-      keep="true",
-      align=get(align),
-      x=get(x),
-      y=get(y),
-      maskchildren="true",
-      width=get(width),
-      height=get(height)
+    set(layer[get(container_name)],
+    type="container",
+    visible="true",
+    keep="true",
+    align=get(align),
+    x=get(x),
+    y=get(y),
+    maskchildren="true",
+    width=get(width),
+    height=get(height)
     );
     addLayer(get(frame_name));
-    trace(get(frame_name));
-    set(layer[get(frame_name)], 
-      type="image",
-      visible="true",
-      keep="true",
-      width=get(width),
-      height=get(height),
-      align="center",
-      url="%SWFPATH%/skin/auto_thumbs.png",
-      crop="0|0|156|156",
-      parent=get(container_name)
+    set(layer[get(frame_name)],
+    type="image",
+    visible="true",
+    keep="true",
+    width=get(width),
+    height=get(height),
+    align="center",
+    url="%SWFPATH%/skin/auto_thumbs.png",
+    crop="0|0|156|156",
+    parent=get(container_name)
     );
-
 
     addLayer(get(photo_name));
-    set(layer[get(photo_name)], 
-      style="photo"
-      type="image",
-      visible="true",
-      keep="true",
-      width=get(content_width),
-      height=get(content_height),
-      align="center",
-      url=get(url),
-      active="true",
-      parent=get(container_name)
+    set(layer[get(photo_name)],
+    style="photo"
+    type="image",
+    visible="true",
+    keep="true",
+    width=get(content_width),
+    height=get(content_height),
+    align="center",
+    url=get(url),
+    active=get(active),
+    parent=get(container_name)
     );
     set(layer[get(photo_name)].onloaded, "init_photo_album");
-    set(layer[get(photo_name)].onclick, "toggle_photo_album_active");
+    set(layer[get(photo_name)].onclick, "sceneGroupOnclick");
 
 
-    
     addLayer(get(text_name));
-    set(layer[get(text_name)], 
-      type="text",
-      visible="true",
-      keep="true",
-      height="20",
-      align="bottom",
-      bgcolor="0x000000",
-      css="text-align:center; color:#fff; font-family:SimHei; font-size:12px;",
-      url="%SWFPATH%/plugins/textfield.swf",
-      bgalpha=".3",
-      width=get(content_width),
-      y=get(content_bottom),
-      html=get(text),
-      parent=get(container_name)
+    set(layer[get(text_name)],
+    type="text",
+    visible="true",
+    keep="true",
+    height="20",
+    align="bottom",
+    bgcolor="0x000000",
+    css="text-align:center; color:#fff; font-family:SimHei; font-size:12px;",
+    url="%SWFPATH%/plugins/textfield.swf",
+    bgalpha=".3",
+    width=get(content_width),
+    y=get(content_bottom),
+    html=get(text),
+    parent=get(container_name)
     );
 
   </action>

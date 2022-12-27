@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted, defineProps, defineEmits } from "vue";
+import { computed, watch, ref, onMounted, defineEmits } from "vue";
 import http from "@/util/http";
 import * as api from "@/util/api";
 
@@ -18,9 +18,9 @@ const emit = defineEmits(['onClose'])
       <span class="dialog-footer">
         <el-button @click="('onClose')">取消</el-button>
         <el-button type="primary" @click="function () {
-          ('onSuccess', form)
-          form.value = {}
-        }">确定</el-button>
+  ('onSuccess', form)
+  form.value = {}
+}">确定</el-button>
       </span>
     </template>
   </el-dialog>

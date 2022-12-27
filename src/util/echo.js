@@ -15,7 +15,6 @@ const EchoImpl = new Echo({
   cluster: "ap3",
   forceTLS: false,
   disableStats: false,
-  // authEndpoint: 'http://laravel.test/api/v1/broadcasting/auth',
   authorizer: (channel, options) => {
     return {
       authorize: (socketId, callback) => {
