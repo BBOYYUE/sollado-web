@@ -60,7 +60,7 @@
   </action>
   <action name="hotspot_animate"> inc(frame,1,get(lastframe),0); mul(ypos,frame,frameheight);
     txtadd(crop,'0|',get(ypos),'|',get(framewidth),'|',get(frameheight)); delayedcall(0.03,
-    if(loaded, hotspot_animate() ) ); </action>
+    if(loaded, hotspot_animate())); </action>
   <action name="set_flag">
     txtadd(tooltipname, 'tooltip_', get(name));
     set(plugin[get(tooltipname)].url,'%SWFPATH%/plugins/textfield.swf');

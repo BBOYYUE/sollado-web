@@ -179,6 +179,9 @@ export const useEditorStore = defineStore("editor", {
     addHotspotGroup (hotspotGroup) {
       hotspotGroup.scene_id = this.activeScene.hash_id
       if (!this.activeScene.hotspotGroups) this.activeScene.hotspotGroups = new Set()
+      if (!(this.activeScene.hotspotGroups instanceof Set)) {
+        this.activeScene.hotspotGroups = new Set(this.activeScene.hotspotGroups)
+      }
       this.activeScene.hotspotGroups.add(hotspotGroup.hash_id)
       this.scene[this.activeScene.hash_id] = this.activeScene
       this.hotspotGroup[hotspotGroup.hash_id] = Object.assign({}, hotspotGroup, {
