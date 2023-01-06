@@ -113,7 +113,7 @@ function storeFolder () {
     {},
     {
       user_id: authStore.user.id,
-      parent_id: threeDimensional.active,
+      parent_id: threeDimensional.active.hashId,
       type: 1,
     },
     form.value
@@ -292,21 +292,11 @@ watch(
   () => threeDimensional.storehouse,
   (storeHouse) => {
     if (storeHouse) {
-      console.log(storeHouse.data[0])
       threeDimensional.setActive({
         hashId: storeHouse.data[0].hash_id,
         name: "根目录",
       });
       threeDimensional.getFolder();
-    }
-  }
-);
-watch(
-  () => threeDimensional.active,
-  (active) => {
-    if (active) {
-      console.log(active)
-      // panorama.getFolder();
     }
   }
 );
