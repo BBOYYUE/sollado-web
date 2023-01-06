@@ -10,13 +10,26 @@ const krpano = ref({});
 const props = defineProps({
   id: String,
 });
+const containerStyle = ref(
+  {
+    width: 'calc(100vw)',
+    height: 'calc(100vh)'
+  }
+)
+
+
 onMounted(() => {
-  http()
-    .get(api.host + api.threeDimensional + props.id)
-    .then((res) => {
-      threeDimensional.value = res.data.data;
-      init();
-    });
+  document.title = "模型文件预览"
+  if (props.id) {
+    http()
+      .get(api.host + api.threeDimensional + props.id)
+      .then((res) => {
+        threeDimensional.value = res.data.data;
+        init();
+      });
+  } else {
+    testInit();
+  }
 
 });
 function init () {
@@ -58,7 +71,12 @@ watch(
 );
 </script>
 <template>
-  <div class="w-wull h-full">
-    <div id="threeDimensional" style="overflow: hidden" class="w-full h-full"></div>
+  <div class="w-wull h-full flex flex-col justify-center">
+    <div class="text-black absolute top-0 left-0"> 当前状态:
+      <span id="status"></span>
+      <span id="progress"></span>
+      <span id="tiems"></span>
+    </div>
+    <div id="threeDimensional" style="overflow: hidden" :style="containerStyle"></div>
   </div>
 </template>
