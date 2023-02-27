@@ -1,4 +1,4 @@
-// const host = "http://laravel.test/";
+// const host = "http://dev-cn.laravel.com/";
 const host = "https://api.sollado.com/";
 const filesystem = "api/v1/filesystem/";
 const auth = "api/v1/authorizations/";
