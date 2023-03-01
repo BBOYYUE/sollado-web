@@ -151,7 +151,6 @@ watch(
         </template>
       </el-page-header>
     </el-card>
-
     <el-card class="mx-4">
       <el-table :data="panoramaWork.assets.data" stripe style="width: 100%">
         <el-table-column label="名称">

@@ -7,6 +7,7 @@ import { ElMessage } from "element-plus";
 import * as api from "@/util/api";
 import * as purpose from "@/common/purpose";
 import { Timer, UploadFilled, ArrowRight } from "@element-plus/icons-vue";
+import axios from "axios";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -23,6 +24,9 @@ let searchForm = ref({
 const form = ref({
   name: "",
 });
+const tabeleMaxHeight = window.innerHeight - 350
+const uploadData = ref({})
+const uploadUrl = ref("")
 const errorMsg = (msg) => {
   ElMessage({
     message: msg,
@@ -36,7 +40,8 @@ const successMsg = (msg) => {
   });
 };
 
-function onFileUploadSuccess (respond) {
+function onFileUploadSuccess(respond) {
+  console.log(respond)
   if (respond.code == 200) {
     successMsg("上传成功!");
     filesystem.addFile(respond.data);
@@ -44,7 +49,7 @@ function onFileUploadSuccess (respond) {
     errorMsg("上传失败!");
   }
 }
-function getPurposeInfo (val) {
+function getPurposeInfo(val) {
   for (let item in purpose) {
     if (purpose[item].val == val) {
       return purpose[item].key;
@@ -52,17 +57,14 @@ function getPurposeInfo (val) {
   }
 }
 
-function downloadFile (id) {
+function downloadFile(id) {
   filesystem.downloadFile(id);
 }
 
-function deleteFile (id) {
+function deleteFile(id) {
   filesystem.deleteFile(id);
-  setTimeout(function () {
-    filesystem.getFolder();
-  }, 1000);
 }
-function goToActive (row) {
+function goToActive(row) {
   if (row.type == 1) {
     let hashId = row.hash_id ?? row.hashId;
     router.push("/material-library/manage/folder/" + hashId + "?name=" + row.name);
@@ -71,7 +73,7 @@ function goToActive (row) {
   }
 }
 
-function storeFolder () {
+function storeFolder() {
   let formData = Object.assign(
     {},
     {
@@ -85,7 +87,7 @@ function storeFolder () {
   filesystem.storeFolder(formData);
 }
 
-function goBack () {
+function goBack() {
   let len = filesystem.history.length;
   if (len > 1) {
     router.push(
@@ -99,13 +101,47 @@ function goBack () {
   }
   filesystem.history.pop();
 }
-function search (name) {
+function search(name) {
   filesystem.setFilterByName(name);
   filesystem.getFolder();
 }
-function pageClick (page) {
+function pageClick(page) {
   filesystem.setPage(page);
   filesystem.getFolder();
+}
+async function handleBeforeUpload(file) {
+  try {
+    const res = await axios.create({
+      baseURL: api.host,
+      headers: {
+          Authorization: authStore.tokenType + ' ' + authStore.accessToken,
+      }
+    }).post(
+      api.ossSignatureVerification, 
+      {
+        name: file.name,
+        parent_id: props.id,
+        type: 0,
+      },
+    )
+    const response = res.data
+    uploadUrl.value = response.host
+
+    // 组装自定义参数「如果要自定义回传参数这段代码不能省略」
+    if (response['callback-var'] && Object.keys(response['callback-var']).length) {
+      for (const [key, value] of Object.entries(response['callback-var'])) {
+        uploadData.value[key] = value
+      }
+    }
+    uploadData.value.policy = response.policy
+    uploadData.value.OSSAccessKeyId = response.accessid
+    uploadData.value.signature = response.signature
+    uploadData.value.host = response.host
+    uploadData.value.callback = response.callback
+    uploadData.value.key = response.dir + '/' + file.name
+  } catch (error) {
+    errorMsg('获取上传配置失败')
+  }
 }
 watch(
   () => authStore.isAuth,
@@ -122,7 +158,6 @@ watch(
   () => props.id,
   (id) => {
     if (id) {
-      console.log(id);
       filesystem.setActive({
         hashId: id,
         name: route.query ? route.query.name : "",
@@ -167,7 +202,7 @@ watch(
       </el-page-header>
     </el-card>
     <el-card class="mx-4">
-      <el-table :data="filesystem.folder.data" stripe style="width: 100%">
+      <el-table :data="filesystem.folder.data" stripe style="width: 100%" :max-height="tabeleMaxHeight">
         <el-table-column label="名称" width="280">
           <template #default="scope">
             <el-link target="_blank" type="primary" v-on:click.stop="goToActive(scope.row)">{{ scope.row.name }}
@@ -225,12 +260,11 @@ watch(
     </el-dialog>
     <el-dialog v-model="dialogFileVisible" title="上传文件" width="500px">
       <div class="w-full h-full overflow-auto" style="height: 300px">
-        <el-upload drag :action="api.host + api.filesystem" multiple :data="{
-  parent_id: props.id,
-  type: 0,
-}" :headers="{
-  Authorization: authStore.tokenType + ' ' + authStore.accessToken,
-}" :on-success="onFileUploadSuccess" class="mx-4">
+        <el-upload drag  multiple
+        :action="uploadUrl" 
+        :data="uploadData" 
+        :on-success="onFileUploadSuccess" 
+        :before-upload="handleBeforeUpload" class="mx-4">
           <el-icon class="el-icon--upload" style="height: 150px">
             <upload-filled />
           </el-icon>

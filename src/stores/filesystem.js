@@ -85,7 +85,7 @@ export const useFilesystemStore = defineStore("filesystem", {
       this.queryBuilder.page = page;
     },
     addFile(file) {
-      this.folder.data.push(file);
+      this.folder.data.unshift(file);
     },
     storeFolder(form) {
       appStore.loading();
@@ -99,21 +99,13 @@ export const useFilesystemStore = defineStore("filesystem", {
           appStore.ready();
         });
     },
-    deleteFile(id) {
+    async deleteFile(id) {
       appStore.loading();
-      http()
+      await http()
         .delete(
-          api.host + api.filesystem + id + queryBuilder(this.queryBuilder)
+          api.host + api.filesystem + id
         )
-        .then(() => {
-          appStore.ready();
-        });
-      // .then((res) => {
-      //     let respond = res.data
-      //     if (respond.code == 200) {
-      //         this.folder = respond.data
-      //     }
-      // })
+      this.getFolder()
     },
     downloadFile(id) {
       window.open(api.host + api.filesystem + id);

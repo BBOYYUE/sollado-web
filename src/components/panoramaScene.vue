@@ -9,8 +9,6 @@ const props = defineProps({
   info: Object
 });
 
-
-
 const getXmlPath = (info) => {
   return info && info.xml ? api.getUrl(info.xml[0].path) : ""
 }
