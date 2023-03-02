@@ -92,14 +92,18 @@ function saveWork () {
               </div> -->
               <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 cursor-pointer"
                 @click="toggleCode">
-                <code-icon class="w-8 h-8"></code-icon>
+                <div class="w-8 h-8">
+                <code-icon ></code-icon>
+              </div>
               </div>
             </div>
             <!-- 插件列表 -->
             <div class="flex flex-row justify-center flex-grow">
               <div class="border border-solid border-gray-100 rounded-md  shadow-md m-4 p-4 cursor-pointer"
                 v-for="plugin in pluginList()" :key="plugin" @click="pluginClick(plugin)">
-                <component :is="plugin.component.icon" class="w-8 h-8" />
+                <div class="w-8 h-8">
+                  <component :is="plugin.component.icon"  />
+                </div>
               </div>
             </div>
             <!-- 保存按钮 -->

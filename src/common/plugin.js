@@ -11,7 +11,7 @@ import panoramaImage from "@/components/plugin/panorama-image/panorama-image"
 // import panoramaLogicLink from "@/components/plugin/panorama-logic-link/panorama-logic-link"
 // import panoramaButtonGroup from "@/components/plugin/panorama-button-group/panorama-button-group"
 export default [
-  panoramaScene,
+  // panoramaScene,
   panoramaView,
   panoramaHotspot,
   panoramaFlag,

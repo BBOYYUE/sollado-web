@@ -16,7 +16,7 @@ const route = useRoute();
 const router = useRouter();
 
 
-function goTo (url) {
+function goTo(url) {
   router.push(url);
 }
 onMounted(() => {
@@ -36,9 +36,6 @@ onMounted(() => {
         <el-menu-item index="1" @click="router.push(`/work/editor/panorama/${props.workid}/work-info`)">
           <template #title>作品</template>
         </el-menu-item>
-        <!-- <el-menu-item index="2" @click="router.push(`/work/editor/panorama/${props.workid}/scene`)">
-          <template #title>场景</template>
-        </el-menu-item> -->
         <el-menu-item index="3" @click="router.push(`/work/editor/panorama/${props.workid}/editor`)">
           <template #title>编辑器</template>
         </el-menu-item>
@@ -54,8 +51,8 @@ onMounted(() => {
             <div class="flex flex-col h-16 justify-center">
               <div
                 class="rounded-full border border-gray-100 shadow-inner w-12 h-12 flex flex-col justify-center bg-gray-200">
-                <div class="flex flex-row justify-center" @click="router.push('/work/manage/panorama-work')">
-                  <power-icon class="w-4 h-4"></power-icon>
+                <div class="flex flex-row m-3 justify-center" @click="router.push('/work/manage/panorama-work')">
+                    <power-icon></power-icon>
                 </div>
               </div>
             </div>
