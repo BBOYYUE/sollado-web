@@ -8,6 +8,7 @@ import * as api from "@/util/api";
 import * as purpose from "@/common/purpose";
 import { Timer, UploadFilled, ArrowRight } from "@element-plus/icons-vue";
 import axios from "axios";
+import * as filesystemType from "@/common/filesystemType.js"
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -65,10 +66,10 @@ function deleteFile(id) {
   filesystem.deleteFile(id);
 }
 function goToActive(row) {
-  if (row.type == 1) {
+  if (row.type == filesystemType.FOLDER) {
     let hashId = row.hash_id ?? row.hashId;
     router.push("/material-library/manage/folder/" + hashId + "?name=" + row.name);
-  } else if (row.type == 0) {
+  } else if (row.type == filesystemType.ASSET) {
     window.open(row.path, "_blank ");
   }
 }
@@ -79,7 +80,7 @@ function storeFolder() {
     {
       user_id: authStore.user.id,
       parent_id: filesystem.active.hashId,
-      type: 1,
+      type: filesystemType.FOLDER,
     },
     form.value
   );
@@ -121,7 +122,7 @@ async function handleBeforeUpload(file) {
       {
         name: file.name,
         parent_id: props.id,
-        type: 0,
+        type: filesystemType.ASSET,
       },
     )
     const response = res.data
@@ -211,7 +212,7 @@ watch(
         </el-table-column>
         <el-table-column label="分享码" width="120">
           <template #default="scope">
-            <div v-if="scope.row.type == 0">
+            <div v-if="scope.row.type == filesystemType.ASSET">
               {{ scope.row.hash_id }}
             </div>
           </template>
@@ -235,7 +236,7 @@ watch(
           <template #default="scope">
             <div class="flex flex-row flex-nowrap justify-end w-full">
               <el-button type="primary" size="small" v-on:click.stop="downloadFile(scope.row.hash_id)"
-                v-if="scope.row.type == 0">下载</el-button>
+                v-if="scope.row.type == filesystemType.ASSET">下载</el-button>
               <el-button type="danger" size="small" v-on:click.stop="deleteFile(scope.row.hash_id)"
                 v-if="scope.row.purpose != 14">删除</el-button>
             </div>

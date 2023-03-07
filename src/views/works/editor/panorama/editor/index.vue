@@ -7,7 +7,7 @@ import { v4 as uuid } from "uuid";
 import * as api from "@/util/api";
 import { useRoute, useRouter } from "vue-router";
 import pluginCommon from "@/common/plugin.js"
-import pluginBase from "@/components/plugin/base/index.js"
+import pluginBase from "@/views/works/editor/panorama/plugin/index.js"
 import plugin from "./plugin.vue"
 import infoIcon from "@/components/icon/panorama-info.vue"
 import dashboardIcon from "@/components/icon/panorama-dashboard.vue"

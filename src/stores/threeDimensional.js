@@ -3,6 +3,7 @@ import http from "@/util/http";
 import * as api from "../util/api";
 import queryBuilder from "../util/queryBuilder";
 import { useAppStore } from "@/stores/app";
+import * as threeDimensionalType from "@/common/threeDimensionalType.js"
 const appStore = useAppStore();
 
 /**
@@ -33,7 +34,7 @@ export const useThreeDimensionalStore = defineStore("threeDimensional", {
   },
   actions: {
     getStorehouse() {
-      this.queryBuilder.filter.type = 2;
+      this.queryBuilder.filter.type = threeDimensionalType.STOREHOUSE;
       this.queryBuilder.filter.parent_id = undefined;
       this.queryBuilder.filter.name = undefined;
       appStore.loading();

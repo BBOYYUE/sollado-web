@@ -7,6 +7,7 @@ import { usePanoramaStore } from "@/stores/panorama";
 import { Timer, ArrowRight } from "@element-plus/icons-vue";
 import * as api from "@/util/api";
 import http from "@/util/http";
+import * as panoramaType from '@/common/panoramaType.js'
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -48,10 +49,11 @@ function goBack () {
   }
 }
 function goToActive (row) {
-  if (row.type == 1) {
+  // 这里2是文件夹 1是全景图
+  if (row.type == panoramaType.FOLDER) {
     let hashId = row.hash_id ?? row.hashId;
     router.push("/material-library/manage/panorama-list/" + hashId + "?name=" + row.name);
-  } else if (row.type == 0) {
+  } else if (row.type == panoramaType.ASSET) {
     window.open(row.path, "_blank ");
   }
 }
@@ -113,7 +115,7 @@ function storeFolder () {
     {
       user_id: authStore.user.id,
       parent_id: panorama.active.hashId,
-      type: 1,
+      type: panoramaType.FOLDER,
     },
     form.value
   );
@@ -155,9 +157,6 @@ function getStatus (id) {
 }
 function deletePanorama (id) {
   panorama.deletePanorama(id);
-  setTimeout(function () {
-    panorama.getFolder();
-  }, 1000);
 }
 function showPanorama (id) {
   try {
@@ -195,13 +194,13 @@ function filesystemTreeClick (node) {
 function loadFilesystem (node, resolve) {
   if (node.level === 0) {
     http()
-      .get(api.host + api.filesystem + "?filter[type]=2")
+      .get(api.host + api.filesystem + "?filter[type]=" + panoramaType.STOREHOUSE)
       .then((res) => {
         let respond = res.data;
         if (respond.code == 200) {
           let data = [];
           for (let item in respond.data.data) {
-            if (respond.data.data[item].type == 2) {
+            if (respond.data.data[item].type == panoramaType.STOREHOUSE) {
               data.push({
                 name: respond.data.data[item].name,
                 hashId: respond.data.data[item].hash_id,
@@ -214,22 +213,23 @@ function loadFilesystem (node, resolve) {
         }
       });
   } else {
+    let queryString = node.level === 1 ? "?filter[parent_id]=" + node.data.hashId: "?filter[parent_id]=" + node.data.hashId +"&filter[purpose]=1"
     http()
-      .get(api.host + api.filesystem + "?filter[parent_id]=" + node.data.hashId)
+      .get(api.host + api.filesystem + queryString)
       .then((res) => {
         let respond = res.data;
         if (respond.code == 200) {
           let data = [];
           let fileList = [];
           for (let item in respond.data.data) {
-            if (respond.data.data[item].type == 1) {
+            if (respond.data.data[item].type == panoramaType.FOLDER) {
               data.push({
                 name: respond.data.data[item].name,
                 hashId: respond.data.data[item].hash_id,
                 purpose: respond.data.data[item].purpose,
                 type: respond.data.data[item].type,
               });
-            } else if (respond.data.data[item].purpose == 1) {
+            } else if (respond.data.data[item].type == panoramaType.ASSET && respond.data.data[item].purpose == 1) {
               panoramaFileInfo.value[respond.data.data[item].hash_id] =
                 respond.data.data[item];
               fileList.push({
@@ -352,7 +352,7 @@ watch(
         </el-table-column>
         <el-table-column label="分享码" width="120">
           <template #default="scope">
-            <div v-if="scope.row.type == 0">
+            <div v-if="scope.row.type == 1">
               {{ scope.row.hash_id }}
             </div>
           </template>
@@ -360,7 +360,7 @@ watch(
         <el-table-column label="操作" width="350" fixed="right">
           <template #default="scope">
             <div class="flex flex-row flex-nowrap justify-end w-full">
-              <el-button-group v-show="!getStatus(scope.row.hash_id) && scope.row.type == 0">
+              <el-button-group v-show="!getStatus(scope.row.hash_id) && scope.row.type == panoramaType.ASSET">
                 <el-button type="success" size="small" v-on:click.stop="showPanorama(scope.row.hash_id)">
                   预览
                 </el-button>
@@ -371,9 +371,9 @@ watch(
               <el-button type="primary" size="small" disabled v-show="getStatus(scope.row.hash_id)">
                 处理中
               </el-button>
-              <el-button type="primary" size="small" disabled v-show="!getStatus(scope.row.hash_id)">
+              <!-- <el-button type="primary" size="small" disabled v-show="!getStatus(scope.row.hash_id)">
                 编辑
-              </el-button>
+              </el-button> -->
               <el-button type="danger" size="small" v-on:click.stop="deletePanorama(scope.row.hash_id)">
                 删除
               </el-button>

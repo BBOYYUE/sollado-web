@@ -19,7 +19,7 @@ const containerStyle = ref(
 
 
 onMounted(() => {
-  document.title = "Ä£ÐÍÎÄ¼þÔ¤ÀÀ"
+  document.title = "3Dæ¨¡åž‹å±•ç¤º"
   if (props.id) {
     http()
       .get(api.host + api.threeDimensional + props.id)
@@ -72,7 +72,7 @@ watch(
 </script>
 <template>
   <div class="w-wull h-full flex flex-col justify-center">
-    <div class="text-black absolute top-0 left-0"> µ±Ç°×´Ì¬:
+    <div class="text-black absolute top-0 left-0"> æ­£åœ¨åŠ è½½ä¸­:
       <span id="status"></span>
       <span id="progress"></span>
       <span id="tiems"></span>

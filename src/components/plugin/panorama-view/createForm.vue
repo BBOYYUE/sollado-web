@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits, computed } from "vue"
+import { ref, computed } from "vue"
 import box from "@/components/box.vue"
 import { useEditorStore } from "@/stores/editor";
 

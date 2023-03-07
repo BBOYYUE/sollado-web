@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+// import PanoramaEdit from "../views/works/editor/panorama/editor/index.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -100,6 +101,12 @@ const router = createRouter({
                 alias: '全景作品'
               }
             },
+            {
+              path: "panorama-work/:workid",
+              name: 'panoramaWorkInfo',
+              component: () => import('@/views/works/manage/PanoramaWorkInfo.vue'),
+              props: true,
+            }
           ]
         },
         {
@@ -108,46 +115,11 @@ const router = createRouter({
           component: () => import("@/views/works/editor/Index.vue"),
           children: [
             {
-              path: "panorama/:workid",
+              path: "panorama/:sceneid",
               name: 'workEditorPanorama',
-              component: () => import('@/views/works/editor/panorama/index.vue'),
-              props: true,
-              children: [
-                {
-                  path: "assets",
-                  name: 'workEditorAsset',
-                  component: () => import("@/views/works/editor/panorama/assets/index.vue"),
-                },
-                {
-                  path: "editor/:sceneid?",
-                  name: 'workEditorEditor',
-                  props: true,
-                  component: () => import("@/views/works/editor/panorama/editor/index.vue"),
-                },
-                {
-                  path: "plugin",
-                  name: 'workEditorPlugin',
-                  component: () => import("@/views/works/editor/panorama/plugin/index.vue"),
-                },
-                {
-                  path: "scene",
-                  name: 'workEditorScene',
-                  component: () => import("@/views/works/editor/panorama/scene/index.vue"),
-                },
-                {
-                  path: "work-info",
-                  name: 'workEditorWorkInfo',
-                  component: () => import("@/views/works/editor/panorama/work-info/index.vue"),
-                }
-              ]
-            },
-
-            // {
-            //   path: "panorama-work-edit/:id?",
-            //   name: "panoramaWorkEdit",
-            //   component: () => import("@/views/works/editor/PanoramaWorkEditView.vue"),
-            //   props: true,
-            // },
+              component: () => import('@/views/works/editor/panorama/editor/index.vue'),
+              props: true
+            }
           ]
         },
         {

@@ -24,12 +24,6 @@ export const useEditorStore = defineStore("editor", {
       view: {},
       viewGroup: {},
 
-      // layer: {},
-      // layerGroup: {},
-      // logic: {},
-      // logicGroup: {},
-      // button: {},
-      // buttonGroup: {},
 
       showDashboardVisible: false,
       showGroupCreateFormVisible: false,
@@ -41,17 +35,23 @@ export const useEditorStore = defineStore("editor", {
     }
   },
   actions: {
-
-    updateActiveHotspot(data) {
-      let { atv, ath } = data
-      this.activeHotspot.ath = ath
-      this.activeHotspot.atv = atv
-      console.log(this.activeHotspot);
+    hideAll() {
+      this.showDashboardVisible = false
+      this.showGroupCreateFormVisible = false
+      this.showGroupUpdateFormVisible = false
+      this.showCreateFormVisible = false
+      this.showUpdateFormVisible = false
+      this.showGroupInfoVisible = false
+      this.showInfoVisible = false
+    },
+    
+    updateActiveHotspotPosition(data) {
+      this.activeHotspot = Object.assign({}, this.activeHotspot, {'atv':data.atv, 'ath':data.ath})
     },
     updateHotspotByActiveHotspot() {
-      console.log(this.activeHotspot.hash_id, 1111)
-      this.hotspot[this.activeHotspot.hash_id] = this.activeHotspot
+      this.hotspot = Object.assign({}, this.hotspot, {[this.activeHotspot.hash_id]: this.activeHotspot})
     },
+
     updateWork() {
       let data = {
         id: this.work.hash_id,
@@ -80,6 +80,7 @@ export const useEditorStore = defineStore("editor", {
           let respond = res.data;
           if (respond.code == 200) {
             this.work = respond.data;
+            this.initWork()
             if (respond.data.option) {
               let option = JSON.parse(this.work.option)
               for (let key in option) {
@@ -90,53 +91,47 @@ export const useEditorStore = defineStore("editor", {
           appStore.ready();
         });
     },
-    setActiveSceneGroup(activeSceneGroup) {
-      console.log(activeSceneGroup)
-      this.activeSceneGroup = activeSceneGroup
-    },
-    setActiveScene(activeScene) {
-      this.activeScene = activeScene
-    },
-    addScene(scene) {
-      // 这里如果某个场景已经存在了, 并且在某个场景分组中, 那么会删了重加
-      for (let sceneHashId in scene) {
-        if (this.scene[sceneHashId] && this.scene[sceneHashId].group_id && scene[sceneHashId].group_id) {
-          this.delSceneByGroup(this.scene[sceneHashId], this.scene[sceneHashId].group_id)
-          if (!this.sceneGroup[scene[sceneHashId].group_id].scenes) {
-            this.sceneGroup[scene[sceneHashId].group_id].scenes = []
-          }
-          this.sceneGroup[scene[sceneHashId].group_id].scenes.push(sceneHashId)
-        }
-      }
 
-      this.scene = Object.assign({}, this.scene, scene);
+    initWork(){
+
     },
+
+    addScene(sceneList) {
+      
+      for (let sceneHashId in sceneList) {
+        // 这里如果某个场景已经存在, 并且场景包含分组信息
+        if(this.scene[sceneHashId] && this.scene[sceneHashId].group_id){
+            this.delSceneByGroup(this.scene[sceneHashId], this.scene[sceneHashId].group_id)
+        }
+        // 如果此场景有分组信息, 那么需要加入到分组信息里
+        if(sceneList[sceneHashId].group_id){
+          this.addSceneByGroup(sceneHashId, sceneList[sceneHashId].group_id)
+        }
+        this.scene = Object.assign({}, this.scene, sceneList);
+      }
+    },
+    delSceneByGroup(hashId, groupId) {
+      if (this.sceneGroup[groupId] && this.sceneGroup[groupId].scenes) {
+          let index = this.sceneGroup[groupId].scenes.indexOf(hashId)
+          this.sceneGroup[groupId].scenes.splice(index, 1)
+      }
+    },
+    addSceneByGroup(sceneHashId, groupId){
+      if(this.sceneGroup[groupId].scenes.includes(sceneHashId)) return
+      this.sceneGroup[groupId].scenes.push(sceneHashId)
+    },
+
     addSceneGroup(scene_group) {
-      this.sceneGroup[scene_group.hash_id] = Object.assign({}, scene_group, {
-        scenes: new Set()
-      });
+      if(!scene_group.scenes) scene_group.scenes = []
+      this.sceneGroup = Object.assign({}, this.sceneGroup, {[scene_group.hash_id]: scene_group})
     },
     updateScene(newData, oldData) {
-      this.scene[newData.hash_id] = newData
-
+      this.scene = Object.assign({}, this.scene, {[newData.hash_id]:newData})
       if (oldData.group_id) {
-        if (Array.isArray(this.sceneGroup[oldData.group_id].scenes)) {
-          let index = this.sceneGroup[oldData.group_id].scenes.indexOf(oldData.hash_id)
-          this.sceneGroup[oldData.group_id].scenes.splice(index, 1)
-        } else if (this.sceneGroup[oldData.group_id].scenes instanceof Set) {
-          this.sceneGroup[oldData.group_id].scenes.delete(oldData.hash_id)
-        }
+        this.delSceneByGroup(newData.hash_id, oldData.group_id)
       }
       if (newData.group_id) {
-        if (this.sceneGroup[newData.group_id].scenes) {
-          if (Array.isArray(this.sceneGroup[newData.group_id].scenes)) {
-            this.sceneGroup[newData.group_id].scenes.push(newData.hash_id)
-          } else if (this.sceneGroup[newData.group_id].scenes instanceof Set) {
-            this.sceneGroup[newData.group_id].scenes.add(newData.hash_id)
-          }
-        } else {
-          this.sceneGroup[newData.group_id].scenes = [newData.hash_id]
-        }
+        this.addSceneByGroup(newData.hash_id, newData.group_id)
       }
     },
     delScene(hashId) {
@@ -146,21 +141,12 @@ export const useEditorStore = defineStore("editor", {
       }
       delete this.scene[hashId]
     },
-    delSceneByGroup(hashId, groupId) {
-      if (this.sceneGroup[groupId] && this.sceneGroup[groupId].scenes) {
-        if (Array.isArray(this.sceneGroup[groupId].scenes)) {
-          let index = this.sceneGroup[groupId].scenes.indexOf(hashId)
-          this.sceneGroup[groupId].scenes.splice(index, 1)
-        } else if (this.sceneGroup[groupId].scenes instanceof Set) {
-          this.sceneGroup[groupId].scenes.delete(hashId)
-        }
-      }
-    },
+
     delSceneGroup(hash_id) {
       let scenes = this.sceneGroup[hash_id].scenes
       if (scenes) {
         for (let index in scenes) {
-          delete this.scene[scenes[index]]
+          this.delScene(scenes[index])
         }
       }
       delete this.sceneGroup[hash_id]
@@ -168,232 +154,190 @@ export const useEditorStore = defineStore("editor", {
 
     addView(view) {
       view.scene_id = this.activeScene.hash_id
-      this.view[view.hash_id] = view;
-      if (!this.activeScene.views) this.activeScene.views = new Set()
-      if (this.activeScene.views instanceof Set) {
-        this.activeScene.views.add(view.hash_id)
-      } else {
-        this.activeScene.views.push(view.hash_id)
+      this.view = Object.assign({}, this.view, {[view.hash_id]: view})
+      this.addViewByScene(view.hash_id, this.activeScene.hash_id)
+      this.setActiveScene(this.scene[this.activeScene.hash_id])
+      if (view.group_id) {
+        this.addViewByGroup(view.hash_id, view.group_id)
       }
-      this.scene[this.activeScene.hash_id] = this.activeScene
-      if (view.group_id) this.viewGroup[view.group_id].views.add(view.hash_id)
+    },
+    addViewByGroup(view_hash_id, group_id){
+      if(this.viewGroup[group_id].views){
+        this.viewGroup[group_id].views.push(view_hash_id)
+      }else{
+        this.viewGroup[group_id].views = [view_hash_id]
+      }
+    },
+    addViewByScene(view_hash_id, scene_hash_id){
+      if(this.scene[scene_hash_id].views){
+        if(this.scene[scene_hash_id].views.includes(view_hash_id)) return
+        this.scene[scene_hash_id].views.push(view_hash_id)
+      }else{
+        this.scene[scene_hash_id].views = [view_hash_id]
+      }
+    },
+    delViewByGroup(view_hash_id, group_hash_id){
+      if (this.viewGroup[group_hash_id] && this.viewGroup[group_hash_id].views) {
+          let index = this.viewGroup[group_hash_id].views.indexOf(view_hash_id)
+          this.viewGroup[group_hash_id].views.splice(index, 1)
+      }
+    },
+    delViewGroupByScene(view_group_hash_id, scene_hash_id){
+      if(this.scene[scene_hash_id] && this.scene[scene_hash_id].viewGroups){
+        let index = this.scene[scene_hash_id].viewGroups.indexOf(view_group_hash_id)
+        this.scene[scene_hash_id].viewGroups.splice(index, 1)
+      }
+    },
+    delViewByScene(view_hash_id, scene_hash_id){
+      if(this.scene[scene_hash_id] && this.scene[scene_hash_id].views){
+        let index = this.scene[scene_hash_id].views.indexOf(view_hash_id)
+        this.scene[scene_hash_id].views.splice(index, 1)
+      }
     },
     updateView(newData, oldData) {
-      this.view[newData.hash_id] = newData
-      if (oldData.group_id && this.viewGroup[oldData.group_id] && this.viewGroup[oldData.group_id].views) {
-        if (Array.isArray(this.viewGroup[oldData.group_id].views)) {
-          let index = this.viewGroup[oldData.group_id].views.indexOf(oldData.hash_id)
-          this.viewGroup[oldData.group_id].views.splice(index, 1)
-        } else if (this.viewGroup[oldData.group_id].views instanceof Set) {
-          this.viewGroup[oldData.group_id].views.delete(newData.hash_id)
-        }
+      this.view = Object.assign({}, this.view, {[newData.hash_id]:newData})
+      if(oldData.group_id){
+        this.delViewByGroup(newData.hash_id, oldData.group_id)
       }
       if (newData.group_id) {
-        if (this.viewGroup[newData.group_id].views) {
-          if (Array.isArray(this.viewGroup[newData.group_id].views)) {
-            this.viewGroup[newData.group_id].views.push(newData.hash_id)
-          } else if (this.viewGroup[newData.group_id].views instanceof Set) {
-            this.viewGroup[newData.group_id].views.add(newData.hash_id)
-          }
-        } else {
-          this.viewGroup[newData.group_id].views = [newData.hash_id]
-        }
+        this.addViewByGroup(newData.hash_id, newData.group_id)
       }
     },
     addViewGroup(viewGroup) {
       viewGroup.scene_id = this.activeScene.hash_id
-      if (!this.activeScene.viewGroups) this.activeScene.viewGroups = new Set()
-      if (this.activeScene.viewGroups instanceof Set) {
-        this.activeScene.viewGroups.add(viewGroup.hash_id)
-      } else if (Array.isArray(this.activeScene.viewGroups)) {
-        this.activeScene.viewGroups.push(viewGroup.hash_id)
-      }
-      this.scene[this.activeScene.hash_id] = this.activeScene
-      this.viewGroup[viewGroup.hash_id] = Object.assign({}, viewGroup, {
-        views: new Set()
-      })
+      viewGroup.views = []
+      this.addViewGroupByScene(viewGroup.hash_id, this.activeScene.hash_id)
+      this.setActiveScene(this.scene[this.activeScene.hash_id])
+      this.viewGroup = Object.assign({}, this.viewGroup, {[viewGroup.hash_id]: viewGroup})
     },
+    addViewGroupByScene(group_hash_id, scene_hash_id){
+      if(this.scene[scene_hash_id].viewGroups){
+        if(this.scene[scene_hash_id].viewGroups.includes(group_hash_id)) return
+        this.scene[scene_hash_id].viewGroups.push(group_hash_id)
+      }else{
+        this.scene[scene_hash_id].viewGroups = [group_hash_id]
+      }
+    },
+
     delView(hash_id) {
       let view = this.view[hash_id]
-      if (view.scene_id && this.scene[view.scene_id] && this.scene[view.scene_id].views) {
-        if (Array.isArray(this.scene[view.scene_id].views)) {
-          let index = this.scene[view.scene_id].views.indexOf(hash_id)
-          this.scene[view.scene_id].views.splice(index, 1)
-        } else if (this.scene[view.scene_id].views instanceof Set) {
-          this.scene[view.scene_id].views.delete(hash_id)
-        }
-        delete this.scene[view.scene_id].defaultView
-      }
-      if (view.group_id && this.viewGroup[view.group_id] && this.viewGroup[view.group_id].views) {
-        if (Array.isArray(this.viewGroup[view.group_id].views)) {
-          let index = this.viewGroup[view.group_id].views.indexOf(hash_id)
-          this.viewGroup[view.group_id].views.splice(index, 1)
-        } else if (this.viewGroup[view.group_id].views instanceof Set) {
-          this.viewGroup[view.group_id].views.delete(hash_id)
-        }
+      this.delViewByScene(hash_id, view.scene_id)
+      if(view.group_id){
+        this.delViewByGroup(hash_id, view.group_id)
       }
       delete this.view[hash_id]
     },
     delViewGroup(hash_id) {
+      this.delViewGroupByScene(hash_id, this.viewGroup[hash_id].scene_id)
       delete this.viewGroup[hash_id]
     },
 
+    addHotspot(hotspot) {
+      hotspot.scene_id = this.activeScene.hash_id
+      this.hotspot = Object.assign({}, this.hotspot, {[hotspot.hash_id]:hotspot})
+      this.addHotspotByScene(hotspot.hash_id, this.activeScene.hash_id)
+      this.setActiveScene(this.scene[this.activeScene.hash_id])
+      if(hotspot.group_id){
+        this.addHotspotByGroup(hotspot.hash_id, hotspot.group_id)
+      }
+    },
+    updateHotspot(newData, oldData) {
+      this.hotspot = Object.assign({}, this.hotspot, {[newData.hash_id]:newData})
+      if (oldData.group_id){
+          this.delHotspotByGroup(oldData.hash_id, oldData.group_id)
+      }
+      if(newData.group_id){
+        this.addHotspotByGroup(newData.hash_id, newData.group_id)
+      }
+    },
+    addHotspotGroup(hotspotGroup) {
+      hotspotGroup.scene_id = this.activeScene.hash_id
+      hotspotGroup.hotspots = []
+      this.addHotspotGroupByScene(hotspotGroup.hash_id, this.activeScene.hash_id)
+      this.setActiveScene(this.scene[this.activeScene.hash_id])
+      this.hotspotGroup = Object.assign({}, this.hotspotGroup, {[hotspotGroup.hash_id]:hotspotGroup})
+    },
+    addHotspotByGroup(hotspot_hash_id, group_hash_id){
+      if(this.hotspotGroup[group_hash_id].hotspots){
+        if(this.hotspotGroup[group_hash_id].hotspots.includes(hotspot_hash_id)) return
+        this.hotspotGroup[group_hash_id].hotspots.push(hotspot_hash_id)
+      }else{
+        this.hotspotGroup[group_hash_id].hotspots = [hotspot_hash_id]
+      }
+    },
+    addHotspotByScene(hotspot_hash_id, scene_hash_id){
+        if(this.scene[scene_hash_id].hotspots){
+          if(this.scene[scene_hash_id].hotspots.includes(hotspot_hash_id)) return
+          this.scene[scene_hash_id].hotspots.push(hotspot_hash_id)
+        }else{
+          this.scene[scene_hash_id].hotspots = [hotspot_hash_id]
+        }
+    },
+    addHotspotGroupByScene(group_hash_id, scene_hash_id){
+      if(this.scene[scene_hash_id].hotspotGroups){
+        if(this.scene[scene_hash_id].hotspotGroups.includes(group_hash_id)) return
+        this.scene[scene_hash_id].hotspotGroups.push(group_hash_id)
+      }else{
+        this.scene[scene_hash_id].hotspotGroups = [group_hash_id]
+      }
+    },
+
+    delHotspot(hash_id) {
+      let hotspot = this.hotspot[hash_id]
+      this.delHotspotByScene(hotspot.hash_id, hotspot.scene_id)
+      if(hotspot.group_id){
+        this.delHotspotByGroup(hotspot.hash_id, hotspot.group_id)
+      }
+      delete this.hotspot[hash_id]
+    },
+    delHotspotGroup(hash_id) {
+      let hotspotGroup = this.hotspotGroup[hash_id]
+      this.delHotspotGroupByScene(hash_id, hotspotGroup.scene_id)
+      delete this.hotspotGroup[hash_id]
+    },
+    delHotspotByGroup(hotspot_id, group_id){
+      if(this.hotspotGroup[group_id] && this.hotspotGroup[group_id].hotspots){
+        let index = this.hotspotGroup[group_id].hotspots.indexOf(hotspot_id)
+        this.hotspotGroup[group_id].hotspots.splice(index, 1)
+      } 
+    },
+    delHotspotByScene(hotspot_id, scene_hash_id){
+      if(this.scene[scene_hash_id] && this.scene[scene_hash_id].hotspots){
+        let index = this.scene[scene_hash_id].hotspots.indexOf(hotspot_id)
+        this.scene[scene_hash_id].hotspots.splice(index, 1)
+      } 
+    },
+    delHotspotGroupByScene(hotspot_group_id, scene_hash_id){
+      if(this.scene[scene_hash_id] && this.scene[scene_hash_id].hotspotGroups){
+        let index = this.scene[scene_hash_id].hotspotGroups.indexOf(hotspot_group_id)
+        this.scene[scene_hash_id].hotspotGroups.splice(index, 1)
+      } 
+    },
+
+    setActiveSceneGroup(activeSceneGroup) {
+      this.activeSceneGroup = activeSceneGroup
+    },
+    setActiveScene(activeScene) {
+      this.activeScene = activeScene
+    },
     setActiveHotspot(activeHotspot) {
-      console.log(activeHotspot)
       this.activeHotspot = activeHotspot
     },
     setActiveHotspotGroup(activeHotspotGroup) {
       this.activeHotspotGroup = activeHotspotGroup
     },
-    addHotspot(hotspot) {
-      hotspot.scene_id = this.activeScene.hash_id
-      this.hotspot[hotspot.hash_id] = hotspot;
-      if (!this.activeScene.hotspots) this.activeScene.hotspots = new Set()
-      if (this.activeScene.hotspots instanceof Set) {
-        this.activeScene.hotspots.add(hotspot.hash_id)
-      } else if (Array.isArray(this.activeScene.hotspots)) {
-        this.activeScene.hotspots.push(hotspot.hash_id)
-      }
-      this.scene[this.activeScene.hash_id] = this.activeScene
-      if (hotspot.group_id) {
-        if (this.hotspotGroup[hotspot.group_id].hotspots) {
-          if (Array.isArray(this.hotspotGroup[hotspot.group_id].hotspots)) {
-            this.hotspotGroup[hotspot.group_id].hotspots.push(hotspot.hash_id)
-          } else if (this.hotspotGroup[hotspot.group_id].hotspots instanceof Set) {
-            this.hotspotGroup[hotspot.group_id].hotspots.add(hotspot.hash_id)
-          }
-        }else{
-          this.hotspotGroup[hotspot.group_id].hotspots = [hotspot.hash_id]
-        }
-      }
-    },
-    updateHotspot(newData, oldData) {
-      this.hotspot[newData.hash_id] = newData
-      if (oldData.group_id && this.hotspotGroup[oldData.group_id] && this.hotspotGroup[oldData.group_id].hotspots) {
-        if (Array.isArray(this.hotspotGroup[oldData.group_id].hotspots)) {
-          let index = this.hotspotGroup[oldData.group_id].hotspots.indexOf(oldData.group_id)
-          this.hotspotGroup[oldData.group_id].hotspots.splice(index, 1)
-        } else if (this.hotspotGroup[oldData.group_id].hotspots instanceof Set) {
-          this.hotspotGroup[oldData.group_id].hotspots.delete(newData.hash_id)
-        }
-      }
-      if (newData.group_id) {
-        if (this.hotspotGroup[newData.group_id]) {
-          if (Array.isArray(this.hotspotGroup[newData.group_id].hotspots)) {
-            this.hotspotGroup[newData.group_id].hotspots.push(newData.hash_id)
-          } else if (this.hotspotGroup[newData.group_id].hotspots instanceof Set) {
-            this.hotspotGroup[newData.group_id].hotspots.add(newData.hash_id)
-          }
-        } else {
-          this.hotspotGroup[newData.group_id].hotspots = [newData.hash_id]
-        }
-      }
-    },
-    addHotspotGroup(hotspotGroup) {
-      hotspotGroup.scene_id = this.activeScene.hash_id
-      if (!this.activeScene.hotspotGroups) this.activeScene.hotspotGroups = new Set()
-      if(this.activeScene.hotspotGroups instanceof Set){
-        this.activeScene.hotspotGroups.add(hotspotGroup.hash_id)
-      }else if(Array.isArray(this.activeScene.hotspotGroups)){
-        this.activeScene.hotspotGroups.push(hotspotGroup.hash_id)
-      }
-      this.scene[this.activeScene.hash_id] = this.activeScene
-      this.hotspotGroup[hotspotGroup.hash_id] = Object.assign({}, hotspotGroup, {
-        hotspots: new Set()
-      })
-    },
-    delHotspot(hash_id) {
-      let hotspot = this.hotspot[hash_id]
-      if (hotspot.scene_id && this.scene[hotspot.scene_id] && this.scene[hotspot.scene_id].hotspots) {
-        if (Array.isArray(this.scene[hotspot.scene_id].hotspots)) {
-          let index = this.scene[hotspot.scene_id].hotspots.indexOf(hash_id)
-          this.scene[hotspot.scene_id].hotspots.splice(index, 1)
-        } else if (this.scene[hotspot.scene_id].hotspots instanceof Set) {
-          this.scene[hotspot.scene_id].hotspots.delete(hash_id)
-        }
-      }
-      if (hotspot.group_id && this.hotspotGroup[hotspot.group_id] && this.hotspotGroup[hotspot.group_id].hotspots) {
-        if (Array.isArray(this.hotspotGroup[hotspot.group_id].hotspots)) {
-          let index = this.hotspotGroup[hotspot.group_id].hotspots.indexOf(hash_id)
-          this.hotspotGroup[hotspot.group_id].hotspots.splice(index, 1)
-        } else if (this.hotspotGroup[hotspot.group_id].hotspots instanceof Set) {
-          this.hotspotGroup[hotspot.group_id].hotspots.delete(hash_id)
-        }
-      }
-      delete this.hotspot[hash_id]
-    },
-    delHotspotGroup(hash_id) {
-      delete this.hotspotGroup[hash_id]
-    },
-
     setActiveLayer(activeLayer) {
       this.activeLayer = activeLayer
     },
     setActiveLayerGroup(activeLayerGroup) {
       this.activeLayerGroup = activeLayerGroup
     },
-    addLayer(layer) {
-      this.layer[layer.hash_id] = layer;
-    },
-    updateLayer(newData, oldData) {
-      this.layer[newData.hash_id] = newData
-      if (oldData.group_id && this.layerGroup[oldData.group_id] && this.layerGroup[oldData.group_id].layers) {
-        if (Array.isArray(this.layerGroup[oldData.group_id].layers)) {
-          let index = this.layerGroup[oldData.group_id].layers.indexOf(oldData.group_id)
-          this.layerGroup[oldData.group_id].layers.splice(index, 1)
-        } else if (this.layerGroup[oldData.group_id].layers instanceof Set) {
-          this.layerGroup[oldData.group_id].layers.delete(oldData.group_id)
-        }
-      }
-      if (newData.group_id) {
-        if (this.layerGroup[newData.group_id].layers) {
-          if (Array.isArray(this.layerGroup[newData.group_id].layers)) {
-            this.layerGroup[newData.group_id].layers.push(newData.hash_id)
-          } else if (this.layerGroup[newData.group_id].layers instanceof Set) {
-            this.layerGroup[newData.group_id].layers.add(newData.hash_id)
-          }
-        } else {
-          this.layerGroup[newData.group_id].layers = [newData.hash_id]
-        }
-      }
-    },
-    addLayerGroup(layerGroup) {
-      this.layerGroup[layerGroup.hash_id] = Object.assign({}, layerGroup, {
-        layers: new Set()
-      })
-    },
-
-
     setActiveLogic(activeLogic) {
       this.activeLogic = activeLogic
     },
     setActiveLogicGroup(activeLogicGroup) {
       this.activeLogicGroup = activeLogicGroup
     },
-    addLogic(logic) {
-      this.logic[logic.hash_id] = logic;
-    },
-    addLogicGroup(logicGroup) {
-      this.logicGroup[logicGroup.hash_id] = Object.assign({}, logicGroup, {
-        logics: new Set()
-      })
-    },
-
-    setActiveButton(activeButton) {
-      this.activeButton = activeButton
-    },
-    setActiveButtonGroup(activeButtonGroup) {
-      this.activeButtonGroup = activeButtonGroup
-    },
-    addButton(button) {
-      this.button[button.hash_id] = button;
-    },
-    addButtonGroup(buttonGroup) {
-      this.buttonGroup[buttonGroup.hash_id] = Object.assign({}, buttonGroup, {
-        buttons: new Set()
-      })
-    },
-
     setActiveView(activeView) {
       this.activeView = activeView
     },
@@ -401,21 +345,9 @@ export const useEditorStore = defineStore("editor", {
       this.activeViewGroup = activeViewGroup
     },
 
-
-    hideAll() {
-      this.showDashboardVisible = false
-      this.showGroupCreateFormVisible = false
-      this.showGroupUpdateFormVisible = false
-      this.showCreateFormVisible = false
-      this.showUpdateFormVisible = false
-      this.showGroupInfoVisible = false
-      this.showInfoVisible = false
-    },
-
     toggleDashboard() {
       this.showDashboardVisible = !this.showDashboardVisible
     },
-
     toggleInfo() {
       this.showInfoVisible = !this.showInfoVisible
     },
@@ -456,7 +388,5 @@ export const useEditorStore = defineStore("editor", {
       this.showGroupInfoVisible = true
       this.showDashboardVisible = true
     }
-
-
   }
 });

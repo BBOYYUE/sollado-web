@@ -99,7 +99,7 @@ function loadFilesystem (node, resolve) {
 
       <el-form-item label="所属分组">
         <el-select v-model="form.group_id">
-          <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id">{{
+          <el-option v-for="info in groups" :key="info.hash_id" :label="info.name" :value="info.hash_id" v-show="info.plugin == 'panorama-image'">{{
               info.name
           }}</el-option>
         </el-select>

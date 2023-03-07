@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onMounted } from "vue";
+import { computed, watch, ref, onMounted, onActivated } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAppStore } from "@/stores/app";
 import { useEditorStore } from "@/stores/editor";

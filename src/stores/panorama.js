@@ -3,6 +3,7 @@ import http from "@/util/http";
 import * as api from "../util/api";
 import queryBuilder from "../util/queryBuilder";
 import { useAppStore } from "@/stores/app";
+import * as panoramaType from '@/common/panoramaType.js'
 const appStore = useAppStore();
 
 /**
@@ -34,7 +35,7 @@ export const usePanoramaStore = defineStore("panorama", {
   },
   actions: {
     getStorehouse() {
-      this.queryBuilder.filter.type = 2;
+      this.queryBuilder.filter.type = panoramaType.STOREHOUSE;
       this.queryBuilder.filter.parent_id = undefined;
       this.queryBuilder.filter.name = undefined;
       appStore.loading();
@@ -118,13 +119,10 @@ export const usePanoramaStore = defineStore("panorama", {
           appStore.ready();
         });
     },
-    deletePanorama(id) {
+    async deletePanorama(id) {
       appStore.loading();
-      http()
-        .delete(api.host + api.panorama + id)
-        .then(() => {
-          appStore.ready();
-        });
+      await http().delete(api.host + api.panorama + id)
+      this.getFolder()
     },
   },
 });

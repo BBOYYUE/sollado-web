@@ -3,6 +3,8 @@ import http from "@/util/http";
 import * as api from "../util/api";
 import queryBuilder from "../util/queryBuilder";
 import { useAppStore } from "@/stores/app";
+import * as filesystemType from "@/common/filesystemType.js"
+
 const appStore = useAppStore();
 
 /**
@@ -40,7 +42,7 @@ export const useFilesystemStore = defineStore("filesystem", {
     },
     getStorehouse() {
       appStore.loading();
-      this.queryBuilder.filter.type = 2;
+      this.queryBuilder.filter.type = filesystemType.STOREHOUSE;
       this.queryBuilder.filter.parent_id = undefined;
       this.queryBuilder.filter.name = undefined;
       http()

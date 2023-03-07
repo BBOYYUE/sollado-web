@@ -19,7 +19,7 @@
     "json-string-formatter": "^1.0.1",
     "laravel-echo": "^1.14.2",
     "normalizr": "^3.6.2",
-    "pinia": "^2.0.28",
+    "pinia": "^2.0.32",
     "plural": "^1.1.0",
     "pusher-js": "^7.6.0",
     "three": "^0.145.0",

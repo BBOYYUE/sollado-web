@@ -114,13 +114,12 @@ export const usePanoramaWorkStore = defineStore("panoramaWork", {
           appStore.ready();
         });
     },
-    deletePanoramaWork(id) {
+    async deletePanoramaWork(id) {
       appStore.loading();
-      http()
+      await http()
         .delete(api.host + api.panoramaWork + id)
-        .then(() => {
-          appStore.ready();
-        });
+      this.getAsset()
+
     },
   },
 });

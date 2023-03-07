@@ -7,9 +7,7 @@ const props = defineProps({
   bgColor: String
 })
 const sizeClass = computed(() => {
-
   let c = ""
-  console.log(props.marign != 'none')
   switch (props.size) {
     case 'xs':
       c = props.marign != 'none' ? c + ' m-2 ' : c + ''

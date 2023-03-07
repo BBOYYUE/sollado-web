@@ -1,13 +1,24 @@
 <script setup>
 import { computed, watch, ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import box from "@/components/box.vue"
 import { useEditorStore } from "@/stores/editor";
 import { v4 as uuid } from "uuid";
 import { CirclePlus, Plus } from "@element-plus/icons-vue";
 import * as api from "@/util/api";
 import http from "@/util/http";
+import axios from "axios";
+import * as panoramaType from "@/common/panoramaType.js"
 
 const editorStore = useEditorStore();
+const route = useRoute();
+const router = useRouter();
+const props = defineProps({
+  workid: String,
+});
+onMounted(() => {
+  editorStore.getPanorama(props.workid);
+})
 const work = computed(() => editorStore.work, function () {
   return editorStore.work
 })
@@ -23,20 +34,22 @@ const createSceneGroupForm = ref({
   name: undefined
 })
 const createSceneGroupDialogVisible = ref(false)
-const createSceneForm = ref({})
+const createSceneForm = ref({
+  group_id: ""
+})
 const createSceneDialogVisible = ref(false)
 
 
 const loadPanorama = function (node, resolve) {
   if (node.level === 0) {
     http()
-      .get(api.host + api.panorama + "?filter[type]=2")
+      .get(api.host + api.panorama + "?filter[type]=" + panoramaType.STOREHOUSE)
       .then((res) => {
         let respond = res.data;
         if (respond.code == 200) {
           let data = [];
           for (let item in respond.data.data) {
-            if (respond.data.data[item].type == 2) {
+            if (respond.data.data[item].type == panoramaType.STOREHOUSE) {
               data.push({
                 name: respond.data.data[item].name,
                 hashId: respond.data.data[item].hash_id,
@@ -63,14 +76,14 @@ const loadPanorama = function (node, resolve) {
           let data = [];
           let fileList = [];
           for (let item in respond.data.data) {
-            if (respond.data.data[item].type == 1) {
+            if (respond.data.data[item].type == panoramaType.FOLDER) {
               data.push({
                 name: respond.data.data[item].name,
                 hashId: respond.data.data[item].hash_id,
                 purpose: respond.data.data[item].purpose,
                 type: respond.data.data[item].type,
               });
-            } else if (respond.data.data[item].type == 0) {
+            } else if (respond.data.data[item].type == panoramaType.ASSET) {
               panoramaInfo.value[respond.data.data[item].hash_id] =
                 respond.data.data[item];
               fileList.push({
@@ -129,6 +142,7 @@ function copy(str) {
 
 function checkoutScene(scene) {
   editorStore.setActiveScene(scene)
+  router.push(`/work/editor/panorama/${scene.hash_id}`);
 }
 function removeScene(scene) {
   editorStore.delScene(scene.hash_id)
@@ -139,6 +153,7 @@ function removeSceneForGroup(scene, groupHashId) {
 function addSceneGroup() {
   console.log(createSceneGroupDialogVisible.value)
   createSceneGroupDialogVisible.value = true
+
 }
 function removeSceneGroup(groupHashId) {
   editorStore.delSceneGroup(groupHashId)
@@ -158,35 +173,67 @@ function closeAddSceneGroup() {
   createSceneGroupForm.value = { name: undefined }
 }
 
-function storeScene(){
+function storeScene() {
   let data = {}
   getPanoramaInfo(formPanoramaList.value).map((panorama) => {
-      if (!data[panorama.hash_id]) {
-        panorama.plugin = 'panorama-scene'
-        if(createSceneForm.value.group_id){
-          panorama.group_id = createSceneForm.value.group_id
-        }
-        data[panorama.hash_id] = panorama
+    if (!data[panorama.hash_id]) {
+      panorama.plugin = 'panorama-scene'
+      if (createSceneForm.value.group_id) {
+        panorama.group_id = createSceneForm.value.group_id
       }
-    })
-    editorStore.addScene(data)
-    createSceneDialogVisible.value = false
+      data[panorama.hash_id] = panorama
+    }
+  })
+  editorStore.addScene(data)
+  createSceneDialogVisible.value = false
 }
-function getPanoramaInfo (form) {
+function getPanoramaInfo(form) {
   let data = []
   form.map((item) => {
     data.push(panoramaInfo.value[item])
   })
   return data;
 }
-function closeAddScene(){
+function closeAddScene() {
 
 }
-function createScene(sceneGroupHashId = "") {
+function createScene() {
+  createSceneDialogVisible.value = true
+}
+function createSceneByGroup(sceneGroupHashId = "") {
   if (sceneGroupHashId) {
     createSceneForm.value.group_id = sceneGroupHashId
   }
   createSceneDialogVisible.value = true
+}
+async function textToStringAndDownload(name, workId) {
+
+  // 要保存的字符串
+  let res = await axios.create({
+    baseURL: api.host,
+  }).get(
+    api.panoramaWork + 'getDocument/' + workId
+  )
+  let stringData = res.data
+  console.log(stringData)
+  // dada 表示要转换的字符串数据，type 表示要转换的数据格式
+  let blob = new Blob([stringData], {
+    type: "text/plain;charset=utf-8"
+  })
+  // 根据 blob生成 url链接
+  let objectURL = URL.createObjectURL(blob)
+
+  // 创建一个 a 标签Tag
+  let aTag = document.createElement('a')
+  // 设置文件的下载地址
+  aTag.href = objectURL
+  // 设置保存后的文件名称
+  aTag.download = `${name}.xml`
+  // 给 a 标签添加点击事件
+  aTag.click()
+  // 释放一个之前已经存在的、通过调用 URL.createObjectURL() 创建的 URL 对象。
+  // 当你结束使用某个 URL 对象之后，应该通过调用这个方法来让浏览器知道不用在内存中继续保留对这个文件的引用了。
+  URL.revokeObjectURL(objectURL)
 }
 
 </script>
@@ -208,6 +255,8 @@ function createScene(sceneGroupHashId = "") {
             <div class="flex flex-row justify-left">
               <el-link type="primary" @click="showPanoramaWork(work.hash_id)">预览</el-link>
               <el-link type="primary" @click="copyPanoramaWorkLink(work.hash_id)" class="ml-2">复制预览地址</el-link>
+              <el-link type="primary" @click="textToStringAndDownload(work.name, work.hash_id)"
+                class="ml-2">下载xml</el-link>
             </div>
             <div class="text-xs text-gray-400 ml-4">上一次编辑: 2022年11月30日</div>
           </div>
@@ -220,8 +269,7 @@ function createScene(sceneGroupHashId = "") {
     <div>
       <box size="md">
         <div class="text-lg font-bold pb-2">场景列表</div>
-        <el-tabs v-model="all" class="demo-tabs" @tab-click="handleClick" :addable="true" @tab-add="addSceneGroup"
-          @tab-remove="removeSceneGroup">
+        <el-tabs class="demo-tabs" :addable="true" @tab-add="addSceneGroup" @tab-remove="removeSceneGroup">
           <el-tab-pane label="所有场景" name="all" class="flex flex-row flex-wrap" :closable="false">
             <box size="xs" class="h-26 w-24" @click="createScene">
               <div class="w-full h-full flex flex-col justify-center">
@@ -252,7 +300,7 @@ function createScene(sceneGroupHashId = "") {
           </el-tab-pane>
           <el-tab-pane :label="sceneGroup.name" :name="sceneGroupHashId" :closable="true" class="flex flex-row flex-wrap"
             v-for="(sceneGroup, sceneGroupHashId) in sceneGroups" :key="sceneGroupHashId">
-            <box size="xs" class="h-26 w-24" @click="createScene(sceneGroupHashId)">
+            <box size="xs" class="h-26 w-24" @click="createSceneByGroup(sceneGroupHashId)">
               <div class="w-full h-full flex flex-col justify-center">
                 <div class="w-full flex flex-row justify-center">
                   <Plus class="w-8 h-8"></Plus>

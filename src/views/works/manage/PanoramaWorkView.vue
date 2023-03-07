@@ -26,15 +26,6 @@ function goBack () {
   }
 }
 
-function goToActive (row) {
-  if (row.type == 1) {
-    let hashId = row.hash_id ?? row.hashId;
-    router.push("/work/manage/panorama-work/" + hashId + "?name=" + row.name);
-  } else if (row.type == 0) {
-    window.open(row.path, "_blank ");
-  }
-}
-
 function search (name) {
   panoramaWork.setFilterByName(name);
   panoramaWork.getAsset();
@@ -58,16 +49,10 @@ function storeAsset () {
 
 function deletePanoramaWork (id) {
   panoramaWork.deletePanoramaWork(id);
-  setTimeout(function () {
-    panoramaWork.getAsset();
-  }, 1000);
 }
 function editPanoramaWork (id) {
   try {
-    // let features =
-    //   "height=500, width=800, top=100, left=100, toolbar=no, menubar=no, scrollbars = no, resizable = no, location = no, personalbar=no, titlebar=no, status = no";
-    // window.open("/panorama-work-edit/" + id, "全景作品编辑", features);
-    router.push(`/work/editor/panorama/${id}/work-info/`);
+    router.push(`/work/manage/panorama-work/${id}`);
   } catch (e) {
     console.log(e);
   }
@@ -131,9 +116,9 @@ watch(
       <el-page-header @back="goBack">
         <template #breadcrumb>
           <el-breadcrumb :separator-icon="ArrowRight">
-            <el-breadcrumb-item v-for="item in panoramaWork.history" :key="item" @click="goToActive(item)">
+            <!-- <el-breadcrumb-item v-for="item in panoramaWork.history" :key="item" @click="goToActive(item)">
               <div>{{ item.name }}</div>
-            </el-breadcrumb-item>
+            </el-breadcrumb-item> -->
           </el-breadcrumb>
         </template>
         <template #content>
@@ -155,7 +140,7 @@ watch(
       <el-table :data="panoramaWork.assets.data" stripe style="width: 100%">
         <el-table-column label="名称">
           <template #default="scope">
-            <el-link target="_blank" type="primary" v-on:click.stop="goToActive(scope.row)">
+            <el-link target="_blank" type="primary"  v-on:click.stop="editPanoramaWork(scope.row.hash_id)">
               {{ scope.row.name }}
             </el-link>
           </template>
@@ -172,7 +157,7 @@ watch(
         </el-table-column>
         <el-table-column label="分享码" width="120">
           <template #default="scope">
-            <div v-if="scope.row.type == 0">
+            <div>
               {{ scope.row.hash_id }}
             </div>
           </template>
