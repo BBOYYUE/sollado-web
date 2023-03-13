@@ -5,7 +5,8 @@ import { useAuthStore } from "@/stores/auth";
 import { useFilesystemStore } from "@/stores/filesystem";
 import { ElMessage } from "element-plus";
 import * as api from "@/util/api";
-import * as purpose from "@/common/purpose";
+import * as purpose from "@/common/filePurpose";
+
 import { Timer, UploadFilled, ArrowRight } from "@element-plus/icons-vue";
 import axios from "axios";
 import * as filesystemType from "@/common/filesystemType.js"
@@ -51,11 +52,7 @@ function onFileUploadSuccess(respond) {
   }
 }
 function getPurposeInfo(val) {
-  for (let item in purpose) {
-    if (purpose[item].val == val) {
-      return purpose[item].key;
-    }
-  }
+  return purpose.getPurpose(val)
 }
 
 function downloadFile(id) {
